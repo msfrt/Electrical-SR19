@@ -1,0 +1,67 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Car1516_ATCC_Rear
+
+
+BO_ 53 Car12_ATCC_Rear_5: 8 Car1516_ATCC_Rear
+ SG_ Water_Outlet_Temp : 16|16@1- (0.1,0) [-3276.8|3276.7] "°C" Vector__XXX
+ SG_ Water_Inlet_Temp : 0|16@1- (0.1,0) [-3276.8|3276.7] "°C" Vector__XXX
+
+BO_ 52 Car12_ATCC_Rear_4: 8 Car1516_ATCC_Rear
+ SG_ Tire_Temp_RRI : 32|16@1- (0.18,32) [-5866.24|5930.06] "°F" Vector__XXX
+ SG_ Tire_Temp_RRM : 16|16@1- (0.18,32) [-5866.24|5930.06] "°F" Vector__XXX
+ SG_ Tire_Temp_RRO : 0|16@1- (0.18,32) [-5866.24|5930.06] "°F" Vector__XXX
+
+BO_ 51 Car12_ATCC_Rear_3: 8 Car1516_ATCC_Rear
+ SG_ Tire_Temp_RLI : 48|16@1- (0.18,32) [-5866.24|5930.06] "°F" Vector__XXX
+ SG_ Tire_Temp_RLM : 32|16@1- (0.18,32) [-5866.24|5930.06] "°F" Vector__XXX
+ SG_ Tire_Temp_RLO : 16|16@1- (0.18,32) [-5866.24|5930.06] "°F" Vector__XXX
+ SG_ Brake_Rotor_Temp_Rear : 0|16@1- (0.1,0) [-3276.8|3276.7] "°C" Vector__XXX
+
+BO_ 50 Car12_ATCC_Rear_2: 8 Car1516_ATCC_Rear
+ SG_ Brake_Press_RR : 0|16@1- (0.1,0) [-3276.8|3276.7] "psi" Vector__XXX
+
+BO_ 49 Car12_ATCC_Rear_1: 8 Car1516_ATCC_Rear
+
+BO_ 48 Car12_ATCC_Rear_0: 8 Car1516_ATCC_Rear
+ SG_ ESP_Motor_Current : 48|16@1- (0.0125,0) [-409.6|409.5875] "A" Vector__XXX
+ SG_ Rectifier_Current : 32|16@1- (0.0125,0) [-409.6|409.5875] "A" Vector__XXX
+ SG_ Linear_Pot_RR : 16|16@1- (-0.01,75) [0|75] "cm" Vector__XXX
+ SG_ Linear_Pot_RL : 0|16@1- (-0.01,75) [0|75] "cm" Vector__XXX
+
+
+
+

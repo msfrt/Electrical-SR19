@@ -1,0 +1,91 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: M400_Data_set_1_send
+
+
+BO_ 1520 M400_Data_set_1_send: 8 M400_Data_set_1_send
+ SG_ Gear_Angle m15 : 39|16@0- (0.09,-45) [-2994.12|2904.03] "" Vector__XXX
+ SG_ Drive_Speed_M400 m15 : 23|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ Ground_Speed_M400 m14 : 55|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ AUX2_Duty_Cycle_M400 m14 : 39|16@0- (1,0) [0|0] "%" Vector__XXX
+ SG_ AUX1_Duty_Cycle_M400 m14 : 23|16@0- (1,0) [0|0] "%" Vector__XXX
+ SG_ Fuel_Temp m13 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ TC_Power_Reduction m12 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ TC_Launch_Aim_RPM m12 : 39|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ Lambda_1_Long_Term_Trim m11 : 55|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ Lambda_1_Short_Term_Trim m11 : 39|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ Lambda_1_Aim_Value m11 : 23|16@0- (0.001,0) [-32.768|32.767] "" Vector__XXX
+ SG_ TC_Slip_Aim_Value m13 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ TC_Slip_Aim_Error m13 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ Ign_Cut_Level_Total m10 : 55|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ Fuel_Inj_Duty_Cycle m10 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ TC_Cut_Level m12 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ Ground_Speed_Right m10 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ Ground_Speed_Left m9 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ Drive_Speed_Right m9 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ Drive_Speed_Left m9 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ Exhaust_Gas_Temp_M400_4 m8 : 55|16@0- (1,0) [0|0] "°C" Vector__XXX
+ SG_ Exhaust_Gas_Temp_M400_3 m8 : 39|16@0- (1,0) [0|0] "°C" Vector__XXX
+ SG_ Exhaust_Gas_Temp_M400_2 m8 : 23|16@0- (1,0) [0|0] "°C" Vector__XXX
+ SG_ Exhaust_Gas_Temp_M400_1 m7 : 55|16@0- (1,0) [0|0] "°C" Vector__XXX
+ SG_ G_Lateral m7 : 39|16@0- (0.001,0) [-32.768|32.767] "" Vector__XXX
+ SG_ Lambda_1 m7 : 23|16@0- (0.001,0) [-32.768|32.767] "" Vector__XXX
+ SG_ Manifold_Pressure m6 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ Wheel_Slip m6 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ Fuel_Cut_Level_Total m6 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ Throttle_Position m5 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ RPM m5 : 39|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ Oil_Temp m5 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ Oil_pressure m4 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ G_Longitudinal m4 : 39|16@0- (0.001,0) [-32.768|32.767] "" Vector__XXX
+ SG_ Manifold_Temp m4 : 23|16@0- (0.1,0) [-3276.8|3276.7] "°C" Vector__XXX
+ SG_ Gear m3 : 55|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ Fuel_Pressure m3 : 39|16@0- (0.1,0) [-3276.8|3276.7] "kPa" Vector__XXX
+ SG_ Engine_Temp m3 : 23|16@0- (0.1,0) [-3276.8|3276.7] "°C" Vector__XXX
+ SG_ AUX8_Duty_Cycle_M400 m2 : 23|16@0- (1,0) [0|0] "%" Vector__XXX
+ SG_ AUX7_Duty_Cycle_M400 m1 : 55|16@0- (1,0) [0|0] "%" Vector__XXX
+ SG_ AUX6_Duty_Cycle_M400 m1 : 39|16@0- (1,0) [0|0] "%" Vector__XXX
+ SG_ AUX5_Duty_Cycle_M400 m1 : 23|16@0- (1,0) [0|0] "%" Vector__XXX
+ SG_ AUX4_Duty_Cycle_M400 m0 : 55|16@0- (1,0) [0|0] "%" Vector__XXX
+ SG_ AUX3_Duty_Cycle_M400 m0 : 39|16@0- (1,0) [0|0] "%" Vector__XXX
+ SG_ rowcounter M : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ECU_Temp m2 : 55|16@0- (0.1,0) [0|0] "°C" Vector__XXX
+ SG_ Battery_Voltage_M400 m2 : 39|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+ SG_ Steering_Angle m0 : 23|16@0- (0.1,0) [-3276.8|3276.7] "°" Vector__XXX
+
+
+
+
