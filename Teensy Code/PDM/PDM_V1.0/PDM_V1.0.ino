@@ -18,6 +18,7 @@
 //
 //  Last change:    updated BatteryVoltAvg to copy from PDM.voltAvg after the
 //                  necessary calculations. BatteryVoltAvg is used in WP speed.
+//                  testing GitHub.
 //------------------------------------------------------------------------------
 
 // CASES:
