@@ -19,7 +19,7 @@
 #include <FlexCAN.h>
 
 
-static CAN_message_t rxmsg; DAVE IS STUPID
+static CAN_message_t rxmsg;
 
 // Left screen
 #define TFT1_sclk 13
