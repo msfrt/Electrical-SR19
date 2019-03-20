@@ -1,0 +1,9 @@
+
+int readableValue(Sensor input){
+  int Vin = input.InputVoltage;
+  int Zero = input.ZeroVoltage;
+  float UnitMV = input.UnitMV;
+  int ScalingFact = input.ScalingFactor;
+  return ((Vin-Zero) * (UnitMV) * (ScalingFact);
+}
+
