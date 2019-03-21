@@ -192,17 +192,17 @@ void setup()
 
   delay(1000);
 
-  // initialize SD card
-  Serial.print("Initializing SD card...");
-  if (!SD.begin(SD_CS)) {
-    Serial.println("failed!");
-    return;
-  }
-  Serial.println("OK!");
+//  // initialize SD card
+//  Serial.print("Initializing SD card...");
+//  if (!SD.begin(SD_CS)) {
+//    Serial.println("failed!");
+//    return;
+//  }
+//  Serial.println("OK!");
 
 
 
-  display startup message
+  // display startup message
   startupMessage();
 
   delay(1000);
@@ -866,7 +866,7 @@ void rpmBar()
 // copy of rpm bar function with temporary ability for throttle
 void throttleBar()
 {
-  int ledValue = map(CAN0_throttle.value, 0, 100, 0, 1800);
+  int ledValue = map(CAN0_throttle.value, 0, 1000, 0, 1800);
 
   //         .setPixelColor(LED#, red, green, blue)
   //----------------------------------------------------------------------------
