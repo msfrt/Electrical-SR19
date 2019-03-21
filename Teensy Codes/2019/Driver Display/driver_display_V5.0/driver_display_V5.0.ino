@@ -255,7 +255,7 @@ void loop()
     }
 
   if (CAN0_rpm.value >= shiftPoint)
-    //rpmBarFlash();
+    rpmBarFlash();
 
   //pedalPosition(CAN0_throttle.value);
 
@@ -277,6 +277,8 @@ void loop()
       else // <-- else was not here before
       {
         previousTime = time;
+
+        Serial.println("we made it here");
 
         showWarnings();
         tcReadout();
@@ -866,68 +868,48 @@ void rpmBar()
 // copy of rpm bar function with temporary ability for throttle
 void throttleBar()
 {
-  int ledValue = map(CAN0_throttle.value, 0, 1000, 0, 1800);
+
+  int ledValue = map(CAN0_throttle.value, 0, 1000, 0, 600);
 
   //         .setPixelColor(LED#, red, green, blue)
   //----------------------------------------------------------------------------
-  if (ledValue > 1200 && ledValue <= 1800)
+  if (ledValue > 450 && ledValue <= 600)
   {
-    pixelsTop.setPixelColor(3, ledValue - 1200, 0, 0);
+    pixelsRight.setPixelColor(3,  ledValue - 450, 0, 0);
 
     // Turn these LEDs on
-    for (int led = 0; led <= 3; led++)
-    {
-      if (led <= 1)
-        pixelsRight.setPixelColor(led, 0, 150, 0);
+    pixelsRight.setPixelColor(2, 150, 50, 0);
+    pixelsRight.setPixelColor(1, 75, 150, 0);
+    pixelsRight.setPixelColor(0, 0, 150, 0);
 
-      else if (led <= 2)
-        pixelsRight.setPixelColor(led, 150, 150, 0);
 
-      else
-        pixelsRight.setPixelColor(led, 150, 0, 0);
-    }
+
   }
 
   //----------------------------------------------------------------------------
-  else if (ledValue > 800 && ledValue <= 1200)
+  else if (ledValue > 300 && ledValue <= 450)
   {
-    pixelsRight.setPixelColor(2, ledValue - 800, 0, 0);
+    pixelsRight.setPixelColor(2,  ledValue - 300, (ledValue - 300) / 3 , 0);
 
     // Turn these LEDs on
-    for (int led = 0; led <= 2; led++)
-    {
-      if (led <= 1)
-        pixelsRight.setPixelColor(led, 0, 150, 0);
-
-      else if (led <= 2)
-        pixelsRight.setPixelColor(led, 150, 150, 0);
-
-      else
-        pixelsRight.setPixelColor(led, 150, 0, 0);
-    }
+    pixelsRight.setPixelColor(1, 50, 150, 0);
+    pixelsRight.setPixelColor(0, 0, 150, 0);
 
     // Turn these LEDs off
     pixelsRight.setPixelColor(3, 0, 0, 0);
   }
 
   //----------------------------------------------------------------------------
-  else if (ledValue > 400 && ledValue <= 800)
+  else if (ledValue > 150 && ledValue <= 300)
   {
-    pixelsRight.setPixelColor(1,  ledValue - 400, 0, 0);
+    pixelsRight.setPixelColor(1,  (ledValue / 3) - 50, ledValue - 150 , 0);
 
     // Turn these LEDs on
-    for (int led = 0; led <= 1; led++)
-    {
-      if (led <= 2)
-        pixelsRight.setPixelColor(led, 0, 150, 0);
-
-      else
-        pixelsRight.setPixelColor(led, 150, 150, 0);
-    }
+    pixelsRight.setPixelColor(0, 0, 150, 0);
 
     // Turn these LEDs off
-    for (int led = 2; led <= 3; led++)
-      pixelsRight.setPixelColor(led, 0, 0, 0);
+    pixelsRight.setPixelColor(2, 0, 0, 0);
+    pixelsRight.setPixelColor(3, 0, 0, 0);
   }
 
   //----------------------------------------------------------------------------
@@ -937,7 +919,7 @@ void throttleBar()
 
     // Turn these LEDs off
     for (int led = 1; led <= 3; led++)
-      pixelsRight.setPixelColor(led, 0, 0, 0);
+      pixelsTop.setPixelColor(led, 0, 0, 0);
   }
   //----------------------------------------------------------------------------
   pixelsRight.show();
