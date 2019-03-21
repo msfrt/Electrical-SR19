@@ -203,12 +203,12 @@ void setup()
 
 
   // display startup message
-  startupMessage();
+  // startupMessage();
 
   delay(1000);
 
   clearScreens();
-  pedalPositionScale();
+  // pedalPositionScale();
 
 
 }
