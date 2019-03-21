@@ -11,13 +11,12 @@
 //  Written by:     Nicholas Kopec & Dave Yonkers
 //  Forked:         03/04/2019
 //  Modified By:    Dave Yonkers
-//  Last Modified:  03/04/2019 4:32 AM [Ireland time ;)))]
+//  Last Modified:  03/21/2019 8:00 PM
 //  Version:        1.0
 //  Purpose:        Make a car go faster
 //  Description:    PDM code
 //
-//  Last change:    updated BatteryVoltAvg to copy from PDM.voltAvg after the
-//                  necessary calculations. BatteryVoltAvg is used in WP speed.
+//  Last change:    updated min PWMs
 //------------------------------------------------------------------------------
 
 // CASES:
@@ -246,9 +245,9 @@ int FANL_livePWM2 = 0;
 int FANR_livePWM2 = 0;
 int WP_livePWM2 = 0;
 // used to store the minimum allowed PWM
-int FANL_minPWM = 20;
-int FANR_minPWM = 20;
-int WP_minPWM = 20;
+int FANL_minPWM = 30;
+int FANR_minPWM = 30;
+int WP_minPWM = 25;
 //used to store the max PWM, should be 255
 int FANL_maxPWM = 255;
 int FANR_maxPWM = 255;
