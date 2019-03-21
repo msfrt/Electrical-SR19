@@ -1,8 +1,3 @@
 # SR-19
 
-
-
-![The West is the best](/images/kanye.png)
-
-
->> I looked up a dick online. I found a pretty good one but I had to pay for it.
+![The West is the best](https://cdn.shopify.com/s/files/1/0059/9765/8230/products/24_shut_the_fuck_up_and_enjoy_the_greatness_480x480.png?v=1529463856)
