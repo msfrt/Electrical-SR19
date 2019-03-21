@@ -47,7 +47,7 @@ static CAN_message_t rxmsg;
 #define numPixelsRight 4
 
 // SD card
-#define SD_CS BUILTIN_SDCARDs
+//#define SD_CS BUILTIN_SDCARDs
 
 Adafruit_ILI9340 tftLeft = Adafruit_ILI9340(TFT1_cs, TFT1_dc, TFT1_rst);
 Adafruit_ILI9340 tftRight = Adafruit_ILI9340(TFT2_cs, TFT2_dc, TFT2_rst);
@@ -88,6 +88,13 @@ const int oilTempScreenPos = 100;
 const int fuelTempScreenPos = 150;
 const int batteryVoltScreenPos = 200;
 
+// Left screen
+const int FanPWMPos = 1;
+const int WaterPumpPWMPos = 50;
+//const int oilTempScreenPos = 100;
+//const int fuelTempScreenPos = 150;
+//const int batteryVoltScreenPos = 200;
+
 //initialize warnings-----------------------------------------------------------
 int rpmColor = ILI9340_WHITE;
 int engineTemperatureColor = ILI9340_WHITE;
@@ -121,6 +128,8 @@ const int batteryProtection2 = 1050;
 const int rpmMax = 13500;
 const int rpmMin = 1400;
 const int shiftPoint = 12000;
+
+//intialize throttle position bar constants--------
 
 const int ledBrightness = 80;       //Value between 0-255
 const int ledBrightnessFlash = 150; //Value between 0-255
@@ -183,16 +192,18 @@ void setup()
 
   delay(1000);
 
-  //initialize SD card
-  //  Serial.print("Initializing SD card...");
-  // if (!SD.begin(SD_CS)) {
-  //   Serial.println("failed!");
-  //   return;
-  // }
-  // Serial.println("OK!");
+  // initialize SD card
+  Serial.print("Initializing SD card...");
+  if (!SD.begin(SD_CS)) {
+    Serial.println("failed!");
+    return;
+  }
+  Serial.println("OK!");
 
-  //display startup message
-  // startupMessage();
+
+
+  display startup message
+  startupMessage();
 
   delay(1000);
 
@@ -233,6 +244,7 @@ void loop()
 
 
   rpmBar();
+  throttleBar();
 
   // delay the rpm numbers on the screen by a little so CAN can read reliably
   if (millis() - rpmTimer >= 200)
@@ -243,7 +255,7 @@ void loop()
     }
 
   if (CAN0_rpm.value >= shiftPoint)
-    rpmBarFlash();
+    //rpmBarFlash();
 
   //pedalPosition(CAN0_throttle.value);
 
@@ -843,6 +855,103 @@ void rpmBar()
   //----------------------------------------------------------------------------
   pixelsTop.show();
 }
+
+
+
+
+
+
+
+
+// copy of rpm bar function with temporary ability for throttle
+void throttleBar()
+{
+  int ledValue = map(CAN0_throttle.value, 0, 100, 0, 1800);
+
+  //         .setPixelColor(LED#, red, green, blue)
+  //----------------------------------------------------------------------------
+  if (ledValue > 1200 && ledValue <= 1800)
+  {
+    pixelsTop.setPixelColor(3, ledValue - 1200, 0, 0);
+
+    // Turn these LEDs on
+    for (int led = 0; led <= 3; led++)
+    {
+      if (led <= 1)
+        pixelsRight.setPixelColor(led, 0, 150, 0);
+
+      else if (led <= 2)
+        pixelsRight.setPixelColor(led, 150, 150, 0);
+
+      else
+        pixelsRight.setPixelColor(led, 150, 0, 0);
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  else if (ledValue > 800 && ledValue <= 1200)
+  {
+    pixelsRight.setPixelColor(2, ledValue - 800, 0, 0);
+
+    // Turn these LEDs on
+    for (int led = 0; led <= 2; led++)
+    {
+      if (led <= 1)
+        pixelsRight.setPixelColor(led, 0, 150, 0);
+
+      else if (led <= 2)
+        pixelsRight.setPixelColor(led, 150, 150, 0);
+
+      else
+        pixelsRight.setPixelColor(led, 150, 0, 0);
+    }
+
+    // Turn these LEDs off
+    pixelsRight.setPixelColor(3, 0, 0, 0);
+  }
+
+  //----------------------------------------------------------------------------
+  else if (ledValue > 400 && ledValue <= 800)
+  {
+    pixelsRight.setPixelColor(1,  ledValue - 400, 0, 0);
+
+    // Turn these LEDs on
+    for (int led = 0; led <= 1; led++)
+    {
+      if (led <= 2)
+        pixelsRight.setPixelColor(led, 0, 150, 0);
+
+      else
+        pixelsRight.setPixelColor(led, 150, 150, 0);
+    }
+
+    // Turn these LEDs off
+    for (int led = 2; led <= 3; led++)
+      pixelsRight.setPixelColor(led, 0, 0, 0);
+  }
+
+  //----------------------------------------------------------------------------
+  else
+  {
+    pixelsRight.setPixelColor(0, 0, ledValue, 0);
+
+    // Turn these LEDs off
+    for (int led = 1; led <= 3; led++)
+      pixelsRight.setPixelColor(led, 0, 0, 0);
+  }
+  //----------------------------------------------------------------------------
+  pixelsRight.show();
+}
+
+
+
+
+
+
+
+
+
+
 
 void rpmBarFlash()
 {
