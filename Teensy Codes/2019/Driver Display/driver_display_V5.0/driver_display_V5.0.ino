@@ -693,7 +693,7 @@ void clearScreens()
   tftLeft.setCursor(1, engineTempScreenPos);
   tftLeft.setTextColor(engineTemperatureColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
-  tftLeft.print("TEMP:");
+  tftLeft.print("ENG:");
 
   //Print "OIL:"
   tftLeft.setCursor(1, oilTempScreenPos);
