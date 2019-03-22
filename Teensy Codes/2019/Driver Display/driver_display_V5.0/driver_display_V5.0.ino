@@ -80,6 +80,7 @@ typedef struct
 // CAN0 sensors
 canSensor CAN0_rpm, CAN0_currentGear, CAN0_oilPressure, CAN0_fuelTemp, CAN0_engTemp;
 canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage;
+canSensor CAN1_pdmCurrent, CAN1_wpCurrent, CAN1_fanrCurrent, CAN1_wpPWM, CAN1_fanrWPM;
 
 //initialize screen position variables------------------------------------------
 const int rpmScreenPos = 1;
@@ -244,7 +245,7 @@ void loop()
 
 
   rpmBar();
-  throttleBar();
+  //throttleBar();
 
   // delay the rpm numbers on the screen by a little so CAN can read reliably
   if (millis() - rpmTimer >= 200)
@@ -254,8 +255,8 @@ void loop()
     oilPressureReadout();
     }
 
-  if (CAN0_rpm.value >= shiftPoint)
-    rpmBarFlash();
+  // if (CAN0_rpm.value >= shiftPoint)
+  //   rpmBarFlash();
 
   //pedalPosition(CAN0_throttle.value);
 
@@ -284,6 +285,12 @@ void loop()
         // oilPressureReadout(); // remove from rpm and uncomment this when engine is reliable
         fuelTemperatureReadout();
         batteryVoltageReadout();
+
+        pdmCurrentReadout();
+        fanrCurrentReadout();
+        wpCurrentReadout();
+        fanrPWMReadout();
+        wpPWMReadout();
       }
     }
 
@@ -297,7 +304,7 @@ void loop()
       }
 
       previousTime = time;
-      tcReadout();
+      //tcReadout();
       //Show_Warnings_R();
     }
   }
@@ -383,6 +390,24 @@ void canDecode()
         }
 
       }
+
+      // PDM msgs (intel byte order!)
+      case 0x9A:
+        CAN1_pdmCurrent.value = rxData[3] + rxData[4] * 256;
+        break;
+
+      case 0x97:
+        CAN1_fanrCurrent.value = rxData[3] + rxData[4] * 256;
+        break;
+
+      case 0x99:
+        CAN1_wpCurrent.value = rxData[3] + rxData[4] * 256;
+        break;
+
+      case 0xA33:
+        CAN1_wpPWM.value = rxData[3];
+        CAN1_fanrWPM.value = rxData[1];
+        break;
 
     }
 
@@ -541,21 +566,74 @@ void batteryVoltageReadout()
   tftLeft.print(out);
 }
 
+
+
 void pdmCurrentReadout()
 {
   char out[6];
 
-  // turn the 4 digit int into a double, then divide by 100 to get voltage
-  double batteryVoltageDouble = (double)CAN0_batteryVoltage.value;
-  batteryVoltageDouble /= 100;
+  double currentDouble = (double)CAN1_pdmCurrent.value;
+  currentDouble /= 100;
+  sprintf(out, "%6.2f", currentDouble);
 
-  sprintf(out, "%5.2f", batteryVoltageDouble);
-
-  tftLeft.setCursor(170, batteryVoltScreenPos);
-  tftLeft.setTextColor(batteryVoltageColor, ILI9340_BLACK);
-  tftLeft.setTextSize(5);
-  tftLeft.print(out);
+  tftRight.setCursor(140, pdmCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print(out);
 }
+
+void wpCurrentReadout()
+{
+  char out[6];
+
+  double currentDouble = (double)CAN1_wpCurrent.value;
+  currentDouble /= 100;
+  sprintf(out, "%5.2f", currentDouble);
+
+  tftRight.setCursor(170, wpCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print(out);
+}
+
+void fanrCurrentReadout()
+{
+  char out[6];
+
+  double currentDouble = (double)CAN1_fanrCurrent.value;
+  currentDouble /= 100;
+  sprintf(out, "%5.2f", currentDouble);
+
+  tftRight.setCursor(170, fanrCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print(out);
+}
+
+void wpPWMReadout()
+{
+  char out[6];
+
+  sprintf(out, "%3d", CAN1_wpPWM.value);
+
+  tftRight.setCursor(230, wpPWMScreenPos);
+  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print(out);
+}
+
+void fanrPWMReadout()
+{
+  char out[6];
+
+  sprintf(out, "%3d", CAN1_fanrWPM.value);
+
+  tftRight.setCursor(230, fanrPWMScreenPos);
+  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print(out);
+}
+
 
 //display the brake and throttle bars----------------------------
 void pedalPosition(int nThrottle)
@@ -639,31 +717,31 @@ void clearScreens()
   tftRight.setCursor(1, pdmCurrentScreenPos);
   tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
   tftRight.setTextSize(5);
-  tftRight.print("CUR PDM:");
+  tftRight.print("PDM:");
 
   // Print
   tftRight.setCursor(1, wpCurrentScreenPos);
   tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
   tftRight.setTextSize(5);
-  tftRight.print("CUR WP:");
+  tftRight.print("WP:");
 
   //Print
   tftRight.setCursor(1, fanrCurrentScreenPos);
   tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
   tftRight.setTextSize(5);
-  tftRight.print("CUR FANR:");
+  tftRight.print("FANR:");
 
   // Print
   tftRight.setCursor(1, wpPWMScreenPos);
-  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
   tftRight.setTextSize(5);
-  tftRight.print("PWM WP:");
+  tftRight.print("WP:");
 
   // Print
   tftRight.setCursor(1, fanrPWMScreenPos);
-  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
   tftRight.setTextSize(5);
-  tftRight.print("PWM FANR:");
+  tftRight.print("FANR:");
 
 }
 
