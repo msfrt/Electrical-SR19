@@ -404,7 +404,7 @@ void canDecode()
         CAN1_wpCurrent.value = rxData[3] + rxData[4] * 256;
         break;
 
-      case 0xA33:
+      case 0xA3:
         CAN1_wpPWM.value = rxData[3];
         CAN1_fanrWPM.value = rxData[1];
         break;
