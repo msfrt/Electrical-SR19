@@ -85,7 +85,7 @@ unsigned long SensTimer10Hz     = 0;
 unsigned long SensTimer1Hz      = 0;
 
 // intitialize a timer just for testing purposes
-unsigned long TestngTimer       = 0;
+unsigned long TestingTimer       = 0;
 
 // initialize the led blinking timer variable
 unsigned long LEDTimer40Hz      = 0;
@@ -478,16 +478,6 @@ void loop() {
     if (WP_livePWM != WP_livePWM2) {WP_livePWM2 = WP_livePWM; analogWrite(A8, WP_livePWM);}
   }
 
-  // REMOVE THIS TIMER AFTER DONE TESTING
-  if ( millis() - TestngTimer >= 2000) // 2 seconds
-  {
-    TestingTimer = millis();
-
-    Serial.print("FAN RIGHT PWM: "); Serial.println(FANR_livePWM);
-    Serial.print(" FAN LEFT PWM: "); Serial.println(FANL_livePWM);
-    Serial.print("   WATER PUMP: "); Serial.println(WP_livePWM);
-    Serial.println();
-  }
 
 
   //----------------------------------------------------------------------------
@@ -844,7 +834,7 @@ static void ANA_TO_SENSORVAL( int sensGroup )
       PDM.voltMax /= 10;
       PDM.voltAvg /= 10;
       // store the avg battery voltage in a variable that doesn't reset every cycle (used in water pump speed calculation)
-      BatteryVoltAvg= PDM.voltAvg
+      BatteryVoltAvg= PDM.voltAvg;
 
       MAIN.voltMin = MAIN.voltMin         * (33000 / 1023)              / 10000.0000 * (10000.0000 + 39000.0000);
       MAIN.voltMax = MAIN.voltMax         * (33000 / 1023)              / 10000.0000 * (10000.0000 + 39000.0000);
