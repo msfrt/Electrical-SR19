@@ -89,11 +89,11 @@ const int fuelTempScreenPos = 150;
 const int batteryVoltScreenPos = 200;
 
 // Left screen
-const int FanPWMPos = 1;
-const int WaterPumpPWMPos = 50;
-//const int oilTempScreenPos = 100;
-//const int fuelTempScreenPos = 150;
-//const int batteryVoltScreenPos = 200;
+const int pdmCurrentScreenPos = 1;
+const int wpCurrentScreenPos = 50;
+const int fanrCurrentScreenPos = 100;
+const int wpPWMScreenPos = 150;
+const int fanrPWMScreenPos = 200;
 
 //initialize warnings-----------------------------------------------------------
 int rpmColor = ILI9340_WHITE;
@@ -262,7 +262,7 @@ void loop()
 
 
   time = millis();
-  if (time - previousTime >= 500)
+  if (time - previousTime >= 1000)
   {
 
     if (digitalRead(selector) == HIGH)
@@ -278,10 +278,8 @@ void loop()
       {
         previousTime = time;
 
-        Serial.println("we made it here");
-
         showWarnings();
-        tcReadout();
+        //tcReadout();
         engineTemperatureReadout();
         // oilPressureReadout(); // remove from rpm and uncomment this when engine is reliable
         fuelTemperatureReadout();
@@ -543,6 +541,22 @@ void batteryVoltageReadout()
   tftLeft.print(out);
 }
 
+void pdmCurrentReadout()
+{
+  char out[6];
+
+  // turn the 4 digit int into a double, then divide by 100 to get voltage
+  double batteryVoltageDouble = (double)CAN0_batteryVoltage.value;
+  batteryVoltageDouble /= 100;
+
+  sprintf(out, "%5.2f", batteryVoltageDouble);
+
+  tftLeft.setCursor(170, batteryVoltScreenPos);
+  tftLeft.setTextColor(batteryVoltageColor, ILI9340_BLACK);
+  tftLeft.setTextSize(5);
+  tftLeft.print(out);
+}
+
 //display the brake and throttle bars----------------------------
 void pedalPosition(int nThrottle)
 {
@@ -619,6 +633,37 @@ void clearScreens()
   tftLeft.setTextColor(batteryVoltageColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
   tftLeft.print("VOLT:");
+
+  // right
+  // Print
+  tftRight.setCursor(1, pdmCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print("CUR PDM:");
+
+  // Print
+  tftRight.setCursor(1, wpCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print("CUR WP:");
+
+  //Print
+  tftRight.setCursor(1, fanrCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print("CUR FANR:");
+
+  // Print
+  tftRight.setCursor(1, wpPWMScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print("PWM WP:");
+
+  // Print
+  tftRight.setCursor(1, fanrPWMScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print("PWM FANR:");
 
 }
 
