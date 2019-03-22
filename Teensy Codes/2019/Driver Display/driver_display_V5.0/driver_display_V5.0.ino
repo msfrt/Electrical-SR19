@@ -62,7 +62,7 @@ int selector = 14;
 //initialize screen variables---------------------------------------------------
 int currentGear = 0;
 int RPM = 0;
-int oilPressure = 0;
+int oilTemp = 0;
 int engineTemperature = 0;
 int fuelTemperature = 0;
 float batteryVoltage = 0;
@@ -79,7 +79,7 @@ typedef struct
 
 // CAN0 sensors
 canSensor CAN0_rpm, CAN0_currentGear, CAN0_oilPressure, CAN0_fuelTemp, CAN0_engTemp;
-canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage;
+canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage, CAN0_oilTemp;
 canSensor CAN1_pdmCurrent, CAN1_wpCurrent, CAN1_fanrCurrent, CAN1_wpPWM, CAN1_fanrWPM;
 
 //initialize screen position variables------------------------------------------
@@ -99,7 +99,7 @@ const int fanrPWMScreenPos = 200;
 //initialize warnings-----------------------------------------------------------
 int rpmColor = ILI9340_WHITE;
 int engineTemperatureColor = ILI9340_WHITE;
-int oilPressureColor = ILI9340_WHITE;
+int oilTempColor = ILI9340_WHITE;
 int fuelTemperatureColor = ILI9340_WHITE;
 int batteryVoltageColor = ILI9340_WHITE;
 
@@ -107,8 +107,8 @@ int batteryVoltageColor = ILI9340_WHITE;
 
 // oil pressure times factor of 10
 // colors change with falling values
-const int oilProtection1 = 350;
-const int oilProtection2 = 300;
+const int oilProtection1 = 800;
+const int oilProtection2 = 1000;
 
 // temp times factor of 10
 // colors change with rising values
@@ -132,7 +132,7 @@ const int shiftPoint = 12000;
 
 //intialize throttle position bar constants--------
 
-const int ledBrightness = 80;       //Value between 0-255
+const int ledBrightness = 40;       //Value between 0-255
 const int ledBrightnessFlash = 150; //Value between 0-255
 
 //initialize timers---------------------------
@@ -229,7 +229,7 @@ void loop()
 //    Serial.println(CAN0_rpm.value);
 //    //delay(5);
 //
-//    CAN0_oilPressure.value = random(70, 200); //temp
+//    CAN0_oilTemp.value = random(70, 200); //temp
 //    CAN0_engTemp.value = random(70, 200); //temp
 //    CAN0_fuelTemp.value = random(70, 200); //temp
 //
@@ -252,7 +252,7 @@ void loop()
     {
     rpmTimer = millis();
     rpmReadout();
-    oilPressureReadout();
+    oilTempReadout();
     }
 
   // if (CAN0_rpm.value >= shiftPoint)
@@ -282,7 +282,7 @@ void loop()
         showWarnings();
         //tcReadout();
         engineTemperatureReadout();
-        // oilPressureReadout(); // remove from rpm and uncomment this when engine is reliable
+        // oilTempReadout(); // remove from rpm and uncomment this when engine is reliable
         fuelTemperatureReadout();
         batteryVoltageReadout();
 
@@ -369,7 +369,8 @@ void canDecode()
 
           // MultID 0x5
           case 0x5:
-            CAN0_oilPressure.value = rxData[4] * 256 + rxData[5];
+            CAN0_oilTemp.value = rxData[4] * 256 + rxData[5];
+            CAN0_oilTemp.value = rxData[6] * 256 + rxData[7];
             break;
 
           // MultID 0x6
@@ -430,14 +431,14 @@ void showWarnings()
 {
 
   // Set oil temperature color
-  if (CAN0_oilPressure.value <= oilProtection2)
-    oilPressureColor = ILI9340_RED;
+  if (CAN0_oilTemp.value <= oilProtection2)
+    oilTempColor = ILI9340_RED;
 
-  else if (CAN0_oilPressure.value <= oilProtection1)
-    oilPressureColor = ILI9340_YELLOW;
+  else if (CAN0_oilTemp.value <= oilProtection1)
+    oilTempColor = ILI9340_YELLOW;
 
   else
-    oilPressureColor = ILI9340_WHITE;
+    oilTempColor = ILI9340_WHITE;
 
   // Set engine temperature color
   if (CAN0_engTemp.value >= tempProtection2)
@@ -518,18 +519,18 @@ void engineTemperatureReadout()
   tftLeft.print(out);
 }
 
-void oilPressureReadout()
+void oilTempReadout()
 {
   // facter oil presure down by a factor of 10
-  double oilPressureDouble = (double)CAN0_oilPressure.value;
-  oilPressureDouble /= 10;
+  double oilTempDouble = (double)CAN0_oilTemp.value;
+  oilTempDouble /= 10;
 
 
   char out[6];
-  sprintf(out, "%5.1f", oilPressureDouble);
+  sprintf(out, "%5.1f", oilTempDouble);
 
   tftLeft.setCursor(170, oilTempScreenPos);
-  tftLeft.setTextColor(oilPressureColor, ILI9340_BLACK);
+  tftLeft.setTextColor(oilTempColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
   tftLeft.print(out);
 }
@@ -696,7 +697,7 @@ void clearScreens()
 
   //Print "OIL:"
   tftLeft.setCursor(1, oilTempScreenPos);
-  tftLeft.setTextColor(oilPressureColor, ILI9340_BLACK);
+  tftLeft.setTextColor(oilTempColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
   tftLeft.print("OIL:");
 
