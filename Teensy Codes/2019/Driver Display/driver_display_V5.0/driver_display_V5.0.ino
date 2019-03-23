@@ -156,6 +156,9 @@ void setup()
   Can0.begin(1000000);
   analogReadResolution(13);
 
+  // set PWM frequency to 40Hz on pin 22 (all PWM FTM0 timers are affected)
+  analogWriteFrequency(22, 40);
+
   pinMode(13, OUTPUT);
   digitalWrite(13, 1);
 
