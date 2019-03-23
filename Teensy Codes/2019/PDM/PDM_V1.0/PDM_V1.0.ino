@@ -11,12 +11,12 @@
 //  Written by:     Nicholas Kopec & Dave Yonkers
 //  Forked:         03/04/2019
 //  Modified By:    Dave Yonkers
-//  Last Modified:  03/21/2019 8:00 PM
+//  Last Modified:  03/22/2019 10:00 PM
 //  Version:        1.0
 //  Purpose:        Make a car go faster
 //  Description:    PDM code
 //
-//  Last change:    updated min PWMs
+//  Last change:    updated PWM freq
 //------------------------------------------------------------------------------
 
 // CASES:
