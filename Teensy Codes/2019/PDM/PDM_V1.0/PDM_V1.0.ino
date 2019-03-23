@@ -244,6 +244,9 @@ int WP_livePWM = 0;
 int FANL_livePWM2 = 0;
 int FANR_livePWM2 = 0;
 int WP_livePWM2 = 0;
+int PWM_freq = 488.28; // default for teensy
+int PWM_freq2 = 488.28;
+int PWM_status = 1; //this is just or testing. 1 = 488.28 Hz, 0 = 20 Hz
 // used to store the minimum allowed PWM
 int FANL_minPWM = 30;
 int FANR_minPWM = 30;
@@ -273,6 +276,7 @@ int FAN_voltLesser = 0;
 int WP_rpmLesser = 0;
 int WP_rpmGreater = 0;
 
+
 // Number of temperature entries in the fan speed table
 const int FAN_numTempEntries = 12;
 
@@ -286,9 +290,7 @@ const int WP_numTempEntries = 12;
 const int WP_numRPMEntries = 8;
 
 // timers for running PWM updates
-unsigned long FANL_UpdateTimer = 0;
-unsigned long FANR_UpdateTimer = 0;
-unsigned long WP_UpdateTimer = 0;
+unsigned long PWM_UpdateTimer = 0;
 
 
 
@@ -433,48 +435,51 @@ void loop() {
   //----------------------------------------------------------------------------
 
   // Left Fan
-  if (millis() - FANL_UpdateTimer >= 100)
+  if (millis() - PWM_UpdateTimer >= 50)
   {
-    FANL_UpdateTimer = millis();
+    PWM_UpdateTimer = millis();
 
+
+
+    // left fan calculations
     FAN_findTemp(fanLeftTable);
     FAN_findVolt(fanLeftTable);
     FANL_speedPercent = FAN_PERCENT(fanLeftTable);
     FANL_livePWM = SOFT_POWER(FANL_speedPercent, FANL_livePWM, FANL_minPWM, FANL_maxPWM, FANL_incrementPWM);
-    // this if statement only writes to the pin if the PWM changes from it's previous value (held by livePWM2)
-    if (FANL_livePWM != FANL_livePWM2) {FANL_livePWM2 = FANL_livePWM; analogWrite(A6, FANL_livePWM);}
-  }
 
-  // Right Fan
-  if (millis() - FANR_UpdateTimer >= 100)
-  {
-    FANR_UpdateTimer = millis();
-
+    // right fan calculations
     FAN_findTemp(fanRightTable);
     FAN_findVolt(fanRightTable);
     FANR_speedPercent = FAN_PERCENT(fanRightTable);
     FANR_livePWM = SOFT_POWER(FANR_speedPercent, FANR_livePWM, FANR_minPWM, FANR_maxPWM, FANR_incrementPWM);
-    // this if statement only writes to the pin if the PWM changes from it's previous value (held by livePWM2)
-    if (FANR_livePWM != FANR_livePWM2) {FANR_livePWM2 = FANR_livePWM; analogWrite(A7, FANR_livePWM);}
-    //analogWrite(A7, FANR_livePWM);
 
-    // uncomment for testing
-    // Serial.print(" engine temp: "); Serial.println(CAN0_engTemp.value);
-    // Serial.print("     voltage: "); Serial.println(BatteryVoltAvg);
-    // Serial.print("FANR_livePWM: "); Serial.println(FANR_livePWM);
-    // Serial.println();
-  }
-
-  // Water Pump
-  if (millis() - WP_UpdateTimer >= 10)
-  {
-    WP_UpdateTimer = millis();
-
+    // water pump calculations
     WP_findTemp(waterPumpTable);
     WP_findRPM(waterPumpTable);
     WP_speedPercent = WATER_PUMP_PERCENT(waterPumpTable);
     WP_livePWM = SOFT_POWER(WP_speedPercent, WP_livePWM, WP_minPWM, WP_maxPWM, WP_incrementPWM);
+
+
+
+    // determine the PWM frequency
+    if ( (20 <= FANL_livePWM && FANL_livePWM <= 32) || (20 <= FANR_livePWM && FANR_livePWM <= 32) || (20 <= WP_livePWM && WP_livePWM <= 32))
+    {
+      PWM_freq = 488.25; // Hz
+      PWM_status = 1; // High
+    }
+    else
+    {
+      PWM_freq = 20; // Hz
+      PWM_status = 0; // Low
+    }
+
+
+    // only change the frequency if the PWM frequency is different than the current
+    if (PWM_freq != PWM_freq2) {PWM_freq2 = PWM_freq; analogWriteFrequency(22, PWM_freq);}
+
     // this if statement only writes to the pin if the PWM changes from it's previous value (held by livePWM2)
+    if (FANL_livePWM != FANL_livePWM2) {FANL_livePWM2 = FANL_livePWM; analogWrite(A6, FANL_livePWM);}
+    if (FANR_livePWM != FANR_livePWM2) {FANR_livePWM2 = FANR_livePWM; analogWrite(A7, FANR_livePWM);}
     if (WP_livePWM != WP_livePWM2) {WP_livePWM2 = WP_livePWM; analogWrite(A8, WP_livePWM);}
   }
 
@@ -1262,6 +1267,17 @@ static void CALC_SEND_CAN()
     msg.buf[6] = 0;
     msg.buf[7] = 0; //
     CAN_DATA_SEND(0xA3, 8, 1); // 100Hz
+
+    // message for PWM update signal (testing; temp)
+    msg.buf[0] = 0;
+    msg.buf[1] = 0;
+    msg.buf[2] = PWM_status << 4;
+    msg.buf[3] = 0;
+    msg.buf[4] = 0;
+    msg.buf[5] = 0;
+    msg.buf[6] = 0;
+    msg.buf[7] = 0;
+    CAN_DATA_SEND(0x96, 8, 1);
 
 
   }
