@@ -132,7 +132,7 @@ const int shiftPoint = 12000;
 
 //intialize throttle position bar constants--------
 
-const int ledBrightness = 15;       //Value between 0-255
+const int ledBrightness = 10;       //Value between 0-255
 const int ledBrightnessFlash = 150; //Value between 0-255
 
 //initialize timers---------------------------
@@ -369,7 +369,7 @@ void canDecode()
 
           // MultID 0x5
           case 0x5:
-            CAN0_oilTemp.value = rxData[4] * 256 + rxData[5];
+            CAN0_oilPressure.value = rxData[4] * 256 + rxData[5];
             CAN0_oilTemp.value = rxData[6] * 256 + rxData[7];
             break;
 
@@ -522,7 +522,7 @@ void engineTemperatureReadout()
 void oilTempReadout()
 {
   // facter oil presure down by a factor of 10
-  double oilTempDouble = (double)CAN0_oilTemp.value;
+  double oilTempDouble = (double)CAN0_oilPressure.value;
   oilTempDouble /= 10;
 
 
@@ -540,7 +540,7 @@ void fuelTemperatureReadout()
   char out[6];
 
   // turn fuel int into a double, then divide by factor 10
-  double fuelTemperatureDouble = (double)CAN0_fuelTemp.value;
+  double fuelTemperatureDouble = (double)CAN0_oilTemp.value;
   fuelTemperatureDouble /= 10;
 
   sprintf(out, "%5.1f", fuelTemperatureDouble);
