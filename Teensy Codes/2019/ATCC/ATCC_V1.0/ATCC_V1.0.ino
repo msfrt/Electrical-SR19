@@ -8,7 +8,7 @@
 //       ╚═════╝  ╚═════╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝
 //
 //------------------------------------------------------------------------------
-//  Written by:     Dave Yonkers & Nicholas Kopec
+//  Written by:     Dave Yonkers
 //  Created:        03/04/2019
 //  Modified By:    Dave Yonkers
 //  Last Modified:  03/04/2019 6:45 AM Ireland time ;;;;;;))) cheeky
@@ -25,7 +25,7 @@
 // before uploading, update the "ATCC" constant to the correct module
 // possible values:   0 : FRONT
 //                    1 : REAR
-const int ATCC = 0;
+#define ATCC = 1
 
 
 //------------------------------------------------------------------------------
