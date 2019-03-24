@@ -47,7 +47,7 @@ static CAN_message_t rxmsg;
 #define numPixelsRight 4
 
 // SD card
-#define SD_CS BUILTIN_SDCARDs
+//#define SD_CS BUILTIN_SDCARDs
 
 Adafruit_ILI9340 tftLeft = Adafruit_ILI9340(TFT1_cs, TFT1_dc, TFT1_rst);
 Adafruit_ILI9340 tftRight = Adafruit_ILI9340(TFT2_cs, TFT2_dc, TFT2_rst);
@@ -62,7 +62,7 @@ int selector = 14;
 //initialize screen variables---------------------------------------------------
 int currentGear = 0;
 int RPM = 0;
-int oilPressure = 0;
+int oilTemp = 0;
 int engineTemperature = 0;
 int fuelTemperature = 0;
 float batteryVoltage = 0;
@@ -79,7 +79,8 @@ typedef struct
 
 // CAN0 sensors
 canSensor CAN0_rpm, CAN0_currentGear, CAN0_oilPressure, CAN0_fuelTemp, CAN0_engTemp;
-canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage;
+canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage, CAN0_oilTemp;
+canSensor CAN1_pdmCurrent, CAN1_wpCurrent, CAN1_fanrCurrent, CAN1_wpPWM, CAN1_fanrWPM;
 
 //initialize screen position variables------------------------------------------
 const int rpmScreenPos = 1;
@@ -88,10 +89,17 @@ const int oilTempScreenPos = 100;
 const int fuelTempScreenPos = 150;
 const int batteryVoltScreenPos = 200;
 
+// Left screen
+const int pdmCurrentScreenPos = 1;
+const int wpCurrentScreenPos = 50;
+const int fanrCurrentScreenPos = 100;
+const int wpPWMScreenPos = 150;
+const int fanrPWMScreenPos = 200;
+
 //initialize warnings-----------------------------------------------------------
 int rpmColor = ILI9340_WHITE;
 int engineTemperatureColor = ILI9340_WHITE;
-int oilPressureColor = ILI9340_WHITE;
+int oilTempColor = ILI9340_WHITE;
 int fuelTemperatureColor = ILI9340_WHITE;
 int batteryVoltageColor = ILI9340_WHITE;
 
@@ -99,8 +107,8 @@ int batteryVoltageColor = ILI9340_WHITE;
 
 // oil pressure times factor of 10
 // colors change with falling values
-const int oilProtection1 = 350;
-const int oilProtection2 = 300;
+const int oilProtection1 = 800;
+const int oilProtection2 = 1000;
 
 // temp times factor of 10
 // colors change with rising values
@@ -122,7 +130,9 @@ const int rpmMax = 13500;
 const int rpmMin = 1400;
 const int shiftPoint = 12000;
 
-const int ledBrightness = 80;       //Value between 0-255
+//intialize throttle position bar constants--------
+
+const int ledBrightness = 10;       //Value between 0-255
 const int ledBrightnessFlash = 150; //Value between 0-255
 
 //initialize timers---------------------------
@@ -183,21 +193,23 @@ void setup()
 
   delay(1000);
 
-  //initialize SD card
-  //  Serial.print("Initializing SD card...");
-  // if (!SD.begin(SD_CS)) {
-  //   Serial.println("failed!");
-  //   return;
-  // }
-  // Serial.println("OK!");
+//  // initialize SD card
+//  Serial.print("Initializing SD card...");
+//  if (!SD.begin(SD_CS)) {
+//    Serial.println("failed!");
+//    return;
+//  }
+//  Serial.println("OK!");
 
-  //display startup message
+
+
+  // display startup message
   // startupMessage();
 
   delay(1000);
 
   clearScreens();
-  pedalPositionScale();
+  // pedalPositionScale();
 
 
 }
@@ -217,7 +229,7 @@ void loop()
 //    Serial.println(CAN0_rpm.value);
 //    //delay(5);
 //
-//    CAN0_oilPressure.value = random(70, 200); //temp
+//    CAN0_oilTemp.value = random(70, 200); //temp
 //    CAN0_engTemp.value = random(70, 200); //temp
 //    CAN0_fuelTemp.value = random(70, 200); //temp
 //
@@ -233,24 +245,25 @@ void loop()
 
 
   rpmBar();
+  //throttleBar();
 
   // delay the rpm numbers on the screen by a little so CAN can read reliably
   if (millis() - rpmTimer >= 200)
     {
     rpmTimer = millis();
     rpmReadout();
-    oilPressureReadout();
+    oilTempReadout();
     }
 
-  if (CAN0_rpm.value >= shiftPoint)
-    rpmBarFlash();
+  // if (CAN0_rpm.value >= shiftPoint)
+  //   rpmBarFlash();
 
   //pedalPosition(CAN0_throttle.value);
 
 
 
   time = millis();
-  if (time - previousTime >= 500)
+  if (time - previousTime >= 1000)
   {
 
     if (digitalRead(selector) == HIGH)
@@ -267,11 +280,17 @@ void loop()
         previousTime = time;
 
         showWarnings();
-        tcReadout();
+        //tcReadout();
         engineTemperatureReadout();
-        // oilPressureReadout(); // remove from rpm and uncomment this when engine is reliable
+        // oilTempReadout(); // remove from rpm and uncomment this when engine is reliable
         fuelTemperatureReadout();
         batteryVoltageReadout();
+
+        pdmCurrentReadout();
+        fanrCurrentReadout();
+        wpCurrentReadout();
+        fanrPWMReadout();
+        wpPWMReadout();
       }
     }
 
@@ -285,7 +304,7 @@ void loop()
       }
 
       previousTime = time;
-      tcReadout();
+      //tcReadout();
       //Show_Warnings_R();
     }
   }
@@ -351,6 +370,7 @@ void canDecode()
           // MultID 0x5
           case 0x5:
             CAN0_oilPressure.value = rxData[4] * 256 + rxData[5];
+            CAN0_oilTemp.value = rxData[6] * 256 + rxData[7];
             break;
 
           // MultID 0x6
@@ -371,6 +391,24 @@ void canDecode()
         }
 
       }
+
+      // PDM msgs (intel byte order!)
+      case 0x9A:
+        CAN1_pdmCurrent.value = rxData[3] + rxData[4] * 256;
+        break;
+
+      case 0x97:
+        CAN1_fanrCurrent.value = rxData[3] + rxData[4] * 256;
+        break;
+
+      case 0x99:
+        CAN1_wpCurrent.value = rxData[3] + rxData[4] * 256;
+        break;
+
+      case 0xA3:
+        CAN1_wpPWM.value = rxData[3];
+        CAN1_fanrWPM.value = rxData[1];
+        break;
 
     }
 
@@ -393,14 +431,14 @@ void showWarnings()
 {
 
   // Set oil temperature color
-  if (CAN0_oilPressure.value <= oilProtection2)
-    oilPressureColor = ILI9340_RED;
+  if (CAN0_oilTemp.value <= oilProtection2)
+    oilTempColor = ILI9340_RED;
 
-  else if (CAN0_oilPressure.value <= oilProtection1)
-    oilPressureColor = ILI9340_YELLOW;
+  else if (CAN0_oilTemp.value <= oilProtection1)
+    oilTempColor = ILI9340_YELLOW;
 
   else
-    oilPressureColor = ILI9340_WHITE;
+    oilTempColor = ILI9340_WHITE;
 
   // Set engine temperature color
   if (CAN0_engTemp.value >= tempProtection2)
@@ -481,18 +519,18 @@ void engineTemperatureReadout()
   tftLeft.print(out);
 }
 
-void oilPressureReadout()
+void oilTempReadout()
 {
   // facter oil presure down by a factor of 10
-  double oilPressureDouble = (double)CAN0_oilPressure.value;
-  oilPressureDouble /= 10;
+  double oilTempDouble = (double)CAN0_oilPressure.value;
+  oilTempDouble /= 10;
 
 
   char out[6];
-  sprintf(out, "%5.1f", oilPressureDouble);
+  sprintf(out, "%5.1f", oilTempDouble);
 
   tftLeft.setCursor(170, oilTempScreenPos);
-  tftLeft.setTextColor(oilPressureColor, ILI9340_BLACK);
+  tftLeft.setTextColor(oilTempColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
   tftLeft.print(out);
 }
@@ -502,7 +540,7 @@ void fuelTemperatureReadout()
   char out[6];
 
   // turn fuel int into a double, then divide by factor 10
-  double fuelTemperatureDouble = (double)CAN0_fuelTemp.value;
+  double fuelTemperatureDouble = (double)CAN0_oilTemp.value;
   fuelTemperatureDouble /= 10;
 
   sprintf(out, "%5.1f", fuelTemperatureDouble);
@@ -528,6 +566,75 @@ void batteryVoltageReadout()
   tftLeft.setTextSize(5);
   tftLeft.print(out);
 }
+
+
+
+void pdmCurrentReadout()
+{
+  char out[6];
+
+  double currentDouble = (double)CAN1_pdmCurrent.value;
+  currentDouble /= 100;
+  sprintf(out, "%6.2f", currentDouble);
+
+  tftRight.setCursor(140, pdmCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print(out);
+}
+
+void wpCurrentReadout()
+{
+  char out[6];
+
+  double currentDouble = (double)CAN1_wpCurrent.value;
+  currentDouble /= 100;
+  sprintf(out, "%5.2f", currentDouble);
+
+  tftRight.setCursor(170, wpCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print(out);
+}
+
+void fanrCurrentReadout()
+{
+  char out[6];
+
+  double currentDouble = (double)CAN1_fanrCurrent.value;
+  currentDouble /= 100;
+  sprintf(out, "%5.2f", currentDouble);
+
+  tftRight.setCursor(170, fanrCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print(out);
+}
+
+void wpPWMReadout()
+{
+  char out[6];
+
+  sprintf(out, "%3d", CAN1_wpPWM.value);
+
+  tftRight.setCursor(230, wpPWMScreenPos);
+  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print(out);
+}
+
+void fanrPWMReadout()
+{
+  char out[6];
+
+  sprintf(out, "%3d", CAN1_fanrWPM.value);
+
+  tftRight.setCursor(230, fanrPWMScreenPos);
+  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print(out);
+}
+
 
 //display the brake and throttle bars----------------------------
 void pedalPosition(int nThrottle)
@@ -586,11 +693,11 @@ void clearScreens()
   tftLeft.setCursor(1, engineTempScreenPos);
   tftLeft.setTextColor(engineTemperatureColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
-  tftLeft.print("TEMP:");
+  tftLeft.print("ENG:");
 
   //Print "OIL:"
   tftLeft.setCursor(1, oilTempScreenPos);
-  tftLeft.setTextColor(oilPressureColor, ILI9340_BLACK);
+  tftLeft.setTextColor(oilTempColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
   tftLeft.print("OIL:");
 
@@ -605,6 +712,37 @@ void clearScreens()
   tftLeft.setTextColor(batteryVoltageColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
   tftLeft.print("VOLT:");
+
+  // right
+  // Print
+  tftRight.setCursor(1, pdmCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print("PDM:");
+
+  // Print
+  tftRight.setCursor(1, wpCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print("WP:");
+
+  //Print
+  tftRight.setCursor(1, fanrCurrentScreenPos);
+  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print("FANR:");
+
+  // Print
+  tftRight.setCursor(1, wpPWMScreenPos);
+  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print("WP:");
+
+  // Print
+  tftRight.setCursor(1, fanrPWMScreenPos);
+  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
+  tftRight.setTextSize(5);
+  tftRight.print("FANR:");
 
 }
 
@@ -843,6 +981,83 @@ void rpmBar()
   //----------------------------------------------------------------------------
   pixelsTop.show();
 }
+
+
+
+
+
+
+
+
+// copy of rpm bar function with temporary ability for throttle
+void throttleBar()
+{
+
+  int ledValue = map(CAN0_throttle.value, 0, 1000, 0, 600);
+
+  //         .setPixelColor(LED#, red, green, blue)
+  //----------------------------------------------------------------------------
+  if (ledValue > 450 && ledValue <= 600)
+  {
+    pixelsRight.setPixelColor(3,  ledValue - 450, 0, 0);
+
+    // Turn these LEDs on
+    pixelsRight.setPixelColor(2, 150, 50, 0);
+    pixelsRight.setPixelColor(1, 75, 150, 0);
+    pixelsRight.setPixelColor(0, 0, 150, 0);
+
+
+
+  }
+
+  //----------------------------------------------------------------------------
+  else if (ledValue > 300 && ledValue <= 450)
+  {
+    pixelsRight.setPixelColor(2,  ledValue - 300, (ledValue - 300) / 3 , 0);
+
+    // Turn these LEDs on
+    pixelsRight.setPixelColor(1, 50, 150, 0);
+    pixelsRight.setPixelColor(0, 0, 150, 0);
+
+    // Turn these LEDs off
+    pixelsRight.setPixelColor(3, 0, 0, 0);
+  }
+
+  //----------------------------------------------------------------------------
+  else if (ledValue > 150 && ledValue <= 300)
+  {
+    pixelsRight.setPixelColor(1,  (ledValue / 3) - 50, ledValue - 150 , 0);
+
+    // Turn these LEDs on
+    pixelsRight.setPixelColor(0, 0, 150, 0);
+
+    // Turn these LEDs off
+    pixelsRight.setPixelColor(2, 0, 0, 0);
+    pixelsRight.setPixelColor(3, 0, 0, 0);
+  }
+
+  //----------------------------------------------------------------------------
+  else
+  {
+    pixelsRight.setPixelColor(0, 0, ledValue, 0);
+
+    // Turn these LEDs off
+    for (int led = 1; led <= 3; led++)
+      pixelsTop.setPixelColor(led, 0, 0, 0);
+  }
+  //----------------------------------------------------------------------------
+  pixelsRight.show();
+}
+
+
+
+
+
+
+
+
+
+
 
 void rpmBarFlash()
 {

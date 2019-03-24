@@ -9,15 +9,9 @@
 //
 //------------------------------------------------------------------------------
 //  Written by:     Nicholas Kopec & Dave Yonkers
-//  Forked:         03/04/2019
-//  Modified By:    Dave Yonkers
-//  Last Modified:  03/04/2019 4:32 AM [Ireland time ;)))]
 //  Version:        1.0
 //  Purpose:        Make a car go faster
 //  Description:    PDM code
-//
-//  Last change:    updated BatteryVoltAvg to copy from PDM.voltAvg after the
-//                  necessary calculations. BatteryVoltAvg is used in WP speed.
 //------------------------------------------------------------------------------
 
 // CASES:
@@ -86,7 +80,7 @@ unsigned long SensTimer10Hz     = 0;
 unsigned long SensTimer1Hz      = 0;
 
 // intitialize a timer just for testing purposes
-unsigned long TestngTimer       = 0;
+unsigned long TestingTimer       = 0;
 
 // initialize the led blinking timer variable
 unsigned long LEDTimer40Hz      = 0;
@@ -232,6 +226,9 @@ int BatteryVoltAvg = 120000;
 //
 //------------------------------------------------------------------------------
 
+// timer for running the PWM updates
+unsigned long PWM_calc_timer = 0; // runs all main PWM updates
+
 // Fan speed set from look up table
 int FANL_speedPercent = 0;
 int FANR_speedPercent = 0;
@@ -245,10 +242,19 @@ int WP_livePWM = 0;
 int FANL_livePWM2 = 0;
 int FANR_livePWM2 = 0;
 int WP_livePWM2 = 0;
+// PWM output modification
+#define PWM_freq_pin 22 // 22 is the teensy pin for water pump output
+int PWM_freq_live = 488.28; // Hz; default for teensy
+int PWM_freq_high = 488.28;
+int PWM_freq_low = 40;
+int PWM_startup_mode_duration = 3500; // in millis
+int PWM_startup_mode_range = 5; // PWM increments
+unsigned long PWM_startup_end_time = 0;
+int PWM_freq_status = 1; //this is just or testing. 1 = 488.28 Hz, 0 = 20 Hz. Sends under "water pump status" in DBC
 // used to store the minimum allowed PWM
-int FANL_minPWM = 20;
-int FANR_minPWM = 20;
-int WP_minPWM = 20;
+int FANL_minPWM = 30;
+int FANR_minPWM = 30;
+int WP_minPWM = 25;
 //used to store the max PWM, should be 255
 int FANL_maxPWM = 255;
 int FANR_maxPWM = 255;
@@ -274,6 +280,7 @@ int FAN_voltLesser = 0;
 int WP_rpmLesser = 0;
 int WP_rpmGreater = 0;
 
+
 // Number of temperature entries in the fan speed table
 const int FAN_numTempEntries = 12;
 
@@ -286,10 +293,6 @@ const int WP_numTempEntries = 12;
 // Number of battery voltage entries in the fan speed table
 const int WP_numRPMEntries = 8;
 
-// timers for running PWM updates
-unsigned long FANL_UpdateTimer = 0;
-unsigned long FANR_UpdateTimer = 0;
-unsigned long WP_UpdateTimer = 0;
 
 
 
@@ -303,7 +306,7 @@ int fanLeftTable[FAN_numTempEntries][FAN_numVoltEntries] =
   {    0,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0},
   {  700,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0},
   {  850,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     25},
-  {  851,    15,    15,     15,     15,     15,     15,     15,     15,     15,     30,     30,     30,     30},
+  {  855,    15,    15,     15,     15,     15,     15,     15,     15,     15,     30,     30,     30,     30},
   {  920,    15,    15,     15,     15,     15,     15,     15,     15,     15,     50,     50,     50,     50},
   {  921,    15,    15,     15,     15,     25,     25,     25,     25,     25,     65,     65,     65,     65},
   {  950,    75,    75,     75,     75,     75,     75,     75,     75,     75,     75,     75,     75,     75},
@@ -434,61 +437,44 @@ void loop() {
   //----------------------------------------------------------------------------
 
   // Left Fan
-  if (millis() - FANL_UpdateTimer >= 100)
+  if (millis() - PWM_calc_timer >= 50)
   {
-    FANL_UpdateTimer = millis();
+    PWM_calc_timer = millis();
 
+
+
+    // left fan calculations
     FAN_findTemp(fanLeftTable);
     FAN_findVolt(fanLeftTable);
     FANL_speedPercent = FAN_PERCENT(fanLeftTable);
     FANL_livePWM = SOFT_POWER(FANL_speedPercent, FANL_livePWM, FANL_minPWM, FANL_maxPWM, FANL_incrementPWM);
-    // this if statement only writes to the pin if the PWM changes from it's previous value (held by livePWM2)
-    if (FANL_livePWM != FANL_livePWM2) {FANL_livePWM2 = FANL_livePWM; analogWrite(A6, FANL_livePWM);}
-  }
 
-  // Right Fan
-  if (millis() - FANR_UpdateTimer >= 100)
-  {
-    FANR_UpdateTimer = millis();
-
+    // right fan calculations
     FAN_findTemp(fanRightTable);
     FAN_findVolt(fanRightTable);
     FANR_speedPercent = FAN_PERCENT(fanRightTable);
     FANR_livePWM = SOFT_POWER(FANR_speedPercent, FANR_livePWM, FANR_minPWM, FANR_maxPWM, FANR_incrementPWM);
-    // this if statement only writes to the pin if the PWM changes from it's previous value (held by livePWM2)
-    if (FANR_livePWM != FANR_livePWM2) {FANR_livePWM2 = FANR_livePWM; analogWrite(A7, FANR_livePWM);}
-    //analogWrite(A7, FANR_livePWM);
 
-    // uncomment for testing
-    // Serial.print(" engine temp: "); Serial.println(CAN0_engTemp.value);
-    // Serial.print("     voltage: "); Serial.println(BatteryVoltAvg);
-    // Serial.print("FANR_livePWM: "); Serial.println(FANR_livePWM);
-    // Serial.println();
-  }
-
-  // Water Pump
-  if (millis() - WP_UpdateTimer >= 10)
-  {
-    WP_UpdateTimer = millis();
-
+    // water pump calculations
     WP_findTemp(waterPumpTable);
     WP_findRPM(waterPumpTable);
     WP_speedPercent = WATER_PUMP_PERCENT(waterPumpTable);
     WP_livePWM = SOFT_POWER(WP_speedPercent, WP_livePWM, WP_minPWM, WP_maxPWM, WP_incrementPWM);
+
+
+
+    // determine what PWM frequency is appropriate before writing
+    SET_PWM_FREQUENCY();
+
+
+
+
     // this if statement only writes to the pin if the PWM changes from it's previous value (held by livePWM2)
+    if (FANL_livePWM != FANL_livePWM2) {FANL_livePWM2 = FANL_livePWM; analogWrite(A6, FANL_livePWM);}
+    if (FANR_livePWM != FANR_livePWM2) {FANR_livePWM2 = FANR_livePWM; analogWrite(A7, FANR_livePWM);}
     if (WP_livePWM != WP_livePWM2) {WP_livePWM2 = WP_livePWM; analogWrite(A8, WP_livePWM);}
   }
 
-  // REMOVE THIS TIMER AFTER DONE TESTING
-  if ( millis() - TestngTimer >= 2000) // 2 seconds
-  {
-    TestingTimer = millis();
-
-    Serial.print("FAN RIGHT PWM: "); Serial.println(FANR_livePWM);
-    Serial.print(" FAN LEFT PWM: "); Serial.println(FANL_livePWM);
-    Serial.print("   WATER PUMP: "); Serial.println(WP_livePWM);
-    Serial.println();
-  }
 
 
   //----------------------------------------------------------------------------
@@ -554,7 +540,6 @@ void loop() {
 //
 //
 //------------------------------------------------------------------------------
-
 
 
 
@@ -845,7 +830,7 @@ static void ANA_TO_SENSORVAL( int sensGroup )
       PDM.voltMax /= 10;
       PDM.voltAvg /= 10;
       // store the avg battery voltage in a variable that doesn't reset every cycle (used in water pump speed calculation)
-      BatteryVoltAvg= PDM.voltAvg
+      BatteryVoltAvg= PDM.voltAvg;
 
       MAIN.voltMin = MAIN.voltMin         * (33000 / 1023)              / 10000.0000 * (10000.0000 + 39000.0000);
       MAIN.voltMax = MAIN.voltMax         * (33000 / 1023)              / 10000.0000 * (10000.0000 + 39000.0000);
@@ -1273,6 +1258,17 @@ static void CALC_SEND_CAN()
     msg.buf[6] = 0;
     msg.buf[7] = 0; //
     CAN_DATA_SEND(0xA3, 8, 1); // 100Hz
+
+    // message for PWM update signal (testing; temp)
+    msg.buf[0] = 0;
+    msg.buf[1] = 0;
+    msg.buf[2] = PWM_freq_status << 4;
+    msg.buf[3] = 0;
+    msg.buf[4] = 0;
+    msg.buf[5] = 0;
+    msg.buf[6] = 0;
+    msg.buf[7] = 0;
+    CAN_DATA_SEND(0x96, 8, 1);
 
 
   }
@@ -1758,6 +1754,53 @@ int SOFT_POWER(int powerPercent, int livePWM, int minPWM, int maxPWM, int increm
   }
 
   return livePWM;
+}
+
+
+
+
+
+
+
+
+
+
+void SET_PWM_FREQUENCY()
+//------------------------------------------------------------------------------
+// if any of the motor PWMs are in a certain threshold range, initialize startup
+// mode by adding the desired time to the current time. Startup mode will run
+// until the current time is greater than the time set by the initializer.
+// only writes the frequency to the teeny's PWM timers if they change.
+//------------------------------------------------------------------------------
+{
+  // STARTUP MODE INITIALIZER
+  // determine if we should trigger startup mode (PWM buffer for triggering range)
+  if (     ( FANL_minPWM <= FANL_livePWM    &&    FANL_livePWM <= (FANL_minPWM + PWM_startup_mode_range) )
+        || ( FANR_minPWM <= FANR_livePWM    &&    FANR_livePWM <= (FANR_minPWM + PWM_startup_mode_range) )
+        || ( WP_minPWM   <= WP_livePWM      &&    WP_livePWM   <= (WP_minPWM   + PWM_startup_mode_range) ) )
+  {
+    // take the current time, then add a set duration. this defines when the
+    // startup mode (high freq) will end
+    PWM_startup_end_time = millis() + PWM_startup_mode_duration;
+  }
+
+
+
+  // STARTUP MODE
+  // note: PWM_startup_end_time should always be less than millis() unless the initializer triggers
+  if (millis() <= PWM_startup_end_time) // "if we're in startup mode"
+  {
+    // PWM should be high
+    if (PWM_freq_live != PWM_freq_high) {PWM_freq_live = PWM_freq_high; analogWriteFrequency(PWM_freq_pin, PWM_freq_live);}
+    PWM_freq_status = 1;
+
+  }
+  else
+  {
+    // PWM should be low
+    if (PWM_freq_live != PWM_freq_low) {PWM_freq_live = PWM_freq_low; analogWriteFrequency(PWM_freq_pin, PWM_freq_live);}
+    PWM_freq_status = 0;
+  }
 }
 
 
