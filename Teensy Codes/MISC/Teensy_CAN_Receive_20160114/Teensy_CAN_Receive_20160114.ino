@@ -1,3 +1,5 @@
+// OUTDATED AS OF 2019 - NOT USE
+
 #include <FlexCAN.h>
 
 static CAN_message_t rxmsg;
