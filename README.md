@@ -1,7 +1,7 @@
-# Repo Name: y1819
+# Electrical Repository
 
-*This is master, do not directly modify this branch on a daily basis.*
+*This is the master, do not modify this branch*
 
-*may keep files not specific to a car here, eg. old DBCs, matlab scripts, tools.*
+*Files meant to be used globally may be stored here*
 
-*use car/ branches for specific cars*
+*use car branches for specific cars*
