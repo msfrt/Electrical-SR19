@@ -10,17 +10,16 @@
 //------------------------------------------------------------------------------
 //  Written by:     Dave Yonkers
 //  Created:        03/04/2019
-//  Version:        1.0
-//  Purpose:        Send some sexts over a couple of twisted wires
+//  Purpose:        Send some 1s and 0s over a couple of twisted wires
 //  Description:    Analog-to-CAN converter code
 //------------------------------------------------------------------------------
 
 
 // IMPORTANT!!!
-// before uploading, update the "ATCC" constant to the correct module
+// before uploading, update the "ATCC" definition to the correct module
 // possible values:   0 : FRONT
 //                    1 : REAR
-#define ATCC = 1
+#define ATCC 0
 
 
 //------------------------------------------------------------------------------
@@ -147,53 +146,53 @@ void setup() {
 
       // sensor calibration
       FR_DAMPER_POS.pin         = A0;
-      FR_DAMPER_POS.zeroMVolt10 = 0; // mV * 10
-      FR_DAMPER_POS.mV10unit    = 0; // mV * 10 (mV per unit)
+      FR_DAMPER_POS.zeroMVolt10 = 0; // mV*10
+      FR_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       FR_DAMPER_POS.scaleFact   = 0.1;
 
       FL_DAMPER_POS.pin         = A1;
-      FL_DAMPER_POS.zeroMVolt10 = 0; // mV * 10
-      FL_DAMPER_POS.mV10unit    = 0; // mV * 10 (mV per unit)
+      FL_DAMPER_POS.zeroMVolt10 = 0; // mV*10
+      FL_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       FL_DAMPER_POS.scaleFact   = 0.1;
 
       TRACK_TEMP.pin         = A2;
-      TRACK_TEMP.zeroMVolt10 = 0; // mV * 10
-      TRACK_TEMP.mV10unit    = 0; // mV * 10 (mV per unit)
+      TRACK_TEMP.zeroMVolt10 = 0; // mV*10
+      TRACK_TEMP.mV10unit    = 300; // mV*10 per sensor unit
       TRACK_TEMP.scaleFact   = 0.1;
 
       FR_BRAKE_PRESSURE.pin         = A13;
-      FR_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV * 10
-      FR_BRAKE_PRESSURE.mV10unit    = 0; // mV * 10 (mV per unit)
+      FR_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV*10
+      FR_BRAKE_PRESSURE.mV10unit    = 0; // mV*10 per sensor unit
       FR_BRAKE_PRESSURE.scaleFact   = 0.1;
 
       FL_BRAKE_PRESSURE.pin         = A15;
-      FL_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV * 10
-      FL_BRAKE_PRESSURE.mV10unit    = 0; // mV * 10 (mV per unit)
+      FL_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV*10
+      FL_BRAKE_PRESSURE.mV10unit    = 0; // mV*10 per sensor unit
       FL_BRAKE_PRESSURE.scaleFact   = 0.1;
 
       RR_BRAKE_PRESSURE.pin         = A4;
-      RR_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV * 10
-      RR_BRAKE_PRESSURE.mV10unit    = 0; // mV * 10 (mV per unit)
+      RR_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV*10
+      RR_BRAKE_PRESSURE.mV10unit    = 0; // mV*10 per sensor unit
       RR_BRAKE_PRESSURE.scaleFact   = 0.1;
 
       RL_BRAKE_PRESSURE.pin         = A5;
-      RL_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV * 10
-      RL_BRAKE_PRESSURE.mV10unit    = 0; // mV * 10 (mV per unit)
+      RL_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV*10
+      RL_BRAKE_PRESSURE.mV10unit    = 0; // mV*10 per sensor unit
       RL_BRAKE_PRESSURE.scaleFact   = 0.1;
 
       WATER_TEMP_BETWEEN_RADS.pin         = A19;
-      WATER_TEMP_BETWEEN_RADS.zeroMVolt10 = 0; // mV * 10
-      WATER_TEMP_BETWEEN_RADS.mV10unit    = 0; // mV * 10 (mV per unit)
+      WATER_TEMP_BETWEEN_RADS.zeroMVolt10 = 0; // mV*10
+      WATER_TEMP_BETWEEN_RADS.mV10unit    = 0; // mV*10 per sensor unit
       WATER_TEMP_BETWEEN_RADS.scaleFact   = 0.1;
 
       FR_ROTOR_TEMP.pin         = A12;
-      FR_ROTOR_TEMP.zeroMVolt10 = 0; // mV * 10
-      FR_ROTOR_TEMP.mV10unit    = 0; // mV * 10 (mV per unit)
+      FR_ROTOR_TEMP.zeroMVolt10 = 0; // mV*10
+      FR_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
       FR_ROTOR_TEMP.scaleFact   = 0.1;
 
       FL_ROTOR_TEMP.pin         = A14;
-      FL_ROTOR_TEMP.zeroMVolt10 = 0; // mV * 10
-      FL_ROTOR_TEMP.mV10unit    = 0; // mV * 10 (mV per unit)
+      FL_ROTOR_TEMP.zeroMVolt10 = 0; // mV*10
+      FL_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
       FL_ROTOR_TEMP.scaleFact   = 0.1;
 
 
@@ -218,33 +217,33 @@ void setup() {
 
       // sensor calibration
       RR_DAMPER_POS.pin         = 0;
-      RR_DAMPER_POS.zeroMVolt10 = 0; // mV * 10
-      RR_DAMPER_POS.mV10unit    = 0; // mV * 10
+      RR_DAMPER_POS.zeroMVolt10 = 0; // mV*10
+      RR_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       RR_DAMPER_POS.scaleFact   = 0.1;
 
       RL_DAMPER_POS.pin         = 0;
-      RL_DAMPER_POS.zeroMVolt10 = 0; // mV * 10
-      RL_DAMPER_POS.mV10unit    = 0; // mV * 10
+      RL_DAMPER_POS.zeroMVolt10 = 0; // mV*10
+      RL_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       RL_DAMPER_POS.scaleFact   = 0.1;
 
       RIGHT_RAD_TEMP.pin         = 0;
-      RIGHT_RAD_TEMP.zeroMVolt10 = 0; // mV * 10
-      RIGHT_RAD_TEMP.mV10unit    = 0; // mV * 10
+      RIGHT_RAD_TEMP.zeroMVolt10 = 0; // mV*10
+      RIGHT_RAD_TEMP.mV10unit    = 0; // mV*10 per sensor unit
       RIGHT_RAD_TEMP.scaleFact   = 0.1;
 
       LEFT_RAD_TEMP.pin         = 0;
-      LEFT_RAD_TEMP.zeroMVolt10 = 0; // mV * 10
-      LEFT_RAD_TEMP.mV10unit    = 0; // mV * 10
+      LEFT_RAD_TEMP.zeroMVolt10 = 0; // mV*10
+      LEFT_RAD_TEMP.mV10unit    = 0; // mV*10 per sensor unit
       LEFT_RAD_TEMP.scaleFact   = 0.1;
 
       RR_ROTOR_TEMP.pin         = 0;
-      RR_ROTOR_TEMP.zeroMVolt10 = 0; // mV * 10
-      RR_ROTOR_TEMP.mV10unit    = 0; // mV * 10
+      RR_ROTOR_TEMP.zeroMVolt10 = 0; // mV*10
+      RR_ROTOR_TEMP.mV10unit    = 0; // mV*10 per sensor unit
       RR_ROTOR_TEMP.scaleFact   = 0.1;
 
       RL_ROTOR_TEMP.pin         = 0;
-      RL_ROTOR_TEMP.zeroMVolt10 = 0; // mV * 10
-      RL_ROTOR_TEMP.mV10unit    = 0; // mV * 10
+      RL_ROTOR_TEMP.zeroMVolt10 = 0; // mV*10
+      RL_ROTOR_TEMP.mV10unit    = 0; // mV*10 per sensor unit
       RL_ROTOR_TEMP.scaleFact   = 0.1;
 
       pinMode(13, OUTPUT); // Onboard LED
