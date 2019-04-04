@@ -4,4 +4,4 @@
 
 *Files meant to be used globally may be stored here*
 
-*use car branches for specific cars*
+*Use car branches for specific cars*
