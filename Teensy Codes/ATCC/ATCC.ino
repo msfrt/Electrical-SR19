@@ -175,13 +175,13 @@ void setup() {
       WATER_TEMP_BETWEEN_RADS.scaleFact   = 0.1;
 
       FR_ROTOR_TEMP.pin         = A12;
-      FR_ROTOR_TEMP.zeroMVolt10 = 50; // mV*10
-      FR_ROTOR_TEMP.mV10unit    = 5000; // mV*10 per sensor unit
+      FR_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
+      FR_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
       FR_ROTOR_TEMP.scaleFact   = 0.1;
 
       FL_ROTOR_TEMP.pin         = A14;
-      FL_ROTOR_TEMP.zeroMVolt10 = 50; // mV*10
-      FL_ROTOR_TEMP.mV10unit    = 5000; // mV*10 per sensor unit
+      FL_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
+      FL_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
       FL_ROTOR_TEMP.scaleFact   = 0.1;
 
 
@@ -459,7 +459,7 @@ void calculateAndLaunchCAN()
     // front ATCC
     case 0:
 
-      if ( millis() - SendTimer100Hz >= 1000 ) // changed for testing
+      if ( millis() - SendTimer100Hz >= 100 ) // changed for testing
       {
         SendTimer100Hz = millis();
 
