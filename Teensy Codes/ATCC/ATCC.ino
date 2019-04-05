@@ -79,10 +79,10 @@ typedef struct
   int count         = 0;
   int zeroMVolt10   = 0; // in mV*10
   int mV10unit      = 0; // in mV*10 (mV per unit, ex. 30 could be 30mV/degree C)
-  double scaleFact  = 0; // like in the DBC (.1, .01, .001 etc.)
-  int z1            = 390000; // z1 & z2 are for the voltage divider (units are ohms)
-  int z2            = 100000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
-                              // if you want to change these per sensor, do it in calibration in the setup loop
+  double scaleFact  = 1; // like in the DBC (.1, .01, .001 etc.)
+  double z1         = 39000.0000; // z1 & z2 are for the voltage divider (units are ohms)
+  double z2         = 10000.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
+                                  // if you want to change these per sensor, do it in calibration in the setup loop
 
 
 } sensor;
@@ -145,7 +145,7 @@ void setup() {
       FL_DAMPER_POS.scaleFact   = 0.1;
 
       TRACK_TEMP.pin         = A2;
-      TRACK_TEMP.zeroMVolt10 = 0; // mV*10
+      TRACK_TEMP.zeroMVolt10 = 400; // mV*10
       TRACK_TEMP.mV10unit    = 300; // mV*10 per sensor unit
       TRACK_TEMP.scaleFact   = 0.1;
 
@@ -175,13 +175,13 @@ void setup() {
       WATER_TEMP_BETWEEN_RADS.scaleFact   = 0.1;
 
       FR_ROTOR_TEMP.pin         = A12;
-      FR_ROTOR_TEMP.zeroMVolt10 = 0; // mV*10
-      FR_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
+      FR_ROTOR_TEMP.zeroMVolt10 = 50; // mV*10
+      FR_ROTOR_TEMP.mV10unit    = 5000; // mV*10 per sensor unit
       FR_ROTOR_TEMP.scaleFact   = 0.1;
 
       FL_ROTOR_TEMP.pin         = A14;
-      FL_ROTOR_TEMP.zeroMVolt10 = 0; // mV*10
-      FL_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
+      FL_ROTOR_TEMP.zeroMVolt10 = 50; // mV*10
+      FL_ROTOR_TEMP.mV10unit    = 5000; // mV*10 per sensor unit
       FL_ROTOR_TEMP.scaleFact   = 0.1;
 
 
@@ -281,7 +281,7 @@ void loop() {
     case 0:
 
       // read the sensors in this timer at 10,000 Hz
-      if ( micros() - SensTimer1000Hz >= 10000000 ) //was 1
+      if ( micros() - SensTimer1000Hz >= 10000 ) //was 1
       {
         SensTimer1000Hz = micros();
 
@@ -297,14 +297,13 @@ void loop() {
         analogReadSensor(FR_ROTOR_TEMP);
         analogReadSensor(FL_ROTOR_TEMP);
 
-        Serial.println(TRACK_TEMP.pin);
-        TRACK_TEMP.pin = 100;
+
 
       }
 
       // continually launch the calculateAndLaunchCAN function, as it
       // has indivdual timers built in.
-      //calculateAndLaunchCAN();
+      calculateAndLaunchCAN();
 
       break;
 
@@ -339,14 +338,16 @@ void loop() {
 
 
 
-static void analogReadSensor( sensor SENSOR )
+static void analogReadSensor( sensor &SENSOR )
 // calls the analogRead function for the specified sensor
 // determines if the read values are mins or maxes; modifies globals
 // adds the value to the average, adds one to the counter globals
+// note: the "&" allows us to operate on the original variable, rather than
+// initializing new ones for this function's scope.
 {
 
   // read the sensor
-  SENSOR.readVal = 10293; //analogRead(SENSOR.pin);
+  SENSOR.readVal = analogRead(SENSOR.pin);
 
   // determine if its a min or max
   if      ( SENSOR.readVal < SENSOR.readMin ){ SENSOR.readMin = SENSOR.readVal; }
@@ -369,7 +370,7 @@ static void analogReadSensor( sensor SENSOR )
 
 
 
-void analogToSensorVal( sensor SENSOR )
+void analogToSensorVal( sensor &SENSOR )
 // takes raw sensor data and turns them into the human-readable
 // numbers to send over CAN
 {
@@ -378,11 +379,11 @@ void analogToSensorVal( sensor SENSOR )
   SENSOR.readAvg /= SENSOR.count;
 
 
-
   // convert the analog inputs into the teeny voltage (mV*10)
   int sensMin = SENSOR.readMin * (teensy_voltage_mV10 / read_resolution);
   int sensMax = SENSOR.readMax * (teensy_voltage_mV10 / read_resolution);
   int sensAvg = SENSOR.readAvg * (teensy_voltage_mV10 / read_resolution);
+
 
   // convert the teensy voltage (3.3V) to sensor voltage (12V) by doing the opposite
   // operations of a voltage divider (in ohms). For reference: en.wikipedia.org/wiki/Voltage_divider
@@ -403,6 +404,7 @@ void analogToSensorVal( sensor SENSOR )
   SENSOR.actualMax = sensMax;
   SENSOR.actualAvg = sensAvg;
 
+
   // calculations are done, so reset the sensor raw read values
   resetSensor(SENSOR);
 }
@@ -412,7 +414,7 @@ void analogToSensorVal( sensor SENSOR )
 
 
 
-void resetSensor(sensor SENSOR)
+void resetSensor( sensor &SENSOR )
 // resets the sensor mins, maxs, avgs, and count
 {
   SENSOR.readMin =  2147483647; // maximum number possible
@@ -457,7 +459,7 @@ void calculateAndLaunchCAN()
     // front ATCC
     case 0:
 
-      if ( millis() - SendTimer100Hz >= 100 )
+      if ( millis() - SendTimer100Hz >= 1000 ) // changed for testing
       {
         SendTimer100Hz = millis();
 
@@ -493,6 +495,11 @@ void calculateAndLaunchCAN()
         sendCAN(0x00, 8, 0);
 
 
+        Serial.println();
+        Serial.print("READ MAX: "); Serial.println(TRACK_TEMP.readMax);
+        Serial.print("READ AVG: "); Serial.println(TRACK_TEMP.readAvg);
+        Serial.print("READ MIN: "); Serial.println(TRACK_TEMP.readMin);
+
         analogToSensorVal(TRACK_TEMP);
         msg.buf[0] = messageCount100Hz; // counter
         msg.buf[1] = TRACK_TEMP.actualMax;
@@ -505,9 +512,9 @@ void calculateAndLaunchCAN()
         sendCAN(0x00, 8, 0);
 
         Serial.println();
-        Serial.print("MAX: "); Serial.println(TRACK_TEMP.actualMax);
-        Serial.print("AVG: "); Serial.println(TRACK_TEMP.actualAvg);
-        Serial.print("MIN: "); Serial.println(TRACK_TEMP.actualMin);
+        Serial.print("CALC MAX: "); Serial.println(TRACK_TEMP.actualMax);
+        Serial.print("CALC AVG: "); Serial.println(TRACK_TEMP.actualAvg);
+        Serial.print("CALC MIN: "); Serial.println(TRACK_TEMP.actualMin);
 
 
         analogToSensorVal(FR_BRAKE_PRESSURE);
