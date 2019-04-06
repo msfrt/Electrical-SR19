@@ -479,6 +479,8 @@ void analogToBoschTempVal( sensor &SENSOR )
 
 
 
+
+
 void resetSensor( sensor &SENSOR )
 // resets the sensor mins, maxs, avgs, and count
 {
@@ -534,136 +536,60 @@ void calculateAndLaunchCAN()
 
 
         // turn the raw numbers into the ones we can read over CAN.
-        analogToSensorVal(FR_DAMPER_POS);
+        analogToSensorVal(FL_BRAKE_PRESSURE);
+        analogToSensorVal(FR_BRAKE_PRESSURE);
+        analogToSensorVal(TRACK_TEMP);
         // put the results into a message buffer
         msg.buf[0] = messageCount100Hz; // counter
-        msg.buf[1] = FR_DAMPER_POS.actualMax;
-        msg.buf[2] = FR_DAMPER_POS.actualMax >> 8;
-        msg.buf[3] = FR_DAMPER_POS.actualAvg;
-        msg.buf[4] = FR_DAMPER_POS.actualAvg >> 8;
-        msg.buf[5] = FR_DAMPER_POS.actualMin;
-        msg.buf[6] = FR_DAMPER_POS.actualMin >> 8;
-        msg.buf[7] = 0;
-        // send the message
-        sendCAN(0x00, 8, 0);
-
-
-        analogToSensorVal(FL_DAMPER_POS);
-        msg.buf[0] = messageCount100Hz; // counter
-        msg.buf[1] = FL_DAMPER_POS.actualMax;
-        msg.buf[2] = FL_DAMPER_POS.actualMax >> 8;
-        msg.buf[3] = FL_DAMPER_POS.actualAvg;
-        msg.buf[4] = FL_DAMPER_POS.actualAvg >> 8;
-        msg.buf[5] = FL_DAMPER_POS.actualMin;
-        msg.buf[6] = FL_DAMPER_POS.actualMin >> 8;
-        msg.buf[7] = 0;
-        sendCAN(0x00, 8, 0);
-
-
-        Serial.println();
-        Serial.print("READ MAX: "); Serial.println(TRACK_TEMP.readMax);
-        Serial.print("READ AVG: "); Serial.println(TRACK_TEMP.readAvg);
-        Serial.print("READ MIN: "); Serial.println(TRACK_TEMP.readMin);
-
-        analogToSensorVal(TRACK_TEMP);
-        msg.buf[0] = messageCount100Hz; // counter
-        msg.buf[1] = TRACK_TEMP.actualMax;
-        msg.buf[2] = TRACK_TEMP.actualMax >> 8;
-        msg.buf[3] = TRACK_TEMP.actualAvg;
-        msg.buf[4] = TRACK_TEMP.actualAvg >> 8;
-        msg.buf[5] = TRACK_TEMP.actualMin;
-        msg.buf[6] = TRACK_TEMP.actualMin >> 8;
-        msg.buf[7] = 0;
-        sendCAN(0x00, 8, 0);
-
-        Serial.println();
-        Serial.print("CALC MAX: "); Serial.println(TRACK_TEMP.actualMax);
-        Serial.print("CALC AVG: "); Serial.println(TRACK_TEMP.actualAvg);
-        Serial.print("CALC MIN: "); Serial.println(TRACK_TEMP.actualMin);
-
-
-        analogToSensorVal(FR_BRAKE_PRESSURE);
-        msg.buf[0] = messageCount100Hz; // counter
-        msg.buf[1] = FR_BRAKE_PRESSURE.actualMax;
-        msg.buf[2] = FR_BRAKE_PRESSURE.actualMax >> 8;
+        msg.buf[1] = FL_BRAKE_PRESSURE.actualAvg;
+        msg.buf[2] = FL_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[3] = FR_BRAKE_PRESSURE.actualAvg;
         msg.buf[4] = FR_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[5] = FR_BRAKE_PRESSURE.actualMin;
-        msg.buf[6] = FR_BRAKE_PRESSURE.actualMin >> 8;
+        msg.buf[5] = TRACK_TEMP.actualAvg;
+        msg.buf[6] = TRACK_TEMP.actualAvg >> 8;
         msg.buf[7] = 0;
-        sendCAN(0x00, 8, 0);
-
-
-        analogToSensorVal(FL_BRAKE_PRESSURE);
-        msg.buf[0] = messageCount100Hz; // counter
-        msg.buf[1] = FL_BRAKE_PRESSURE.actualMax;
-        msg.buf[2] = FL_BRAKE_PRESSURE.actualMax >> 8;
-        msg.buf[3] = FL_BRAKE_PRESSURE.actualAvg;
-        msg.buf[4] = FL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[5] = FL_BRAKE_PRESSURE.actualMin;
-        msg.buf[6] = FL_BRAKE_PRESSURE.actualMin >> 8;
-        msg.buf[7] = 0;
-        sendCAN(0x00, 8, 0);
-
-
-        analogToSensorVal(RR_BRAKE_PRESSURE);
-        msg.buf[0] = messageCount100Hz; // counter
-        msg.buf[1] = RR_BRAKE_PRESSURE.actualMax;
-        msg.buf[2] = RR_BRAKE_PRESSURE.actualMax >> 8;
-        msg.buf[3] = RR_BRAKE_PRESSURE.actualAvg;
-        msg.buf[4] = RR_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[5] = RR_BRAKE_PRESSURE.actualMin;
-        msg.buf[6] = RR_BRAKE_PRESSURE.actualMin >> 8;
-        msg.buf[7] = 0;
-        sendCAN(0x00, 8, 0);
+        // send the message
+        sendCAN(0x0, 8, 0);
 
 
         analogToSensorVal(RL_BRAKE_PRESSURE);
-        msg.buf[0] = messageCount100Hz; // counter
-        msg.buf[1] = RL_BRAKE_PRESSURE.actualMax;
-        msg.buf[2] = RL_BRAKE_PRESSURE.actualMax >> 8;
-        msg.buf[3] = RL_BRAKE_PRESSURE.actualAvg;
-        msg.buf[4] = RL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[5] = RL_BRAKE_PRESSURE.actualMin;
-        msg.buf[6] = RL_BRAKE_PRESSURE.actualMin >> 8;
+        analogToSensorVal(RR_BRAKE_PRESSURE);
+        analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
+        msg.buf[0] = messageCount100Hz;
+        msg.buf[1] = RL_BRAKE_PRESSURE.actualAvg;
+        msg.buf[2] = RL_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[3] = RR_BRAKE_PRESSURE.actualAvg;
+        msg.buf[4] = RR_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
+        msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
         msg.buf[7] = 0;
-        sendCAN(0x00, 8, 0);
+        sendCAN(0x1, 8, 0);
 
 
-        analogToSensorVal(WATER_TEMP_BETWEEN_RADS);
-        msg.buf[0] = messageCount100Hz; // counter
-        msg.buf[1] = WATER_TEMP_BETWEEN_RADS.actualMax;
-        msg.buf[2] = WATER_TEMP_BETWEEN_RADS.actualMax >> 8;
-        msg.buf[3] = WATER_TEMP_BETWEEN_RADS.actualAvg;
-        msg.buf[4] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
-        msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualMin;
-        msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualMin >> 8;
+        analogToSensorVal(FL_DAMPER_POS);
+        analogToSensorVal(FR_DAMPER_POS);
+        msg.buf[0] = messageCount100Hz;
+        msg.buf[1] = FL_DAMPER_POS.actualAvg;
+        msg.buf[2] = FL_DAMPER_POS.actualAvg >> 8;
+        msg.buf[3] = FR_DAMPER_POS.actualAvg;
+        msg.buf[4] = FR_DAMPER_POS.actualAvg >> 8;
+        msg.buf[5] = 0;
+        msg.buf[6] = 0;
         msg.buf[7] = 0;
-        sendCAN(0x00, 8, 0);
-
-
-        analogToSensorVal(FR_ROTOR_TEMP);
-        msg.buf[0] = messageCount100Hz; // counter
-        msg.buf[1] = FR_ROTOR_TEMP.actualMax;
-        msg.buf[2] = FR_ROTOR_TEMP.actualMax >> 8;
-        msg.buf[3] = FR_ROTOR_TEMP.actualAvg;
-        msg.buf[4] = FR_ROTOR_TEMP.actualAvg >> 8;
-        msg.buf[5] = FR_ROTOR_TEMP.actualMin;
-        msg.buf[6] = FR_ROTOR_TEMP.actualMin >> 8;
-        msg.buf[7] = 0;
-        sendCAN(0x00, 8, 0);
+        sendCAN(0x2, 8, 0);
 
 
         analogToSensorVal(FL_ROTOR_TEMP);
-        msg.buf[0] = messageCount100Hz; // counter
-        msg.buf[1] = FL_ROTOR_TEMP.actualMax;
-        msg.buf[2] = FL_ROTOR_TEMP.actualMax >> 8;
-        msg.buf[3] = FL_ROTOR_TEMP.actualAvg;
-        msg.buf[4] = FL_ROTOR_TEMP.actualAvg >> 8;
-        msg.buf[5] = FL_ROTOR_TEMP.actualMin;
-        msg.buf[6] = FL_ROTOR_TEMP.actualMin >> 8;
+        analogToSensorVal(FR_ROTOR_TEMP);
+        msg.buf[0] = messageCount100Hz;
+        msg.buf[1] = FL_ROTOR_TEMP.actualAvg;
+        msg.buf[2] = FL_ROTOR_TEMP.actualAvg >> 8;
+        msg.buf[3] = FR_ROTOR_TEMP.actualAvg;
+        msg.buf[4] = FR_ROTOR_TEMP.actualAvg >> 8;
+        msg.buf[5] = 0;
+        msg.buf[6] = 0;
         msg.buf[7] = 0;
-        sendCAN(0x00, 8, 0);
+        sendCAN(0x3, 8, 0);
 
 
       } // end 100Hz timer messages
