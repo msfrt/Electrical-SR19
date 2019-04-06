@@ -220,6 +220,7 @@ canSensor CAN1_betweenRadTemp, CAN1_rightRadInTemp, CAN1_leftRadOutTemp;
 // values updated of PDM volt values after calculated in CAN send function
 // used in setFanSpeed and setWaterPumpSpeed
 int BatteryVoltAvg = 120000;
+int MainVoltAvg = 0;
 
 //------------------------------------------------------------------------------
 //
@@ -282,6 +283,9 @@ int FAN_voltLesser = 0;
 int WP_rpmLesser = 0;
 int WP_rpmGreater = 0;
 
+// Variable to see if the car is on (true if the main circuit is powered)
+bool carOn = false;
+int carOnThreshold = 8000; // determine the car is on when the Main voltage is above 8V
 
 // Number of temperature entries in the fan speed table
 const int FAN_numTempEntries = 12;
@@ -482,7 +486,8 @@ void loop() {
   {
     PWM_calc_timer = millis();
 
-
+    //check to see if the car is on
+    carOn = car_on();
 
     // left fan calculations
     FAN_findTemp(fanLeftTable);
@@ -583,6 +588,11 @@ void loop() {
 //------------------------------------------------------------------------------
 
 
+bool car_on()
+//returns true if the current Main voltage is above the set threshold
+{
+  return MainVoltAvg > carOnThreshold;
+}
 
 
 static void ANA_READ( int sensGroup )
@@ -881,6 +891,8 @@ static void ANA_TO_SENSORVAL( int sensGroup )
       MAIN.voltMin /= 10;
       MAIN.voltMax /= 10;
       MAIN.voltAvg /= 10;
+      // store the avg Main voltage in a variable that doesn't reset every cycle (used to determine if the Main circuit is on)
+      MainVoltAvg = PDM.voltAvg;
 
       DATA.voltMin = DATA.voltMin         * (33000 / 1023)              / 10000.0000 * (10000.0000 + 39000.0000);
       DATA.voltMax = DATA.voltMax         * (33000 / 1023)              / 10000.0000 * (10000.0000 + 39000.0000);
