@@ -286,9 +286,16 @@ int WP_rpmGreater = 0;
 // Variable to see if the car is on (true if the main circuit is powered)
 bool carOn = false;
 int carOnThreshold = 8000; // determine the car is on when the Main voltage is above 8V
-int fanShutdownTemp = 95; // the temp at which the fan shutdown procedure will trigger
+
+// Variables for controling the fan shutdown
+int fanShutdownTemp = 950; // 95C the temp at which the fan shutdown procedure will trigger
 unsigned long fanShutdownTime = 1; // stores the time at which the fans will shutoff must be 1 to avoid startup upon first boot
 int fanShutdownFactor = 0; // the factor to determine how long the fans will stay on
+
+// variables for controling the wp shutdown
+int wpShutdownTemp = 800; // 80C the temp at which the wp shutdown procedure will trigger
+unsigned long wpShutdownTime = 1;// stores the time at which the wp will shutoff must be 1 to avoid startup upon first boot
+int wpShutdownFactor = 0;// the factor to determine how long the wp will stay on
 
 // Number of temperature entries in the fan speed table
 const int FAN_numTempEntries = 12;
@@ -1746,7 +1753,7 @@ int FAN_PERCENT(int table[FAN_numTempEntries][FAN_numVoltEntries])
     {
       //calculate the shutdown time by multpilying enginetemp by a factor and
       //then adding it to the current time
-      fanShutdownTime = millis() + (long(CAN0_engTemp.value)*fanShutdownFactor);
+      fanShutdownTime = millis() + (long(CAN0_engTemp.value - fanShutdownTemp)*fanShutdownFactor);
     }
 
     //if the shutdown time has not been reached, turn the fans on
@@ -1786,20 +1793,46 @@ int WATER_PUMP_PERCENT(int table[WP_numTempEntries][WP_numRPMEntries])
 // Returns percentage (0-100) of maximum pump speed
 // -----------------------------------------------------------------------------------------------------------------------
 {
-  // map the actual temp input between the max and min temp in the table,
-  // to the corresponding bottom and top rates found in rpmLesser
-  int map1 = map(CAN0_engTemp.value, table[WP_temperatureLesser][0], table[WP_temperatureGreater][0], table[WP_temperatureLesser][WP_rpmLesser], table[WP_temperatureGreater][WP_rpmLesser]);
+
+  int pumpSpeed = 0;
+
+  if(carOn)
+  {
+    // map the actual temp input between the max and min temp in the table,
+    // to the corresponding bottom and top rates found in rpmLesser
+    int map1 = map(CAN0_engTemp.value, table[WP_temperatureLesser][0], table[WP_temperatureGreater][0], table[WP_temperatureLesser][WP_rpmLesser], table[WP_temperatureGreater][WP_rpmLesser]);
 
 
-  // do the same as map1, only map it to the corresponding rpmLesser values in the fan table
-  int map2 = map(CAN0_engTemp.value, table[WP_temperatureLesser][0], table[WP_temperatureGreater][0], table[WP_temperatureLesser][WP_rpmGreater], table[WP_temperatureGreater][WP_rpmGreater]);
+    // do the same as map1, only map it to the corresponding rpmLesser values in the fan table
+    int map2 = map(CAN0_engTemp.value, table[WP_temperatureLesser][0], table[WP_temperatureGreater][0], table[WP_temperatureLesser][WP_rpmGreater], table[WP_temperatureGreater][WP_rpmGreater]);
 
 
-  // now, map the opposite direction in the table, by mapping the actual rpm between the min and max in the table
-  // to the results of the previous map
-  int pumpSpeed = map(CAN0_rpm.value, table[0][WP_rpmLesser], table[0][WP_rpmGreater], map1, map2);
+    // now, map the opposite direction in the table, by mapping the actual rpm between the min and max in the table
+    // to the results of the previous map
+    pumpSpeed = map(CAN0_rpm.value, table[0][WP_rpmLesser], table[0][WP_rpmGreater], map1, map2);
+  }
+  else
+  {
+    //check to see if the shutdown should be calculated to enable the fans
+    if( wpShutdownTime == 0 && CAN0_engTemp.value > wpShutdownTemp )
+    {
+      //calculate the shutdown time by multpilying enginetemp by a factor and
+      //then adding it to the current time
+      wpShutdownTime = millis() + (long(CAN0_engTemp.value - wpShutdownTemp)*wpShutdownFactor);
+    }
 
+    //if the shutdown time has not been reached, turn the fans on
+    if( wpShutdownTime > millis() )
+    {
+      pumpSpeed = 10;
+    }
 
+    //else turn the fans off
+    else
+    {
+      pumpSpeed = 0;
+    }
+  }
 
   return pumpSpeed;
 }
