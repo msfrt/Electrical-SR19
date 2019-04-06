@@ -383,9 +383,9 @@ void analogToSensorVal( sensor &SENSOR )
 
 
   // convert the analog inputs into the teeny voltage (mV*10)
-  int sensMin = SENSOR.readMin * (teensy_voltage_mV10 / read_resolution);
-  int sensMax = SENSOR.readMax * (teensy_voltage_mV10 / read_resolution);
-  int sensAvg = SENSOR.readAvg * (teensy_voltage_mV10 / read_resolution);
+  float sensMin = SENSOR.readMin * (teensy_voltage_mV10 / read_resolution);
+  float sensMax = SENSOR.readMax * (teensy_voltage_mV10 / read_resolution);
+  float sensAvg = SENSOR.readAvg * (teensy_voltage_mV10 / read_resolution);
 
 
 
@@ -406,9 +406,9 @@ void analogToSensorVal( sensor &SENSOR )
 
 
   // put the final values into the sensor's structured variabels
-  SENSOR.actualMin = sensMin;
-  SENSOR.actualMax = sensMax;
-  SENSOR.actualAvg = sensAvg;
+  SENSOR.actualMin = (int)sensMin;
+  SENSOR.actualMax = (int)sensMax;
+  SENSOR.actualAvg = (int)sensAvg;
 
 
   // calculations are done, so reset the sensor raw read values
@@ -432,35 +432,41 @@ void analogToBoschTempVal( sensor &SENSOR )
 
 
   // convert the analog inputs into the teeny voltage (mV*10)
-  int sensMin = SENSOR.readMin * (teensy_voltage_mV10 / read_resolution);
-  int sensMax = SENSOR.readMax * (teensy_voltage_mV10 / read_resolution);
-  int sensAvg = SENSOR.readAvg * (teensy_voltage_mV10 / read_resolution);
+  float sensAvg = SENSOR.readAvg * (teensy_voltage_mV10 / read_resolution);
+  // float sensMin = SENSOR.readMin * (teensy_voltage_mV10 / read_resolution);
+  // float sensMax = SENSOR.readMax * (teensy_voltage_mV10 / read_resolution);
+
 
 
   // convert the teensy voltage (3.3V) to sensor voltage by doing the opposite
   // operations of a voltage divider (in ohms). For reference: en.wikipedia.org/wiki/Voltage_divider
-  sensMin = sensMin / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
-  sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
   sensAvg = sensAvg / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
+  // sensMin = sensMin / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
+  // sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
 
 
   // sensor calibration (convert sensor voltage to celsius values)
-  // this function was calculated in Excel using the voltage divider resistor
+  // this function was calculated in Excel ಠ_ಠ using the voltage divider resistor
   // pair for our setup, and the table of values in the Bosch sensor datasheet
-  sensMin = 4.129 * pow(sensMin, 4) - 40.226 * pow(sensMin, 3) + 129.61 * pow(sensMin, 2) -
-            197.54 * sensMin + 151.25;
-  sensMax = 4.129 * pow(sensMax, 4) - 40.226 * pow(sensMax, 3) + 129.61 * pow(sensMax, 2) -
-            197.54 * sensMax + 151.25;
   sensAvg = 4.129 * pow(sensAvg, 4) - 40.226 * pow(sensAvg, 3) + 129.61 * pow(sensAvg, 2) -
             197.54 * sensAvg + 151.25;
+  // sensMin = 4.129 * pow(sensMin, 4) - 40.226 * pow(sensMin, 3) + 129.61 * pow(sensMin, 2) -
+  //           197.54 * sensMin + 151.25;
+  // sensMax = 4.129 * pow(sensMax, 4) - 40.226 * pow(sensMax, 3) + 129.61 * pow(sensMax, 2) -
+  //           197.54 * sensMax + 151.25;
+
+
+  // multiply the calculated temperatures by their factors for CAN
+  sensAvg *= (1.0000 / SENSOR.scaleFact)
+  // sensMin *= (1.0000 / SENSOR.scaleFact)
+  // sensMax *= (1.0000 / SENSOR.scaleFact)
 
 
 
-
-  // put the final values into the sensor's structured variabels
-  SENSOR.actualMin = sensMin;
-  SENSOR.actualMax = sensMax;
-  SENSOR.actualAvg = sensAvg;
+  // put the final values into the sensor's structured variables
+  SENSOR.actualAvg = (int)sensAvg;
+  // SENSOR.actualMin = (int)sensMin;
+  // SENSOR.actualMax = (int)sensMax;
 
 
   // calculations are done, so reset the sensor raw read values
