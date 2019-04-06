@@ -1411,11 +1411,13 @@ void CAN_READ()
           // MultID 0x0
           case 0x0:
             CAN0_rpm.value = rxData[4] * 256 + rxData[5];
+            check_canSensor_validity(CAN0_rpm);
             break;
 
           // MultID 0x4
           case 0x4:
             CAN0_engTemp.value = rxData[4] * 256 + rxData[5];
+            check_canSensor_validity(CAN0_engTemp);
             break;
         }
 
@@ -1448,13 +1450,17 @@ void CAN_READ()
         // ATCCF 0
         case 0x0:
           CAN1_brakePressureFL.value = rxData[1] + rxData[2] * 256;
+          check_canSensor_bounds(CAN1_brakePressureFL);
           CAN1_brakePressureFR.value = rxData[3] + rxData[4] * 256;
+          check_canSensor_bounds(CAN1_brakePressureFR);
           break;
 
         // ATCCF 1
         case 0x1:
           CAN1_brakePressureRL.value = rxData[1] + rxData[2] * 256;
+          check_canSensor_bounds(CAN1_brakePressureRL);
           CAN1_brakePressureRR.value = rxData[3] + rxData[4] * 256;
+          check_canSensor_bounds(CAN1_brakePressureRR);
           break;
       }
     }
@@ -1463,9 +1469,9 @@ void CAN_READ()
 
 
 
-void check_canSensor_validity(canSensor &SENSOR)
+void check_canSensor_bounds(canSensor &SENSOR)
 //------------------------------------------------------------------------------
-//Given a canSensor, check_canSensor_validity will return true if the sensors
+//Given a canSensor, check_canSensor_bounds will return true if the sensors
 //current value is within the sensors bounds which are declared at the top of
 //the file.
 //
