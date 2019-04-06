@@ -351,9 +351,9 @@ static void analogReadSensor( sensor &SENSOR )
   // read the sensor
   SENSOR.readVal = analogRead(SENSOR.pin);
 
-  // determine if its a min or max
-  if      ( SENSOR.readVal < SENSOR.readMin ){ SENSOR.readMin = SENSOR.readVal; }
-  else if ( SENSOR.readVal > SENSOR.readMax ){ SENSOR.readMax = SENSOR.readVal; }
+  // determine if its a min or max (DISABLED)
+  // if      ( SENSOR.readVal < SENSOR.readMin ){ SENSOR.readMin = SENSOR.readVal; }
+  // else if ( SENSOR.readVal > SENSOR.readMax ){ SENSOR.readMax = SENSOR.readVal; }
 
   // add to the average and the counter
   SENSOR.readAvg = SENSOR.readAvg + SENSOR.readVal;
@@ -374,7 +374,7 @@ static void analogReadSensor( sensor &SENSOR )
 
 void analogToSensorVal( sensor &SENSOR )
 // takes raw sensor data and turns them into the human-readable
-// numbers to send over CAN
+// numbers to send over CAN (MAX AND MIN ARE DISABLED)
 {
   // divide the running total for average by the count, therefore calculating
   // the true raw average
@@ -383,32 +383,32 @@ void analogToSensorVal( sensor &SENSOR )
 
 
   // convert the analog inputs into the teeny voltage (mV*10)
-  float sensMin = SENSOR.readMin * (teensy_voltage_mV10 / read_resolution);
-  float sensMax = SENSOR.readMax * (teensy_voltage_mV10 / read_resolution);
   float sensAvg = SENSOR.readAvg * (teensy_voltage_mV10 / read_resolution);
+  // float sensMin = SENSOR.readMin * (teensy_voltage_mV10 / read_resolution);
+  // float sensMax = SENSOR.readMax * (teensy_voltage_mV10 / read_resolution);
 
 
 
   // convert the teensy voltage (3.3V) to sensor voltage by doing the opposite
   // operations of a voltage divider (in ohms). For reference: en.wikipedia.org/wiki/Voltage_divider
-  sensMin = sensMin / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
-  sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
   sensAvg = sensAvg / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
+  // sensMin = sensMin / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
+  // sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
 
 
 
   // sensor calibration (convert sensor voltage to CAN values)
   //                   zero volt of sens.    units per mV*10                inverse of the scale factor.
-  sensMin = (sensMin - SENSOR.zeroMVolt10) * ( 1.0000 / SENSOR.mV10unit ) * ( 1.0000 / SENSOR.scaleFact );
-  sensMax = (sensMax - SENSOR.zeroMVolt10) * ( 1.0000 / SENSOR.mV10unit ) * ( 1.0000 / SENSOR.scaleFact );
   sensAvg = (sensAvg - SENSOR.zeroMVolt10) * ( 1.0000 / SENSOR.mV10unit ) * ( 1.0000 / SENSOR.scaleFact );
+  // sensMin = (sensMin - SENSOR.zeroMVolt10) * ( 1.0000 / SENSOR.mV10unit ) * ( 1.0000 / SENSOR.scaleFact );
+  // sensMax = (sensMax - SENSOR.zeroMVolt10) * ( 1.0000 / SENSOR.mV10unit ) * ( 1.0000 / SENSOR.scaleFact );
 
 
 
   // put the final values into the sensor's structured variabels
-  SENSOR.actualMin = (int)sensMin;
-  SENSOR.actualMax = (int)sensMax;
   SENSOR.actualAvg = (int)sensAvg;
+  // SENSOR.actualMin = (int)sensMin;
+  // SENSOR.actualMax = (int)sensMax;
 
 
   // calculations are done, so reset the sensor raw read values
@@ -422,9 +422,12 @@ void analogToSensorVal( sensor &SENSOR )
 
 
 
+
+
+
 void analogToBoschTempVal( sensor &SENSOR )
 // takes raw sensor data and turns them into the human-readable
-// numbers to send over CAN
+// numbers to send over CAN (MAX AND MIN ARE DISABLED)
 {
   // divide the running total for average by the count, therefore calculating
   // the true raw average
@@ -481,11 +484,14 @@ void analogToBoschTempVal( sensor &SENSOR )
 
 
 
+
+
 void resetSensor( sensor &SENSOR )
 // resets the sensor mins, maxs, avgs, and count
 {
-  SENSOR.readMin =  2147483647; // maximum number possible
-  SENSOR.readMax = -2147483647; // minimum number possible
+  // (MAX AND MIN ARE DISABLED)
+  // SENSOR.readMin =  2147483647; // maximum number possible
+  // SENSOR.readMax = -2147483647; // minimum number possible
   SENSOR.readAvg = 0;
   SENSOR.count   = 0;
 }
@@ -516,7 +522,7 @@ void calculateAndLaunchCAN()
     msg.buf[5] = SensVal[2] >> 8;
     msg.buf[6] = SensVal[3];
     msg.buf[7] = SensVal[3] >> 8;
-    CAN_DATA_SEND(0x50, 8, 0);
+    just_send_it_bro(0x50, 8, 0);
    *
    */
 
@@ -549,7 +555,7 @@ void calculateAndLaunchCAN()
         msg.buf[6] = TRACK_TEMP.actualAvg >> 8;
         msg.buf[7] = 0;
         // send the message
-        sendCAN(0x0, 8, 0);
+        sendCAN(0x0, 8, 1);
 
 
         analogToSensorVal(RL_BRAKE_PRESSURE);
@@ -563,7 +569,7 @@ void calculateAndLaunchCAN()
         msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
         msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
         msg.buf[7] = 0;
-        sendCAN(0x1, 8, 0);
+        sendCAN(0x1, 8, 1);
 
 
         analogToSensorVal(FL_DAMPER_POS);
@@ -576,7 +582,7 @@ void calculateAndLaunchCAN()
         msg.buf[5] = 0;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
-        sendCAN(0x2, 8, 0);
+        sendCAN(0x2, 8, 1);
 
 
         analogToSensorVal(FL_ROTOR_TEMP);
@@ -589,7 +595,7 @@ void calculateAndLaunchCAN()
         msg.buf[5] = 0;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
-        sendCAN(0x3, 8, 0);
+        sendCAN(0x3, 8, 1);
 
 
       } // end 100Hz timer messages
@@ -600,6 +606,44 @@ void calculateAndLaunchCAN()
 
     // rear ATCC
     case 1:
+
+      if ( millis() - SendTimer100Hz >= 100 ) // changed for testing
+      {
+        SendTimer100Hz = millis();
+
+        // add one for every cycle through. Reset after 14
+        if ( messageCount100Hz < 15 ){messageCount100Hz++;}
+        else {messageCount100Hz = 0;}
+
+
+        analogToSensorVal(RL_DAMPER_POS);
+        analogToSensorVal(RR_DAMPER_POS);
+        analogToBoschTempVal(LEFT_RAD_TEMP);
+        msg.buf[0] = messageCount100Hz;
+        msg.buf[1] = RL_DAMPER_POS.actualAvg;
+        msg.buf[2] = RL_DAMPER_POS.actualAvg >> 8;
+        msg.buf[3] = RR_DAMPER_POS.actualAvg;
+        msg.buf[4] = RR_DAMPER_POS.actualAvg >> 8;
+        msg.buf[5] = LEFT_RAD_TEMP.actualAvg;
+        msg.buf[6] = LEFT_RAD_TEMP.actualAvg >> 8;
+        msg.buf[7] = 0;
+        sendCAN(0x4, 8, 1);
+
+
+        analogToSensorVal(RL_ROTOR_TEMP);
+        analogToSensorVal(RR_ROTOR_TEMP);
+        analogToBoschTempVal(RIGHT_RAD_TEMP);
+        msg.buf[0] = messageCount100Hz;
+        msg.buf[1] = RL_ROTOR_TEMP.actualAvg;
+        msg.buf[2] = RL_ROTOR_TEMP.actualAvg >> 8;
+        msg.buf[3] = RR_ROTOR_TEMP.actualAvg;
+        msg.buf[4] = RR_ROTOR_TEMP.actualAvg >> 8;
+        msg.buf[5] = RIGHT_RAD_TEMP.actualAvg;
+        msg.buf[6] = RIGHT_RAD_TEMP.actualAvg >> 8;
+        msg.buf[7] = 0;
+        sendCAN(0x5, 8, 1);
+
+      } // end 100Hz timer messages
       break;
   }
 }
@@ -620,7 +664,7 @@ void sendCAN(int id, int len, int busNo)
 
   switch(busNo)
   {
-    case 0:
+    case 1:
       Can0.write(msg);  // this is send the static
       break;
   }
