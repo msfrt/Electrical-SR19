@@ -80,8 +80,8 @@ typedef struct
   int zeroMVolt10   = 0; // in mV*10
   double mV10unit   = 0; // in mV*10 (mV per unit, ex. 30 could be 30mV/degree C)
   double scaleFact  = 1; // like in the DBC (.1, .01, .001 etc.)
-  double z1         = 39000.0000; // z1 & z2 are for the voltage divider (units are ohms)
-  double z2         = 10000.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
+  double z1         = 1200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
+  double z2         = 2200.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
                                   // if you want to change these per sensor, do it in calibration in the setup loop
 
 
@@ -148,8 +148,6 @@ void setup() {
       TRACK_TEMP.zeroMVolt10 = 400; // mV*10
       TRACK_TEMP.mV10unit    = 300.0000; // mV*10 per sensor unit
       TRACK_TEMP.scaleFact   = 0.1;
-      TRACK_TEMP.z1          = 1200.0000;
-      TRACK_TEMP.z2          = 2200.0000;
 
       FR_BRAKE_PRESSURE.pin         = A13;
       FR_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV*10
