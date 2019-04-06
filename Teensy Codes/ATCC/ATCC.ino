@@ -150,23 +150,23 @@ void setup() {
       TRACK_TEMP.scaleFact   = 0.1;
 
       FR_BRAKE_PRESSURE.pin         = A13;
-      FR_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV*10
-      FR_BRAKE_PRESSURE.mV10unit    = 0; // mV*10 per sensor unit
+      FR_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10 (.5V)
+      FR_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit (Honeywell MLH2000PGB06A) Sens range .5V to 4.5V; 0psi to 2000psi
       FR_BRAKE_PRESSURE.scaleFact   = 0.1;
 
       FL_BRAKE_PRESSURE.pin         = A15;
-      FL_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV*10
-      FL_BRAKE_PRESSURE.mV10unit    = 0; // mV*10 per sensor unit
+      FL_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
+      FL_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       FL_BRAKE_PRESSURE.scaleFact   = 0.1;
 
       RR_BRAKE_PRESSURE.pin         = A4;
-      RR_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV*10
-      RR_BRAKE_PRESSURE.mV10unit    = 0; // mV*10 per sensor unit
+      RR_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
+      RR_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       RR_BRAKE_PRESSURE.scaleFact   = 0.1;
 
       RL_BRAKE_PRESSURE.pin         = A5;
-      RL_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV*10
-      RL_BRAKE_PRESSURE.mV10unit    = 0; // mV*10 per sensor unit
+      RL_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
+      RL_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       RL_BRAKE_PRESSURE.scaleFact   = 0.1;
 
       WATER_TEMP_BETWEEN_RADS.pin         = A19;
