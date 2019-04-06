@@ -148,6 +148,8 @@ void setup() {
       TRACK_TEMP.zeroMVolt10 = 400; // mV*10
       TRACK_TEMP.mV10unit    = 300.0000; // mV*10 per sensor unit
       TRACK_TEMP.scaleFact   = 0.1;
+      TRACK_TEMP.z1          = 1200.0000;
+      TRACK_TEMP.z2          = 2200.0000;
 
       FR_BRAKE_PRESSURE.pin         = A13;
       FR_BRAKE_PRESSURE.zeroMVolt10 = 0; // mV*10
@@ -347,7 +349,7 @@ static void analogReadSensor( sensor &SENSOR )
 {
 
   // read the sensor
-  SENSOR.readVal = 113;//analogRead(SENSOR.pin);
+  SENSOR.readVal = analogRead(SENSOR.pin);
 
   // determine if its a min or max
   if      ( SENSOR.readVal < SENSOR.readMin ){ SENSOR.readMin = SENSOR.readVal; }
@@ -378,14 +380,14 @@ void analogToSensorVal( sensor &SENSOR )
   // the true raw average
   SENSOR.readAvg /= SENSOR.count;
 
-  Serial.print("1: "); Serial.println(SENSOR.readAvg);
+  //Serial.print("1: "); Serial.println(SENSOR.readAvg);
 
   // convert the analog inputs into the teeny voltage (mV*10)
   int sensMin = SENSOR.readMin * (teensy_voltage_mV10 / read_resolution);
   int sensMax = SENSOR.readMax * (teensy_voltage_mV10 / read_resolution);
   int sensAvg = SENSOR.readAvg * (teensy_voltage_mV10 / read_resolution);
 
-  Serial.print("2: "); Serial.println(sensAvg);
+  //Serial.print("2: "); Serial.println(sensAvg);
 
   // convert the teensy voltage (3.3V) to sensor voltage (12V) by doing the opposite
   // operations of a voltage divider (in ohms). For reference: en.wikipedia.org/wiki/Voltage_divider
@@ -393,7 +395,7 @@ void analogToSensorVal( sensor &SENSOR )
   sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
   sensAvg = sensAvg / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
 
-  Serial.print("3: "); Serial.println(sensAvg);
+  //Serial.print("3: "); Serial.println(sensAvg);
 
 
   // sensor calibration (convert 12v to CAN values)
@@ -402,7 +404,8 @@ void analogToSensorVal( sensor &SENSOR )
   sensMax = (sensMax - SENSOR.zeroMVolt10) * ( 1.0000 / SENSOR.mV10unit ) * ( 1.0000 / SENSOR.scaleFact );
   sensAvg = (sensAvg - SENSOR.zeroMVolt10) * ( 1.0000 / SENSOR.mV10unit ) * ( 1.0000 / SENSOR.scaleFact );
 
-  Serial.print("2: "); Serial.println(sensAvg);
+
+  //Serial.print("2: "); Serial.println(sensAvg);
 
 
   // put the final values into the sensor's structured variabels
