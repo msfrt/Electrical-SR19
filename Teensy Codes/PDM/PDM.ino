@@ -290,12 +290,12 @@ int carOnThreshold = 8000; // determine the car is on when the Main voltage is a
 // Variables for controling the fan shutdown
 int fanShutdownTemp = 950; // 95C the temp at which the fan shutdown procedure will trigger
 unsigned long fanShutdownTime = 1; // stores the time at which the fans will shutoff must be 1 to avoid startup upon first boot
-int fanShutdownFactor = 15000; // 15sec/degC the factor to determine how long the fans will stay on
+int fanShutdownFactor = 1500; // 15sec/degC the factor to determine how long the fans will stay on
 
 // variables for controling the wp shutdown
 int wpShutdownTemp = 800; // 80C the temp at which the wp shutdown procedure will trigger
 unsigned long wpShutdownTime = 1;// stores the time at which the wp will shutoff must be 1 to avoid startup upon first boot
-int wpShutdownFactor = 15000;// 15sec/degC the factor to determine how long the wp will stay on
+int wpShutdownFactor = 1500;// 15sec/degC the factor to determine how long the wp will stay on
 
 // Number of temperature entries in the fan speed table
 const int FAN_numTempEntries = 12;
@@ -900,7 +900,7 @@ static void ANA_TO_SENSORVAL( int sensGroup )
       MAIN.voltMax /= 10;
       MAIN.voltAvg /= 10;
       // store the avg Main voltage in a variable that doesn't reset every cycle (used to determine if the Main circuit is on)
-      MainVoltAvg = PDM.voltAvg;
+      MainVoltAvg = MAIN.voltAvg;
 
       DATA.voltMin = DATA.voltMin         * (33000 / 1023)              / 10000.0000 * (10000.0000 + 39000.0000);
       DATA.voltMax = DATA.voltMax         * (33000 / 1023)              / 10000.0000 * (10000.0000 + 39000.0000);
@@ -1798,6 +1798,8 @@ int WATER_PUMP_PERCENT(int table[WP_numTempEntries][WP_numRPMEntries])
 
   if(carOn)
   {
+    wpShutdownTime = 0;
+    
     // map the actual temp input between the max and min temp in the table,
     // to the corresponding bottom and top rates found in rpmLesser
     int map1 = map(CAN0_engTemp.value, table[WP_temperatureLesser][0], table[WP_temperatureGreater][0], table[WP_temperatureLesser][WP_rpmLesser], table[WP_temperatureGreater][WP_rpmLesser]);
