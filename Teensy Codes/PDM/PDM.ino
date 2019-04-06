@@ -201,9 +201,11 @@ int BLIGHT_minPressure = 1;
 // structure to store the attributes of messages recieved on the CAN Bus
 typedef struct
 {
-  bool validity = 0;
+  bool valid = 0;
   unsigned long lastRecieve = 0;
   int16_t value = 0;
+  int16_t lowerBound = 0;
+  int16_t upperBound = 0;
 
 }canSensor;
 
@@ -294,6 +296,45 @@ const int WP_numTempEntries = 12;
 const int WP_numRPMEntries = 8;
 
 
+//bounds for incoming CAN Messages----------
+
+//Sensor Name             //logged value
+
+//Engine RPM
+CAN0_rpm.lowerBound = -100; //-10
+CAN0_rpm.upperBound = 17000; //17000
+
+//Engine Temp
+CAN0_engTemp.lowerBound = -100; //-10C
+CAN0_engTemp.upperBound = 1800; //180C
+
+//Between Radiator Temp
+CAN1_betweenRadTemp.lowerBound = -100; //-10C
+CAN1_betweenRadTemp.upperBound = 1800; //180C
+
+//Right Radiator Inlet Temp
+CAN1_rightRadInTemp.lowerBound = -100; //-10C
+CAN1_rightRadInTemp.upperBound = 1800; //180C
+
+//Left Radiator Outlet Temp
+CAN1_leftRadOutTemp.lowerBound = -100; //-10C
+CAN1_leftRadOutTemp.upperBound = 1800; //180C
+
+//RR Brake Pressure
+CAN1_brakePressureRR.lowerBound = 0;
+CAN1_brakePressureRR.upperBound = 0;
+
+//RL Brake Pressure
+CAN1_brakePressureRL.lowerBound = 0;
+CAN1_brakePressureRL.upperBound = 0;
+
+//FR Brake Pressure
+CAN1_brakePressureFR.lowerBound = 0;
+CAN1_brakePressureFR.upperBound = 0;
+
+//FL Brake Pressure
+CAN1_brakePressureFL.lowerBound = 0;
+CAN1_brakePressureFL.upperBound = 0;
 
 
 
@@ -1422,7 +1463,22 @@ void CAN_READ()
 
 
 
-
+void check_canSensor_validity(canSensor &SENSOR)
+//------------------------------------------------------------------------------
+//Given a canSensor, check_canSensor_validity will return true if the sensors
+//current value is within the sensors bounds which are declared at the top of
+//the file.
+//
+{
+  if( SENSOR.value < SENSOR.lowerBound || SENSOR.value > SENSOR.upperBound )
+  {
+    SENSOR.valid = false;
+  }
+  else
+  {
+    SENSOR.valid = true;
+  }
+}
 
 
 
