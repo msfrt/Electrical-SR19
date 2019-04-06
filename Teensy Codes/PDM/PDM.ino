@@ -290,12 +290,12 @@ int carOnThreshold = 8000; // determine the car is on when the Main voltage is a
 // Variables for controling the fan shutdown
 int fanShutdownTemp = 950; // 95C the temp at which the fan shutdown procedure will trigger
 unsigned long fanShutdownTime = 1; // stores the time at which the fans will shutoff must be 1 to avoid startup upon first boot
-int fanShutdownFactor = 0; // the factor to determine how long the fans will stay on
+int fanShutdownFactor = 15000; // 15sec/degC the factor to determine how long the fans will stay on
 
 // variables for controling the wp shutdown
 int wpShutdownTemp = 800; // 80C the temp at which the wp shutdown procedure will trigger
 unsigned long wpShutdownTime = 1;// stores the time at which the wp will shutoff must be 1 to avoid startup upon first boot
-int wpShutdownFactor = 0;// the factor to determine how long the wp will stay on
+int wpShutdownFactor = 15000;// 15sec/degC the factor to determine how long the wp will stay on
 
 // Number of temperature entries in the fan speed table
 const int FAN_numTempEntries = 12;
