@@ -1,0 +1,245 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: ESP PDM C50 ATCCR ATCCF
+
+
+BO_ 163 PDM_13: 8 PDM
+ SG_ PDM_wpPWM : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ PDM_fanRightPWM : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ PDM_fanLeftPWM : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ PDM_counter13 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ PDM_brakeLightStatus : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ PDM_boardTemp : 32|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+
+BO_ 162 PDM_12: 8 PDM
+ SG_ PDM_dataVoltMin : 40|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_dataVoltMax : 8|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_dataVoltAvg : 24|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counter12 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 161 PDM_11: 8 PDM
+ SG_ PDM_mainVoltMin : 40|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_mainVoltMax : 8|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_mainVoltAvg : 24|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counter11 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 160 PDM_10: 8 PDM
+ SG_ PDM_fuelVoltMin : 40|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fuelVoltMax : 8|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fuelVoltAvg : 24|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counter10 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 159 PDM_09: 8 PDM
+ SG_ PDM_pdmVoltMin : 40|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_pdmVoltMax : 8|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_pdmVoltAvg : 24|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counter09 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 158 PDM_08: 8 PDM
+ SG_ PDM_wpVoltMin : 40|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_wpVoltMax : 8|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_wpVoltAvg : 24|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counter08 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 153 PDM_03: 8 PDM
+ SG_ PDM_wpCurrentMin : 40|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_wpCurrentMax : 8|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_wpCurrentAvg : 24|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_counter03 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 154 PDM_04: 8 PDM
+ SG_ PDM_pdmCurrentMin : 40|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_pdmCurrentMax : 8|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_pdmCurrentAvg : 24|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_counter04 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 155 PDM_05: 8 PDM
+ SG_ PDM_counter05 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ PDM_fuelCurrentMin : 40|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fuelCurrentMax : 8|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fuelCurrentAvg : 24|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+
+BO_ 157 PDM_07: 8 PDM
+ SG_ PDM_counter07 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ PDM_fanLeftVoltMin : 40|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fanLeftVoltMax : 8|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fanLeftVoltAvg : 24|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+
+BO_ 152 PDM_02: 8 PDM
+ SG_ PDM_fanLeftCurrentMin : 40|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fanLeftCurrentMax : 8|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fanLeftCurrentAvg : 24|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_counter02 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 156 PDM_06: 8 PDM
+ SG_ PDM_counter06 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ PDM_fanRightVoltMin : 40|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fanRightVoltMax : 8|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fanRightVoltAvg : 24|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+
+BO_ 151 PDM_01: 8 PDM
+ SG_ PDM_fanRightCurrentMin : 40|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fanRightCurrentMax : 8|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fanRightCurrentAvg : 24|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_counter01 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 150 PDM_00: 8 PDM
+ SG_ PDM_wpStatus : 20|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ PDM_status : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ PDM_fanRightStatus : 12|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ PDM_fanLeftStatus : 16|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ PDM_counter00 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 5 ATCCR_01: 8 ATCCR
+ SG_ ATCCR_rotorTempRR : 24|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCR_rotorTempRL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCR_rightRadiatorInletTemp : 40|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCR_counter01 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 4 ATCCR_00: 8 ATCCR
+ SG_ ATCCR_counter00 : 0|4@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCR_leftRadiatorOutletTemp : 40|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCR_damperPosRR : 24|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCR_damperPosRL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 3 ATCCF_03: 8 ATCCF
+ SG_ ATCCF_rotorTempFR : 24|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_rotorTempFL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_counter03 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 2 ATCCF_02: 8 ATCCF
+ SG_ ATCCF_counter02 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_damperPosFR : 24|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_damperPosFL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 1 ATCCF_01: 8 ATCCF
+ SG_ ATCCF_waterTempBetweenRads : 40|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_counter01 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_brakePressRR : 24|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_brakePressRL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 0 ATCCF_00: 8 ATCCF
+ SG_ ATCCF_trackTemp : 40|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_counter00 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_brakePressFR : 24|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_brakePressFL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 842 ESP_wheelSpeedRear: 8 ESP
+ SG_ ESP_wheelSpeedRR_V : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_wheelSpeedRR : 21|14@0+ (0.0194178,0) [0|318.1218174] "" Vector__XXX
+ SG_ ESP_wheelSpeedRL_V : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_wheelSpeedRL : 5|14@0+ (0.0194178,0) [0|318.1218174] "" Vector__XXX
+
+BO_ 840 ESP_wheelSpeedFront: 8 ESP
+ SG_ ESP_wheelSpeedFR_V : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_wheelSpeedFR : 21|14@0+ (0.0194178,0) [0|318.1218174] "" Vector__XXX
+ SG_ ESP_wheelSpeedFL_V : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_wheelSpeedFL : 5|14@0+ (0.0194178,0) [0|318.1218174] "" Vector__XXX
+
+
+
+CM_ BU_ ESP "Bosch ESP Unit";
+CM_ BU_ PDM "Power Distrubution Module";
+CM_ BU_ C50 "C50 Data Logger";
+CM_ BU_ ATCCR "The Rear Analog To CAN Converter";
+CM_ BU_ ATCCF "Front Analog To CAN Converter";
+CM_ SG_ 163 PDM_wpPWM "The PWM rate of the waterpump";
+CM_ SG_ 163 PDM_fanRightPWM "PWM rate of the right fan";
+CM_ SG_ 163 PDM_fanLeftPWM "PWM rate of the right fan";
+CM_ SG_ 163 PDM_brakeLightStatus "State of the brake light
+0 = Off
+1 = On";
+CM_ SG_ 163 PDM_boardTemp "PDM board temperature";
+CM_ SG_ 162 PDM_dataVoltMin "Voltage of the data circuit";
+CM_ SG_ 162 PDM_dataVoltMax "Voltage of the data circuit";
+CM_ SG_ 162 PDM_dataVoltAvg "Voltage of the data circuit";
+CM_ SG_ 161 PDM_mainVoltMin "Voltage of the main circuit";
+CM_ SG_ 161 PDM_mainVoltMax "Voltage of the main circuit";
+CM_ SG_ 161 PDM_mainVoltAvg "Voltage of the main circuit";
+CM_ SG_ 160 PDM_fuelVoltMin "Voltage of the fuel circuit";
+CM_ SG_ 160 PDM_fuelVoltMax "Voltage of the fuel circuit";
+CM_ SG_ 160 PDM_fuelVoltAvg "Voltage of the fuel circuit";
+CM_ SG_ 159 PDM_pdmVoltMin "Voltage of the PDM";
+CM_ SG_ 159 PDM_pdmVoltMax "Voltage of the PDM";
+CM_ SG_ 159 PDM_pdmVoltAvg "Voltage of the PDM";
+CM_ SG_ 158 PDM_wpVoltMin "The voltage of the waterpump";
+CM_ SG_ 158 PDM_wpVoltMax "The voltage of the waterpump";
+CM_ SG_ 158 PDM_wpVoltAvg "The voltage of the waterpump";
+CM_ SG_ 153 PDM_wpCurrentMin "The current going through the waterpump";
+CM_ SG_ 153 PDM_wpCurrentMax "The current going through the waterpump";
+CM_ SG_ 153 PDM_wpCurrentAvg "The current going through the waterpump";
+CM_ SG_ 154 PDM_pdmCurrentMin "The total current going through the PDM";
+CM_ SG_ 154 PDM_pdmCurrentMax "The total current going through the PDM";
+CM_ SG_ 154 PDM_pdmCurrentAvg "The total current going through the PDM";
+CM_ SG_ 155 PDM_fuelCurrentMin "Current through the fuel circuit";
+CM_ SG_ 155 PDM_fuelCurrentMax "Current through the fuel circuit";
+CM_ SG_ 155 PDM_fuelCurrentAvg "Current through the fuel circuit";
+CM_ SG_ 157 PDM_fanLeftVoltMin "Voltage of the left fan";
+CM_ SG_ 157 PDM_fanLeftVoltMax "Voltage of the left fan";
+CM_ SG_ 157 PDM_fanLeftVoltAvg "Voltage of the left fan";
+CM_ SG_ 152 PDM_fanLeftCurrentMin "Current of the left fan";
+CM_ SG_ 152 PDM_fanLeftCurrentMax "Current of the left fan";
+CM_ SG_ 152 PDM_fanLeftCurrentAvg "Current of the left fan";
+CM_ SG_ 156 PDM_fanRightVoltMin "Voltage of the right fan";
+CM_ SG_ 156 PDM_fanRightVoltMax "Voltage of the right fan";
+CM_ SG_ 156 PDM_fanRightVoltAvg "Voltage of the right fan";
+CM_ SG_ 151 PDM_fanRightCurrentMin "Current of the right fan";
+CM_ SG_ 151 PDM_fanRightCurrentMax "Current of the right fan";
+CM_ SG_ 151 PDM_fanRightCurrentAvg "Current of the right fan";
+CM_ SG_ 150 PDM_wpStatus "Status of the waterpump";
+CM_ SG_ 150 PDM_status "To be used to print error messages:
+
+0 =
+1 =
+2 =
+3 =
+4 =
+5 =
+6 =
+7 =
+8 =
+9 =
+10 =
+11 = 
+12 =
+13 =
+14 =
+15 =  ";
+CM_ SG_ 150 PDM_fanRightStatus "Status of the Right Fan";
+CM_ SG_ 150 PDM_fanLeftStatus "Status of the left fan";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "BusType" "CAN";
+
