@@ -1411,12 +1411,18 @@ void CAN_READ()
           // MultID 0x0
           case 0x0:
             CAN0_rpm.value = rxData[4] * 256 + rxData[5];
+
+            CAN0_rpm.lastRecieve = millis();
+
             check_canSensor_validity(CAN0_rpm);
             break;
 
           // MultID 0x4
           case 0x4:
             CAN0_engTemp.value = rxData[4] * 256 + rxData[5];
+
+            CAN0_engTemp.lastRecieve = millis();
+
             check_canSensor_validity(CAN0_engTemp);
             break;
         }
@@ -1450,16 +1456,24 @@ void CAN_READ()
         // ATCCF 0
         case 0x0:
           CAN1_brakePressureFL.value = rxData[1] + rxData[2] * 256;
-          check_canSensor_bounds(CAN1_brakePressureFL);
           CAN1_brakePressureFR.value = rxData[3] + rxData[4] * 256;
+
+          CAN1_brakePressureFL.lastRecieve = millis();
+          CAN1_brakePressureFR.lastRecieve = millis();
+
+          check_canSensor_bounds(CAN1_brakePressureFL);
           check_canSensor_bounds(CAN1_brakePressureFR);
           break;
 
         // ATCCF 1
         case 0x1:
           CAN1_brakePressureRL.value = rxData[1] + rxData[2] * 256;
-          check_canSensor_bounds(CAN1_brakePressureRL);
           CAN1_brakePressureRR.value = rxData[3] + rxData[4] * 256;
+
+          CAN1_brakePressureRL.lastRecieve = millis();
+          CAN1_brakePressureRR.lastRecieve = millis();
+
+          check_canSensor_bounds(CAN1_brakePressureRL);
           check_canSensor_bounds(CAN1_brakePressureRR);
           break;
       }
