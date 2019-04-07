@@ -1375,7 +1375,7 @@ static void CAN_DATA_SEND(int id, int len, int busNo)
       break;
 
     case 1:
-      Can1.write(msg);  // this is send the static
+      Can0.write(msg);  // this is send the static
       break;
   }
 
