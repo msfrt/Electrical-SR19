@@ -195,12 +195,12 @@ CM_ SG_ 160 PDM_fuelVoltAvg "voltage of the fuel circuit";
 CM_ SG_ 159 PDM_pdmVoltMin "voltage of the PDM";
 CM_ SG_ 159 PDM_pdmVoltMax "voltage of the PDM";
 CM_ SG_ 159 PDM_pdmVoltAvg "voltage of the PDM";
-CM_ SG_ 158 PDM_wpVoltMin "the voltage of the waterpump";
-CM_ SG_ 158 PDM_wpVoltMax "the voltage of the waterpump";
-CM_ SG_ 158 PDM_wpVoltAvg "the voltage of the waterpump";
-CM_ SG_ 153 PDM_wpCurrentMin "the current going through the waterpump";
-CM_ SG_ 153 PDM_wpCurrentMax "the current going through the waterpump";
-CM_ SG_ 153 PDM_wpCurrentAvg "the current going through the waterpump";
+CM_ SG_ 158 PDM_wpVoltMin "the voltage of the water pump";
+CM_ SG_ 158 PDM_wpVoltMax "the voltage of the water pump";
+CM_ SG_ 158 PDM_wpVoltAvg "the voltage of the water pump";
+CM_ SG_ 153 PDM_wpCurrentMin "the current going through the water pump";
+CM_ SG_ 153 PDM_wpCurrentMax "the current going through the water pump";
+CM_ SG_ 153 PDM_wpCurrentAvg "the current going through the water pump";
 CM_ SG_ 154 PDM_pdmCurrentMin "the total current going through the PDM";
 CM_ SG_ 154 PDM_pdmCurrentMax "the total current going through the PDM";
 CM_ SG_ 154 PDM_pdmCurrentAvg "the total current going through the PDM";
@@ -219,7 +219,7 @@ CM_ SG_ 156 PDM_fanRightVoltAvg "voltage of the right fan";
 CM_ SG_ 151 PDM_fanRightCurrentMin "current of the right fan";
 CM_ SG_ 151 PDM_fanRightCurrentMax "current of the right fan";
 CM_ SG_ 151 PDM_fanRightCurrentAvg "current of the right fan";
-CM_ SG_ 150 PDM_wpStatus "status of the waterpump";
+CM_ SG_ 150 PDM_wpStatus "status of the water pump";
 CM_ SG_ 150 PDM_status "to be used to print error messages:
 
 0 =
