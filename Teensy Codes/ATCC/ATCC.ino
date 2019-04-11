@@ -79,7 +79,7 @@ typedef struct
   int count         = 0;
   int zeroMVolt10   = 0; // in mV*10
   double mV10unit   = 0; // in mV*10 (mV per unit, ex. 30 could be 30mV/degree C)
-  double scaleFact  = 1; // like in the DBC (.1, .01, .001 etc.)
+  double scaleFact  = 0.1; // like in the DBC (.1, .01, .001 etc.)
   double z1         = 1200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
   double z2         = 2200.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
                                   // if you want to change these per sensor, do it in calibration in the setup loop
@@ -538,7 +538,7 @@ void calculateAndLaunchCAN()
         if ( messageCount100Hz < 15 ){messageCount100Hz++;}
         else {messageCount100Hz = 0;}
 
-
+        // ATCCF__00
         // turn the raw numbers into the ones we can read over CAN.
         analogToSensorVal(FL_BRAKE_PRESSURE);
         analogToSensorVal(FR_BRAKE_PRESSURE);
@@ -553,9 +553,10 @@ void calculateAndLaunchCAN()
         msg.buf[6] = TRACK_TEMP.actualAvg >> 8;
         msg.buf[7] = 0;
         // send the message
-        sendCAN(0x0, 8, 1);
+        sendCAN(0x8C, 8, 1);
 
 
+        // ATCCF_01
         analogToSensorVal(RL_BRAKE_PRESSURE);
         analogToSensorVal(RR_BRAKE_PRESSURE);
         analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
@@ -567,9 +568,10 @@ void calculateAndLaunchCAN()
         msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
         msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
         msg.buf[7] = 0;
-        sendCAN(0x1, 8, 1);
+        sendCAN(0x8D, 8, 1);
 
 
+        // ATCCF_02
         analogToSensorVal(FL_DAMPER_POS);
         analogToSensorVal(FR_DAMPER_POS);
         msg.buf[0] = messageCount100Hz;
@@ -580,9 +582,10 @@ void calculateAndLaunchCAN()
         msg.buf[5] = 0;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
-        sendCAN(0x2, 8, 1);
+        sendCAN(0x8E, 8, 1);
 
 
+        // ATCCF_03
         analogToSensorVal(FL_ROTOR_TEMP);
         analogToSensorVal(FR_ROTOR_TEMP);
         msg.buf[0] = messageCount100Hz;
@@ -593,7 +596,7 @@ void calculateAndLaunchCAN()
         msg.buf[5] = 0;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
-        sendCAN(0x3, 8, 1);
+        sendCAN(0x8F, 8, 1);
 
 
       } // end 100Hz timer messages

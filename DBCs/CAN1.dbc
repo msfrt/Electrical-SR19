@@ -123,39 +123,39 @@ BO_ 150 PDM_00: 8 PDM
  SG_ PDM_fanLeftStatus : 16|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ PDM_counter00 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
-BO_ 5 ATCCR_01: 8 ATCCR
+BO_ 145 ATCCR_01: 8 ATCCR
  SG_ ATCCR_rotorTempRR : 24|16@1- (1,0) [0|0] "" Vector__XXX
  SG_ ATCCR_rotorTempRL : 8|16@1- (1,0) [0|0] "" Vector__XXX
  SG_ ATCCR_rightRadiatorInletTemp : 40|16@1- (1,0) [0|0] "" Vector__XXX
  SG_ ATCCR_counter01 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 4 ATCCR_00: 8 ATCCR
+BO_ 144 ATCCR_00: 8 ATCCR
  SG_ ATCCR_counter00 : 0|4@1- (1,0) [0|0] "" Vector__XXX
  SG_ ATCCR_leftRadiatorOutletTemp : 40|16@1- (1,0) [0|0] "" Vector__XXX
  SG_ ATCCR_damperPosRR : 24|16@1- (1,0) [0|0] "" Vector__XXX
  SG_ ATCCR_damperPosRL : 8|16@1- (1,0) [0|0] "" Vector__XXX
 
-BO_ 3 ATCCF_03: 8 ATCCF
- SG_ ATCCF_rotorTempFR : 24|16@1- (1,0) [0|0] "" Vector__XXX
- SG_ ATCCF_rotorTempFL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+BO_ 143 ATCCF_03: 8 ATCCF
+ SG_ ATCCF_rotorTempFR : 24|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ ATCCF_rotorTempFL : 8|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ ATCCF_counter03 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 2 ATCCF_02: 8 ATCCF
+BO_ 142 ATCCF_02: 8 ATCCF
  SG_ ATCCF_counter02 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ ATCCF_damperPosFR : 24|16@1- (1,0) [0|0] "" Vector__XXX
- SG_ ATCCF_damperPosFL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_damperPosFR : 24|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ ATCCF_damperPosFL : 8|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
 
-BO_ 1 ATCCF_01: 8 ATCCF
- SG_ ATCCF_waterTempBetweenRads : 40|16@1- (1,0) [0|0] "" Vector__XXX
+BO_ 141 ATCCF_01: 8 ATCCF
+ SG_ ATCCF_waterTempBetweenRads : 40|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ ATCCF_counter01 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ ATCCF_brakePressRR : 24|16@1- (1,0) [0|0] "" Vector__XXX
- SG_ ATCCF_brakePressRL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_brakePressRR : 24|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ ATCCF_brakePressRL : 8|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
 
-BO_ 0 ATCCF_00: 8 ATCCF
- SG_ ATCCF_trackTemp : 40|16@1- (1,0) [0|0] "" Vector__XXX
+BO_ 140 ATCCF_00: 8 ATCCF
+ SG_ ATCCF_trackTemp : 40|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ ATCCF_counter00 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ ATCCF_brakePressFR : 24|16@1- (1,0) [0|0] "" Vector__XXX
- SG_ ATCCF_brakePressFL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_brakePressFR : 24|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ ATCCF_brakePressFL : 8|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
 
 BO_ 842 ESP_wheelSpeedRear: 8 ESP
  SG_ ESP_wheelSpeedRR_V : 22|1@0+ (1,0) [0|1] "" Vector__XXX
@@ -183,44 +183,44 @@ CM_ SG_ 163 PDM_brakeLightStatus "State of the brake light
 0 = Off
 1 = On";
 CM_ SG_ 163 PDM_boardTemp "PDM board temperature";
-CM_ SG_ 162 PDM_dataVoltMin "Voltage of the data circuit";
-CM_ SG_ 162 PDM_dataVoltMax "Voltage of the data circuit";
-CM_ SG_ 162 PDM_dataVoltAvg "Voltage of the data circuit";
-CM_ SG_ 161 PDM_mainVoltMin "Voltage of the main circuit";
-CM_ SG_ 161 PDM_mainVoltMax "Voltage of the main circuit";
-CM_ SG_ 161 PDM_mainVoltAvg "Voltage of the main circuit";
-CM_ SG_ 160 PDM_fuelVoltMin "Voltage of the fuel circuit";
-CM_ SG_ 160 PDM_fuelVoltMax "Voltage of the fuel circuit";
-CM_ SG_ 160 PDM_fuelVoltAvg "Voltage of the fuel circuit";
-CM_ SG_ 159 PDM_pdmVoltMin "Voltage of the PDM";
-CM_ SG_ 159 PDM_pdmVoltMax "Voltage of the PDM";
-CM_ SG_ 159 PDM_pdmVoltAvg "Voltage of the PDM";
-CM_ SG_ 158 PDM_wpVoltMin "The voltage of the waterpump";
-CM_ SG_ 158 PDM_wpVoltMax "The voltage of the waterpump";
-CM_ SG_ 158 PDM_wpVoltAvg "The voltage of the waterpump";
-CM_ SG_ 153 PDM_wpCurrentMin "The current going through the waterpump";
-CM_ SG_ 153 PDM_wpCurrentMax "The current going through the waterpump";
-CM_ SG_ 153 PDM_wpCurrentAvg "The current going through the waterpump";
-CM_ SG_ 154 PDM_pdmCurrentMin "The total current going through the PDM";
-CM_ SG_ 154 PDM_pdmCurrentMax "The total current going through the PDM";
-CM_ SG_ 154 PDM_pdmCurrentAvg "The total current going through the PDM";
-CM_ SG_ 155 PDM_fuelCurrentMin "Current through the fuel circuit";
-CM_ SG_ 155 PDM_fuelCurrentMax "Current through the fuel circuit";
-CM_ SG_ 155 PDM_fuelCurrentAvg "Current through the fuel circuit";
-CM_ SG_ 157 PDM_fanLeftVoltMin "Voltage of the left fan";
-CM_ SG_ 157 PDM_fanLeftVoltMax "Voltage of the left fan";
-CM_ SG_ 157 PDM_fanLeftVoltAvg "Voltage of the left fan";
-CM_ SG_ 152 PDM_fanLeftCurrentMin "Current of the left fan";
-CM_ SG_ 152 PDM_fanLeftCurrentMax "Current of the left fan";
-CM_ SG_ 152 PDM_fanLeftCurrentAvg "Current of the left fan";
-CM_ SG_ 156 PDM_fanRightVoltMin "Voltage of the right fan";
-CM_ SG_ 156 PDM_fanRightVoltMax "Voltage of the right fan";
-CM_ SG_ 156 PDM_fanRightVoltAvg "Voltage of the right fan";
-CM_ SG_ 151 PDM_fanRightCurrentMin "Current of the right fan";
-CM_ SG_ 151 PDM_fanRightCurrentMax "Current of the right fan";
-CM_ SG_ 151 PDM_fanRightCurrentAvg "Current of the right fan";
-CM_ SG_ 150 PDM_wpStatus "Status of the waterpump";
-CM_ SG_ 150 PDM_status "To be used to print error messages:
+CM_ SG_ 162 PDM_dataVoltMin "voltage of the data circuit";
+CM_ SG_ 162 PDM_dataVoltMax "voltage of the data circuit";
+CM_ SG_ 162 PDM_dataVoltAvg "voltage of the data circuit";
+CM_ SG_ 161 PDM_mainVoltMin "voltage of the main circuit";
+CM_ SG_ 161 PDM_mainVoltMax "voltage of the main circuit";
+CM_ SG_ 161 PDM_mainVoltAvg "voltage of the main circuit";
+CM_ SG_ 160 PDM_fuelVoltMin "voltage of the fuel circuit";
+CM_ SG_ 160 PDM_fuelVoltMax "voltage of the fuel circuit";
+CM_ SG_ 160 PDM_fuelVoltAvg "voltage of the fuel circuit";
+CM_ SG_ 159 PDM_pdmVoltMin "voltage of the PDM";
+CM_ SG_ 159 PDM_pdmVoltMax "voltage of the PDM";
+CM_ SG_ 159 PDM_pdmVoltAvg "voltage of the PDM";
+CM_ SG_ 158 PDM_wpVoltMin "the voltage of the water pump";
+CM_ SG_ 158 PDM_wpVoltMax "the voltage of the water pump";
+CM_ SG_ 158 PDM_wpVoltAvg "the voltage of the water pump";
+CM_ SG_ 153 PDM_wpCurrentMin "the current going through the water pump";
+CM_ SG_ 153 PDM_wpCurrentMax "the current going through the water pump";
+CM_ SG_ 153 PDM_wpCurrentAvg "the current going through the water pump";
+CM_ SG_ 154 PDM_pdmCurrentMin "the total current going through the PDM";
+CM_ SG_ 154 PDM_pdmCurrentMax "the total current going through the PDM";
+CM_ SG_ 154 PDM_pdmCurrentAvg "the total current going through the PDM";
+CM_ SG_ 155 PDM_fuelCurrentMin "current through the fuel circuit";
+CM_ SG_ 155 PDM_fuelCurrentMax "current through the fuel circuit";
+CM_ SG_ 155 PDM_fuelCurrentAvg "current through the fuel circuit";
+CM_ SG_ 157 PDM_fanLeftVoltMin "voltage of the left fan";
+CM_ SG_ 157 PDM_fanLeftVoltMax "voltage of the left fan";
+CM_ SG_ 157 PDM_fanLeftVoltAvg "voltage of the left fan";
+CM_ SG_ 152 PDM_fanLeftCurrentMin "current of the left fan";
+CM_ SG_ 152 PDM_fanLeftCurrentMax "current of the left fan";
+CM_ SG_ 152 PDM_fanLeftCurrentAvg "current of the left fan";
+CM_ SG_ 156 PDM_fanRightVoltMin "voltage of the right fan";
+CM_ SG_ 156 PDM_fanRightVoltMax "voltage of the right fan";
+CM_ SG_ 156 PDM_fanRightVoltAvg "voltage of the right fan";
+CM_ SG_ 151 PDM_fanRightCurrentMin "current of the right fan";
+CM_ SG_ 151 PDM_fanRightCurrentMax "current of the right fan";
+CM_ SG_ 151 PDM_fanRightCurrentAvg "current of the right fan";
+CM_ SG_ 150 PDM_wpStatus "status of the water pump";
+CM_ SG_ 150 PDM_status "to be used to print error messages:
 
 0 =
 1 =
@@ -233,13 +233,29 @@ CM_ SG_ 150 PDM_status "To be used to print error messages:
 8 =
 9 =
 10 =
-11 = 
+11 =
 12 =
 13 =
 14 =
 15 =  ";
-CM_ SG_ 150 PDM_fanRightStatus "Status of the Right Fan";
-CM_ SG_ 150 PDM_fanLeftStatus "Status of the left fan";
+CM_ SG_ 150 PDM_fanRightStatus "status of the right fan";
+CM_ SG_ 150 PDM_fanLeftStatus "status of the left fan";
+CM_ SG_ 145 ATCCR_rotorTempRR "rear right rotor temperature";
+CM_ SG_ 145 ATCCR_rotorTempRL "rear left rotor temperature";
+CM_ SG_ 145 ATCCR_rightRadiatorInletTemp "right radiator inlet temperature";
+CM_ SG_ 144 ATCCR_leftRadiatorOutletTemp "left radiator outlet temperature";
+CM_ SG_ 144 ATCCR_damperPosRR "rear right damper position";
+CM_ SG_ 144 ATCCR_damperPosRL "rear left damper position";
+CM_ SG_ 143 ATCCF_rotorTempFR "front right rotor temperature";
+CM_ SG_ 143 ATCCF_rotorTempFL "front left rotor temperature";
+CM_ SG_ 142 ATCCF_damperPosFR "front right damper position";
+CM_ SG_ 142 ATCCF_damperPosFL "front left damper position";
+CM_ SG_ 141 ATCCF_waterTempBetweenRads "water temperature between radiators";
+CM_ SG_ 141 ATCCF_brakePressRR "rear right brake pressure";
+CM_ SG_ 141 ATCCF_brakePressRL "rear left brake pressure";
+CM_ SG_ 140 ATCCF_trackTemp "tack temperature";
+CM_ SG_ 140 ATCCF_brakePressFR "front right brake pressure";
+CM_ SG_ 140 ATCCF_brakePressFL "front left brake pressure";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
 
