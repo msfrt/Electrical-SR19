@@ -136,26 +136,26 @@ BO_ 144 ATCCR_00: 8 ATCCR
  SG_ ATCCR_damperPosRL : 8|16@1- (1,0) [0|0] "" Vector__XXX
 
 BO_ 143 ATCCF_03: 8 ATCCF
- SG_ ATCCF_rotorTempFR : 24|16@1- (1,0) [0|0] "" Vector__XXX
- SG_ ATCCF_rotorTempFL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_rotorTempFR : 24|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ ATCCF_rotorTempFL : 8|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ ATCCF_counter03 : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 142 ATCCF_02: 8 ATCCF
  SG_ ATCCF_counter02 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ ATCCF_damperPosFR : 24|16@1- (1,0) [0|0] "" Vector__XXX
- SG_ ATCCF_damperPosFL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_damperPosFR : 24|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ ATCCF_damperPosFL : 8|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
 
 BO_ 141 ATCCF_01: 8 ATCCF
- SG_ ATCCF_waterTempBetweenRads : 40|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_waterTempBetweenRads : 40|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ ATCCF_counter01 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ ATCCF_brakePressRR : 24|16@1- (1,0) [0|0] "" Vector__XXX
- SG_ ATCCF_brakePressRL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_brakePressRR : 24|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ ATCCF_brakePressRL : 8|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
 
 BO_ 140 ATCCF_00: 8 ATCCF
- SG_ ATCCF_trackTemp : 40|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_trackTemp : 40|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ ATCCF_counter00 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ ATCCF_brakePressFR : 24|16@1- (1,0) [0|0] "" Vector__XXX
- SG_ ATCCF_brakePressFL : 8|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ ATCCF_brakePressFR : 24|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ ATCCF_brakePressFL : 8|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
 
 BO_ 842 ESP_wheelSpeedRear: 8 ESP
  SG_ ESP_wheelSpeedRR_V : 22|1@0+ (1,0) [0|1] "" Vector__XXX
@@ -240,6 +240,8 @@ CM_ SG_ 150 PDM_status "To be used to print error messages:
 15 =  ";
 CM_ SG_ 150 PDM_fanRightStatus "Status of the Right Fan";
 CM_ SG_ 150 PDM_fanLeftStatus "Status of the left fan";
+CM_ SG_ 140 ATCCF_brakePressFR "front right brake pressure";
+CM_ SG_ 140 ATCCF_brakePressFL "front left brake pressure";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
 
