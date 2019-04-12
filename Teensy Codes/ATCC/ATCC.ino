@@ -281,10 +281,11 @@ void loop() {
     case 0:
 
       // read the sensors in this timer at 10,000 Hz
-      if ( micros() - SensTimer1000Hz >= 10000 ) //was 1
+      if ( micros() - SensTimer1000Hz >= 1000000 ) //was 1
       {
         SensTimer1000Hz = micros();
 
+        Serial.println();
         // read the sensors
         // analogReadSensor(FR_DAMPER_POS);
         // analogReadSensor(FL_DAMPER_POS);
@@ -347,7 +348,53 @@ static void analogReadSensor( sensor &SENSOR )
 {
 
   // read the sensor
-  SENSOR.readVal = analogRead(SENSOR.pin);
+  SENSOR.readVal = analogRead(A0);
+  Serial.print("PIN "); Serial.print("A0"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A1);
+  Serial.print("PIN "); Serial.print("A1"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A2);
+  Serial.print("PIN "); Serial.print("A2"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A3);
+  Serial.print("PIN "); Serial.print("A3"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A4);
+  Serial.print("PIN "); Serial.print("A4"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A5);
+  Serial.print("PIN "); Serial.print("A5"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A6);
+  Serial.print("PIN "); Serial.print("A6"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A7);
+  Serial.print("PIN "); Serial.print("A7"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A8);
+  Serial.print("PIN "); Serial.print("A8"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A9);
+  Serial.print("PIN "); Serial.print("A9"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A10);
+  Serial.print("PIN "); Serial.print("A10"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A11);
+  Serial.print("PIN "); Serial.print("A11"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A12);
+  Serial.print("PIN "); Serial.print("A12"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A13);
+  Serial.print("PIN "); Serial.print("A13"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A15);
+  Serial.print("PIN "); Serial.print("A15"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
+
+  SENSOR.readVal = analogRead(A16);
+  Serial.print("PIN "); Serial.print("A16"); Serial.print(" READS: "); Serial.println(SENSOR.readVal);
 
   // determine if its a min or max (DISABLED)
   // if      ( SENSOR.readVal < SENSOR.readMin ){ SENSOR.readMin = SENSOR.readVal; }
@@ -458,7 +505,7 @@ void analogToBoschTempVal( sensor &SENSOR )
 
 
   // multiply the calculated temperatures by their factors for CAN
-  sensAvg *= (1.0000 / SENSOR.scaleFact)
+  sensAvg *= (1.0000 / SENSOR.scaleFact);
   // sensMin *= (1.0000 / SENSOR.scaleFact)
   // sensMax *= (1.0000 / SENSOR.scaleFact)
 
