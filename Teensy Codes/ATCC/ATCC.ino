@@ -144,7 +144,7 @@ void setup() {
       FL_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       FL_DAMPER_POS.scaleFact   = 0.1;
 
-      TRACK_TEMP.pin         = A2;
+      TRACK_TEMP.pin         = A6;
       TRACK_TEMP.zeroMVolt10 = 400; // mV*10
       TRACK_TEMP.mV10unit    = 300.0000; // mV*10 per sensor unit
       TRACK_TEMP.scaleFact   = 0.1;
@@ -506,8 +506,9 @@ void analogToBoschTempVal( sensor &SENSOR )
 
   // multiply the calculated temperatures by their factors for CAN
   sensAvg *= (1.0000 / SENSOR.scaleFact);
-  // sensMin *= (1.0000 / SENSOR.scaleFact)
-  // sensMax *= (1.0000 / SENSOR.scaleFact)
+  // sensMin *= (1.0000 / SENSOR.scaleFact);
+  // sensMax *= (1.0000 / SENSOR.scaleFact);
+
 
 
 
@@ -590,6 +591,8 @@ void calculateAndLaunchCAN()
         analogToSensorVal(FL_BRAKE_PRESSURE);
         analogToSensorVal(FR_BRAKE_PRESSURE);
         analogToSensorVal(TRACK_TEMP);
+        // print the track temp for ATCC testing
+        Serial.print("Track temp CAN value: "); Serial.println(TRACK_TEMP.actualAvg);
         // put the results into a message buffer
         msg.buf[0] = messageCount100Hz; // counter
         msg.buf[1] = FL_BRAKE_PRESSURE.actualAvg;
