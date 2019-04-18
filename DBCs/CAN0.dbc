@@ -96,7 +96,7 @@ BO_ 1520 M400_dataSet1: 8 M400
  SG_ M400_groundSpeedRight m1 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ M400_driveSpeedRight m1 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ M400_groundSpeedLeft m1 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
- SG_ M400_driveSpeedLeft m0 : 55|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_driveSpeedLeft m0 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ M400_groundSpeed m0 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ M400_driveSpeed m0 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ M400_rowCounterDataSet1 M : 0|8@1+ (1,0) [0|255] "" Vector__XXX
