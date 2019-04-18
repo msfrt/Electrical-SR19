@@ -1375,7 +1375,7 @@ static void CAN_DATA_SEND(int id, int len, int busNo)
       break;
 
     case 1:
-      Can0.write(msg);  // this is send the static
+      Can1.write(msg);  // this is send the static
       break;
   }
 
@@ -1799,7 +1799,7 @@ int WATER_PUMP_PERCENT(int table[WP_numTempEntries][WP_numRPMEntries])
   if(carOn)
   {
     wpShutdownTime = 0;
-    
+
     // map the actual temp input between the max and min temp in the table,
     // to the corresponding bottom and top rates found in rpmLesser
     int map1 = map(CAN0_engTemp.value, table[WP_temperatureLesser][0], table[WP_temperatureGreater][0], table[WP_temperatureLesser][WP_rpmLesser], table[WP_temperatureGreater][WP_rpmLesser]);
