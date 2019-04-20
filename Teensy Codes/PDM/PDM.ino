@@ -255,9 +255,9 @@ int PWM_startup_mode_range = 5; // PWM increments
 unsigned long PWM_startup_end_time = 0;
 int PWM_freq_status = 1; //this is just or testing. 1 = 488.28 Hz, 0 = 20 Hz. Sends under "water pump status" in DBC
 // used to store the minimum allowed PWM
-int FANL_minPWM = 30;
-int FANR_minPWM = 30;
-int WP_minPWM = 25;
+int FANL_minPWM = 40;
+int FANR_minPWM = 40;
+int WP_minPWM = 35;
 //used to store the max PWM, should be 255
 int FANL_maxPWM = 255;
 int FANR_maxPWM = 255;
