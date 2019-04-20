@@ -465,7 +465,7 @@ void setup() {
   delay(2000);
   Serial1.write(a);
   delay(500);
-  Serial1.end()
+  Serial1.end();
 
   delay(1000);
 
@@ -473,7 +473,7 @@ void setup() {
   delay(500);
   Serial1.write(b);
   delay(500);
-  Serial1.end()
+  Serial1.end();
   // END GPS initialization
 
 }
