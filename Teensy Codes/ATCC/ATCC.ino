@@ -538,7 +538,7 @@ void calculateAndLaunchCAN()
         if ( messageCount100Hz < 15 ){messageCount100Hz++;}
         else {messageCount100Hz = 0;}
 
-        // ATCCF__00
+        // ATCCF_00
         // turn the raw numbers into the ones we can read over CAN.
         analogToSensorVal(FL_BRAKE_PRESSURE);
         analogToSensorVal(FR_BRAKE_PRESSURE);

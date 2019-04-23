@@ -1494,8 +1494,10 @@ void CAN_READ()
 
       switch (rxID)
       {
-        // ATCCF__00
+        // ATCCF_00
         case 0x8C:
+
+          Serial.println("ATCCF_00 Read!");
           CAN1_brakePressureFL.value = rxData[1] + rxData[2] * 256;
           CAN1_brakePressureFR.value = rxData[3] + rxData[4] * 256;
 
@@ -1508,6 +1510,7 @@ void CAN_READ()
 
         // ATCCF_01
         case 0x8D:
+          Serial.println("ATCCF_01 Read!");
           CAN1_brakePressureRL.value = rxData[1] + rxData[2] * 256;
           CAN1_brakePressureRR.value = rxData[3] + rxData[4] * 256;
 
