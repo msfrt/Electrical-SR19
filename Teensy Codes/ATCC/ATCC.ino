@@ -286,16 +286,16 @@ void loop() {
         SensTimer1000Hz = micros();
 
         // read the sensors
-        // analogReadSensor(FR_DAMPER_POS);
-        // analogReadSensor(FL_DAMPER_POS);
+        analogReadSensor(FR_DAMPER_POS);
+        analogReadSensor(FL_DAMPER_POS);
         analogReadSensor(TRACK_TEMP);
-        // analogReadSensor(FR_BRAKE_PRESSURE);
-        // analogReadSensor(FL_BRAKE_PRESSURE);
-        // analogReadSensor(RR_BRAKE_PRESSURE);
-        // analogReadSensor(RL_BRAKE_PRESSURE);
-        // analogReadSensor(WATER_TEMP_BETWEEN_RADS);
-        // analogReadSensor(FR_ROTOR_TEMP);
-        // analogReadSensor(FL_ROTOR_TEMP);
+        analogReadSensor(FR_BRAKE_PRESSURE);
+        analogReadSensor(FL_BRAKE_PRESSURE);
+        analogReadSensor(RR_BRAKE_PRESSURE);
+        analogReadSensor(RL_BRAKE_PRESSURE);
+        analogReadSensor(WATER_TEMP_BETWEEN_RADS);
+        analogReadSensor(FR_ROTOR_TEMP);
+        analogReadSensor(FL_ROTOR_TEMP);
 
 
 
