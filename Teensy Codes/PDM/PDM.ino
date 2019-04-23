@@ -187,8 +187,8 @@ int BOARD_temp;
 //------------------------------------------------------------------------------
 
 // initialize state variables for BRAKE LIGHT
-uint8_t BLIGHT_state;
-uint8_t BLIGHT_statePrev;
+uint8_t BLIGHT_state = 0;
+uint8_t BLIGHT_statePrev = 0;
 int BLIGHT_minPressure = 1;
 
 
@@ -590,9 +590,9 @@ void loop() {
   //
   //----------------------------------------------------------------------------
 
+  // blight state is 255 for on (max pwm), 0 for off. Initializes to off
   BLIGHT_state = BRAKE_LIGHT_STATE(CAN1_brakePressureFL.value, CAN1_brakePressureFR.value, CAN1_brakePressureRL.value, CAN1_brakePressureRR.value);
-  // digitalWrite(A3, BLIGHT_state) ***Note: you could just have this one statement, but it might not be the best to digitally write so frequently
-  // if ( BLIGHT_state != BLIGHT_statePrev ){ BLIGHT_statePrev = BLIGHT_state; digitalWrite(A3, BLIGHT_state) }
+  if ( BLIGHT_state != BLIGHT_statePrev ){ BLIGHT_statePrev = BLIGHT_state; digitalWrite(A3, BLIGHT_state); }
 
 
 
@@ -1494,8 +1494,8 @@ void CAN_READ()
 
       switch (rxID)
       {
-        // ATCCF 0
-        case 0x0:
+        // ATCCF__00
+        case 0x8C:
           CAN1_brakePressureFL.value = rxData[1] + rxData[2] * 256;
           CAN1_brakePressureFR.value = rxData[3] + rxData[4] * 256;
 
@@ -1506,8 +1506,8 @@ void CAN_READ()
           check_canSensor_bounds(CAN1_brakePressureFR);
           break;
 
-        // ATCCF 1
-        case 0x1:
+        // ATCCF_01
+        case 0x8D:
           CAN1_brakePressureRL.value = rxData[1] + rxData[2] * 256;
           CAN1_brakePressureRR.value = rxData[3] + rxData[4] * 256;
 
@@ -2004,11 +2004,11 @@ uint8_t BRAKE_LIGHT_STATE(int FR_pressure, int FL_pressure, int RR_pressure, int
 
   if ( power )
   {
-    return HIGH;
+    return 255;
   }
   else
   {
-    return LOW;
+    return 0;
   }
 }
 
