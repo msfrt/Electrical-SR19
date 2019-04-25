@@ -440,41 +440,41 @@ void setup() {
   CAN1_leftRadOutTemp.upperBound = 1800; //180C
 
   //RR Brake Pressure
-  CAN1_brakePressureRR.lowerBound = 0;
-  CAN1_brakePressureRR.upperBound = 0;
+  CAN1_brakePressureRR.lowerBound = -100;
+  CAN1_brakePressureRR.upperBound = 2000;
 
   //RL Brake Pressure
-  CAN1_brakePressureRL.lowerBound = 0;
-  CAN1_brakePressureRL.upperBound = 0;
+  CAN1_brakePressureRL.lowerBound = -100;
+  CAN1_brakePressureRL.upperBound = 2000;
 
   //FR Brake Pressure
-  CAN1_brakePressureFR.lowerBound = 0;
-  CAN1_brakePressureFR.upperBound = 0;
+  CAN1_brakePressureFR.lowerBound = -100;
+  CAN1_brakePressureFR.upperBound = 2000;
 
   //FL Brake Pressure
-  CAN1_brakePressureFL.lowerBound = 0;
-  CAN1_brakePressureFL.upperBound = 0;
+  CAN1_brakePressureFL.lowerBound = -100;
+  CAN1_brakePressureFL.upperBound = 2000;
 
 
-  // begin GPS initialization
-  Serial1.begin(9600);
-
-  char a[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x35,0x31,0x2C,0x31,0x31,0x35,0x32,0x30,0x30,0x2A,0x31,0x46,0x0D,0x0A};
-  char b[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x32,0x30,0x2C,0x31,0x30,0x30,0x2A,0x32,0x46,0x0D,0x0A};
-
-  delay(2000);
-  Serial1.write(a);
-  delay(500);
-  Serial1.end();
-
-  delay(1000);
-
-  Serial1.begin(115200);
-  delay(500);
-  Serial1.write(b);
-  delay(500);
-  Serial1.end();
-  // END GPS initialization
+//  // begin GPS initialization
+//  Serial1.begin(9600);
+//
+//  char a[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x35,0x31,0x2C,0x31,0x31,0x35,0x32,0x30,0x30,0x2A,0x31,0x46,0x0D,0x0A};
+//  char b[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x32,0x30,0x2C,0x31,0x30,0x30,0x2A,0x32,0x46,0x0D,0x0A};
+//
+//  delay(2000);
+//  Serial1.write(a);
+//  delay(500);
+//  Serial1.end();
+//
+//  delay(1000);
+//
+//  Serial1.begin(115200);
+//  delay(500);
+//  Serial1.write(b);
+//  delay(500);
+//  Serial1.end();
+//  // END GPS initialization
 
 }
 
@@ -1497,7 +1497,6 @@ void CAN_READ()
         // ATCCF_00
         case 0x8C:
 
-          Serial.println("ATCCF_00 Read!");
           CAN1_brakePressureFL.value = rxData[1] + rxData[2] * 256;
           CAN1_brakePressureFR.value = rxData[3] + rxData[4] * 256;
 
@@ -1510,7 +1509,6 @@ void CAN_READ()
 
         // ATCCF_01
         case 0x8D:
-          Serial.println("ATCCF_01 Read!");
           CAN1_brakePressureRL.value = rxData[1] + rxData[2] * 256;
           CAN1_brakePressureRR.value = rxData[3] + rxData[4] * 256;
 
