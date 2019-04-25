@@ -149,7 +149,7 @@ void setup() {
       TRACK_TEMP.mV10unit    = 300.0000; // mV*10 per sensor unit
       TRACK_TEMP.scaleFact   = 0.1;
 
-      FR_BRAKE_PRESSURE.pin         = A13;
+      FR_BRAKE_PRESSURE.pin         = A14;
       FR_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10 (.5V)
       FR_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit (Honeywell MLH2000PGB06A) Sens range .5V to 4.5V; 0psi to 2000psi
       FR_BRAKE_PRESSURE.scaleFact   = 0.1;
@@ -174,7 +174,7 @@ void setup() {
       WATER_TEMP_BETWEEN_RADS.mV10unit    = 0; // mV*10 per sensor unit
       WATER_TEMP_BETWEEN_RADS.scaleFact   = 0.1;
 
-      FR_ROTOR_TEMP.pin         = A12;
+      FR_ROTOR_TEMP.pin         = A13;
       FR_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
       FR_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
       FR_ROTOR_TEMP.scaleFact   = 0.1;
@@ -458,7 +458,7 @@ void analogToBoschTempVal( sensor &SENSOR )
 
 
   // multiply the calculated temperatures by their factors for CAN
-  sensAvg *= (1.0000 / SENSOR.scaleFact)
+  sensAvg *= (1.0000 / SENSOR.scaleFact);
   // sensMin *= (1.0000 / SENSOR.scaleFact)
   // sensMax *= (1.0000 / SENSOR.scaleFact)
 

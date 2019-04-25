@@ -476,6 +476,66 @@ void setup() {
 //  Serial1.end();
 //  // END GPS initialization
 
+
+  // BRAKE LIGHT MORSE CODE "MSU"
+  int morseUnit = 100; // in millis
+  // dashes are 3 time units, dots are 1 time unit, and spaces between dashes and dots are 1 time unit
+  // spaces between lettersin words are 3 time units
+  // words are seperated by silence equal to 7 time units
+
+  // "M"
+  analogWrite(A3, 255);
+  delay(morseUnit * 3); // dash
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit * 3); // dash
+  analogWrite(A3, 0);
+
+  delay(morseUnit * 3); // letter delay
+
+
+
+  // "S"
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit* 3); // letter delay
+
+
+
+  // "U"
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit * 3); // dash
+  analogWrite(A3, 0);
+
 }
 
 //------------------------------------------------------------------------------
@@ -592,7 +652,7 @@ void loop() {
 
   // blight state is 255 for on (max pwm), 0 for off. Initializes to off
   BLIGHT_state = BRAKE_LIGHT_STATE(CAN1_brakePressureFL.value, CAN1_brakePressureFR.value, CAN1_brakePressureRL.value, CAN1_brakePressureRR.value);
-  if ( BLIGHT_state != BLIGHT_statePrev ){ BLIGHT_statePrev = BLIGHT_state; digitalWrite(A3, BLIGHT_state); }
+  if ( BLIGHT_state != BLIGHT_statePrev ){ BLIGHT_statePrev = BLIGHT_state; analogWrite(A3, BLIGHT_state); }
 
 
 
@@ -2005,7 +2065,7 @@ uint8_t BRAKE_LIGHT_STATE(int FR_pressure, int FL_pressure, int RR_pressure, int
 
   if ( power )
   {
-    return 255;
+    return 255; //PWM value between 0-255
   }
   else
   {
