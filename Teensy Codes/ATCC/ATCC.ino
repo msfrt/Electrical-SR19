@@ -56,6 +56,16 @@ unsigned long SensTimer20Hz     = 0;
 unsigned long SensTimer10Hz     = 0;
 unsigned long SensTimer1Hz      = 0;
 
+// variables for message counters
+int messageCount1000Hz = 0;
+int messageCount500Hz  = 0;
+int messageCount200Hz  = 0;
+int messageCount100Hz  = 0;
+int messageCount50Hz   = 0;
+int messageCount20Hz   = 0;
+int messageCount10Hz   = 0;
+int messageCount1Hz    = 0;
+
 // initialize a timer and variable for the LED
 unsigned long LEDTimer          = 0;
 bool LED_on                     = false;
@@ -81,8 +91,8 @@ typedef struct
   int zeroMVolt10   = 0; // in mV*10
   double mV10unit   = 0; // in mV*10 (mV per unit, ex. 30 could be 30mV/degree C)
   double scaleFact  = 0.1; // like in the DBC (.1, .01, .001 etc.)
-  double z1         = 1200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
-  double z2         = 2200.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
+  double z1         = 6200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
+  double z2         = 12000.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
                                   // if you want to change these per sensor, do it in calibration in the setup loop
 
 
@@ -97,9 +107,6 @@ sensor WATER_TEMP_BETWEEN_RADS, FR_ROTOR_TEMP, FL_ROTOR_TEMP;
 // rear ATCC
 sensor RR_DAMPER_POS, RL_DAMPER_POS, RIGHT_RAD_TEMP, LEFT_RAD_TEMP;
 sensor RR_ROTOR_TEMP, RL_ROTOR_TEMP;
-
-// variables for message counter
-int messageCount100Hz = 0;
 
 // set the analog read resolution in bits (10 bits yeild an input 0-1023, etc.)
 // initialize a variable for a calculation of the readMaximum read value from pins
@@ -140,60 +147,80 @@ void setup() {
       FR_DAMPER_POS.zeroMVolt10 = 0; // mV*10
       FR_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       FR_DAMPER_POS.scaleFact   = 0.1;
+      FR_DAMPER_POS.z1          = 6450;
+      // FR_DAMPER_POS.z2          = 0;
 
       FL_DAMPER_POS.sensName    = "FL_DAMPER_POS";
       FL_DAMPER_POS.pin         = A1;
       FL_DAMPER_POS.zeroMVolt10 = 0; // mV*10
       FL_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       FL_DAMPER_POS.scaleFact   = 0.1;
+      // FL_DAMPER_POS.z1          = 0;
+      // FL_DAMPER_POS.z2          = 0;
 
       TRACK_TEMP.sensName    = "TRACK_TEMP";
       TRACK_TEMP.pin         = A2;
       TRACK_TEMP.zeroMVolt10 = 400; // mV*10
       TRACK_TEMP.mV10unit    = 300.0000; // mV*10 per sensor unit
       TRACK_TEMP.scaleFact   = 0.1;
+      // TRACK_TEMP.z1          = 0;
+      // TRACK_TEMP.z2          = 0;
 
       FR_BRAKE_PRESSURE.sensName    = "FR_BRAKE_PRESSURE";
-      FR_BRAKE_PRESSURE.pin         = A14;
+      FR_BRAKE_PRESSURE.pin         = A13;
       FR_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10 (.5V)
       FR_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit (Honeywell MLH2000PGB06A) Sens range .5V to 4.5V; 0psi to 2000psi
       FR_BRAKE_PRESSURE.scaleFact   = 0.1;
+      // FR_BRAKE_PRESSURE.z1          = 0;
+      // FR_BRAKE_PRESSURE.z2          = 0;
 
       FL_BRAKE_PRESSURE.sensName    = "FL_BRAKE_PRESSURE";
-      FL_BRAKE_PRESSURE.pin         = A15;
+      FL_BRAKE_PRESSURE.pin         = A16;
       FL_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
       FL_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       FL_BRAKE_PRESSURE.scaleFact   = 0.1;
+      FL_BRAKE_PRESSURE.z1          = 6400;
+      // FL_BRAKE_PRESSURE.z2          = 0;
 
       RR_BRAKE_PRESSURE.sensName    = "RR_BRAKE_PRESSURE";
       RR_BRAKE_PRESSURE.pin         = A4;
       RR_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
       RR_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       RR_BRAKE_PRESSURE.scaleFact   = 0.1;
+      // RR_BRAKE_PRESSURE.z1          = 0;
+      // RR_BRAKE_PRESSURE.z2          = 0;
 
       RL_BRAKE_PRESSURE.sensName    = "RL_BRAKE_PRESSURE";
       RL_BRAKE_PRESSURE.pin         = A5;
       RL_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
       RL_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       RL_BRAKE_PRESSURE.scaleFact   = 0.1;
+      // RL_BRAKE_PRESSURE.z1          = 0;
+      // RL_BRAKE_PRESSURE.z2          = 0;
 
       WATER_TEMP_BETWEEN_RADS.sensName    = "WATER_TEMP_BETWEEN_RADS";
       WATER_TEMP_BETWEEN_RADS.pin         = A19;
       WATER_TEMP_BETWEEN_RADS.zeroMVolt10 = 0; // mV*10
       WATER_TEMP_BETWEEN_RADS.mV10unit    = 0; // mV*10 per sensor unit
       WATER_TEMP_BETWEEN_RADS.scaleFact   = 0.1;
+      // WATER_TEMP_BETWEEN_RADS.z1          = 0;
+      // WATER_TEMP_BETWEEN_RADS.z2          = 0;
 
       FR_ROTOR_TEMP.sensName    = "FR_ROTOR_TEMP";
-      FR_ROTOR_TEMP.pin         = A13;
+      FR_ROTOR_TEMP.pin         = A12;
       FR_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
       FR_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
       FR_ROTOR_TEMP.scaleFact   = 0.1;
+      // FR_ROTOR_TEMP.z1          = 0;
+      // FR_ROTOR_TEMP.z2          = 0;
 
       FL_ROTOR_TEMP.sensName    = "FL_ROTOR_TEMP";
-      FL_ROTOR_TEMP.pin         = A14;
+      FL_ROTOR_TEMP.pin         = A15;
       FL_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
       FL_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
       FL_ROTOR_TEMP.scaleFact   = 0.1;
+      // FR_ROTOR_TEMP.z1          = 0;
+      // FR_ROTOR_TEMP.z2          = 0;
 
 
       // assign the pins output or input
@@ -291,44 +318,54 @@ void loop() {
     // main loop for front ATCC
     case 0:
 
-      // read the sensors in this timer at 10,000 Hz
-      if ( micros() - SensTimer1000Hz >= 100000 ) // was 1
+      // read the sensors in this timer at 2,000 Hz
+      if ( micros() - SensTimer2000Hz >= 500 )
       {
-        SensTimer1000Hz = micros();
+        SensTimer2000Hz = micros();
+
+        //read the sensors
+        analogReadSensor(FR_DAMPER_POS);
+        analogReadSensor(FL_DAMPER_POS);
+      }
+
+
+      // read the sensors in this timer at 200 Hz
+      if (millis() - SensTimer200Hz >= 5)
+      {
+        SensTimer200Hz = millis();
 
         // read the sensors
-        //analogReadSensor(FR_DAMPER_POS);
-        //analogReadSensor(FL_DAMPER_POS);
-        //analogReadSensor(TRACK_TEMP);
-        //analogReadSensor(FR_BRAKE_PRESSURE);
-        //analogReadSensor(FL_BRAKE_PRESSURE);
-        //analogReadSensor(RR_BRAKE_PRESSURE);
-        //analogReadSensor(RL_BRAKE_PRESSURE);
-        //analogReadSensor(WATER_TEMP_BETWEEN_RADS);
-        //analogReadSensor(FR_ROTOR_TEMP);
-        //analogReadSensor(FL_ROTOR_TEMP);
-
-        Serial.print(" A0, PIN   1: "); Serial.println(analogRead(A0));
-        Serial.print(" A1, PIN  10: "); Serial.println(analogRead(A1));
-        Serial.print(" A2, PIN  11: "); Serial.println(analogRead(A2));
-        Serial.print(" A3, PIN   2: "); Serial.println(analogRead(A3));
-        Serial.print(" A4, PIN  12: "); Serial.println(analogRead(A4));
-        Serial.print(" A5, PIN   3: "); Serial.println(analogRead(A5));
-        Serial.print(" A6, PIN  13: "); Serial.println(analogRead(A6));
-        Serial.print(" A7, PIN   4: "); Serial.println(analogRead(A7));
-        Serial.print(" A8, PIN  21: "); Serial.println(analogRead(A8));
-        Serial.print(" A9, PIN  29: "); Serial.println(analogRead(A9));
-        Serial.print("A10, PIN  28: "); Serial.println(analogRead(A10));
-        Serial.print("A11, PIN  20: "); Serial.println(analogRead(A11));
-        Serial.print("A12, PIN  18: "); Serial.println(analogRead(A12));
-        Serial.print("A13, PIN  27: "); Serial.println(analogRead(A13));
-        Serial.print("A15, PIN  26: "); Serial.println(analogRead(A14));
-        Serial.print("A16, PIN  19: "); Serial.println(analogRead(A15));
-
-
-
-
+        analogReadSensor(FL_BRAKE_PRESSURE);
+        analogReadSensor(FR_BRAKE_PRESSURE);
+        analogReadSensor(RL_BRAKE_PRESSURE);
+        analogReadSensor(RR_BRAKE_PRESSURE);
       }
+
+
+
+      // read the sensors in this timer at 100 Hz
+      if (millis() - SensTimer100Hz >= 10)
+      {
+        SensTimer100Hz = millis();
+
+        // read the sensors
+        analogReadSensor(FR_ROTOR_TEMP);
+        analogReadSensor(FL_ROTOR_TEMP);
+      }
+
+
+
+      // read the sensors in this timer at 50 Hz
+      if (millis() - SensTimer100Hz >= 20)
+      {
+        SensTimer100Hz = millis();
+
+        // read the sensors
+        analogReadSensor(WATER_TEMP_BETWEEN_RADS);
+        analogReadSensor(TRACK_TEMP);
+      }
+
+
 
       // continually launch the calculateAndLaunchCAN function, as it
       // has indivdual timers built in.
@@ -425,7 +462,8 @@ void analogToSensorVal( sensor &SENSOR )
   // sensMin = sensMin / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
   // sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
 
-
+  // print voltages
+  Serial.print(SENSOR.sensName); Serial.print(" voltage: "); Serial.println(sensAvg);
 
   // sensor calibration (convert sensor voltage to CAN values)
   //                   zero volt of sens.    units per mV*10                inverse of the scale factor.
@@ -562,13 +600,42 @@ void calculateAndLaunchCAN()
     // front ATCC
     case 0:
 
-      if ( millis() - SendTimer100Hz >= 100 ) // changed for testing
+      // messages to be sent at 200 Hz
+      if ( millis() - SendTimer200Hz >= 5 )
       {
-        SendTimer100Hz = millis();
+        SendTimer200Hz = millis();
 
         // add one for every cycle through. Reset after 14
-        if ( messageCount100Hz < 15 ){messageCount100Hz++;}
-        else {messageCount100Hz = 0;}
+        if ( messageCount200Hz < 15 ){messageCount200Hz++;}
+        else {messageCount200Hz = 0;}
+
+
+        // ATCCF_02
+        analogToSensorVal(FL_DAMPER_POS);
+        analogToSensorVal(FR_DAMPER_POS);
+        msg.buf[0] = messageCount200Hz;
+        msg.buf[1] = FL_DAMPER_POS.actualAvg;
+        msg.buf[2] = FL_DAMPER_POS.actualAvg >> 8;
+        msg.buf[3] = FR_DAMPER_POS.actualAvg;
+        msg.buf[4] = FR_DAMPER_POS.actualAvg >> 8;
+        msg.buf[5] = 0;
+        msg.buf[6] = 0;
+        msg.buf[7] = 0;
+        sendCAN(0x8E, 8, 1);
+
+      } // end 200Hz timer messages
+
+
+
+      // messages to be sent at 50 Hz
+      if ( millis() - SendTimer50Hz >= 20 )
+      {
+        SendTimer50Hz = millis();
+
+        // add one for every cycle through. Reset after 14
+        if ( messageCount50Hz < 15 ){messageCount50Hz++;}
+        else {messageCount50Hz = 0;}
+
 
         // ATCCF_00
         // turn the raw numbers into the ones we can read over CAN.
@@ -576,7 +643,7 @@ void calculateAndLaunchCAN()
         analogToSensorVal(FR_BRAKE_PRESSURE);
         analogToSensorVal(TRACK_TEMP);
         // put the results into a message buffer
-        msg.buf[0] = messageCount100Hz; // counter
+        msg.buf[0] = messageCount50Hz; // counter
         msg.buf[1] = FL_BRAKE_PRESSURE.actualAvg;
         msg.buf[2] = FL_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[3] = FR_BRAKE_PRESSURE.actualAvg;
@@ -592,7 +659,7 @@ void calculateAndLaunchCAN()
         analogToSensorVal(RL_BRAKE_PRESSURE);
         analogToSensorVal(RR_BRAKE_PRESSURE);
         analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
-        msg.buf[0] = messageCount100Hz;
+        msg.buf[0] = messageCount50Hz;
         msg.buf[1] = RL_BRAKE_PRESSURE.actualAvg;
         msg.buf[2] = RL_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[3] = RR_BRAKE_PRESSURE.actualAvg;
@@ -602,35 +669,22 @@ void calculateAndLaunchCAN()
         msg.buf[7] = 0;
         sendCAN(0x8D, 8, 1);
 
-        // Serial.println();
-        // Serial.print("FL_BRAKE_PRESSURE: "); Serial.println(FL_BRAKE_PRESSURE.actualAvg);
-        // Serial.print("FR_BRAKE_PRESSURE: "); Serial.println(FR_BRAKE_PRESSURE.actualAvg);
-        // Serial.print("RL_BRAKE_PRESSURE: "); Serial.println(RL_BRAKE_PRESSURE.actualAvg);
-        // Serial.print("RR_BRAKE_PRESSURE: "); Serial.println(RR_BRAKE_PRESSURE.actualAvg);
+      } // end 50 Hz messages
 
 
-        // ATCCF_02
-        analogToSensorVal(FL_DAMPER_POS);
-        analogToSensorVal(FR_DAMPER_POS);
-        msg.buf[0] = messageCount100Hz;
-        msg.buf[1] = FL_DAMPER_POS.actualAvg;
-        msg.buf[2] = FL_DAMPER_POS.actualAvg >> 8;
-        msg.buf[3] = FR_DAMPER_POS.actualAvg;
-        msg.buf[4] = FR_DAMPER_POS.actualAvg >> 8;
-        msg.buf[5] = 0;
-        msg.buf[6] = 0;
-        msg.buf[7] = 0;
-        sendCAN(0x8E, 8, 1);
+      // messages to be sent at 10 Hz
+      if ( millis() - SendTimer10Hz >= 100 )
+      {
+        SendTimer10Hz = millis();
 
-        // Serial.println();
-        // Serial.print("FL_DAMPER_POS:"); Serial.println(FL_DAMPER_POS.actualAvg);
-        // Serial.print("FR_DAMPER_POS:"); Serial.println(FR_DAMPER_POS.actualAvg);
-
+        // add one for every cycle through. Reset after 14
+        if ( messageCount10Hz < 15 ){messageCount10Hz++;}
+        else {messageCount10Hz = 0;}
 
         // ATCCF_03
         analogToSensorVal(FL_ROTOR_TEMP);
         analogToSensorVal(FR_ROTOR_TEMP);
-        msg.buf[0] = messageCount100Hz;
+        msg.buf[0] = messageCount10Hz;
         msg.buf[1] = FL_ROTOR_TEMP.actualAvg;
         msg.buf[2] = FL_ROTOR_TEMP.actualAvg >> 8;
         msg.buf[3] = FR_ROTOR_TEMP.actualAvg;
@@ -640,8 +694,9 @@ void calculateAndLaunchCAN()
         msg.buf[7] = 0;
         sendCAN(0x8F, 8, 1);
 
+      } // end 10 Hz messages
 
-      } // end 100Hz timer messages
+
       break;
 
 

@@ -189,7 +189,7 @@ int BOARD_temp;
 // initialize state variables for BRAKE LIGHT
 uint8_t BLIGHT_state = 0;
 uint8_t BLIGHT_statePrev = 0;
-int BLIGHT_minPressure = 1;
+int BLIGHT_minPressure = 250; // in CAN format (psi * 10)
 
 
 //------------------------------------------------------------------------------
