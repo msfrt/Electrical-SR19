@@ -356,15 +356,35 @@ void loop() {
 
 
       // read the sensors in this timer at 50 Hz
-      if (millis() - SensTimer100Hz >= 20)
+      if (millis() - SensTimer50Hz >= 20) // was 20
       {
-        SensTimer100Hz = millis();
+        SensTimer50Hz = millis();
 
         // read the sensors
         analogReadSensor(WATER_TEMP_BETWEEN_RADS);
         analogReadSensor(TRACK_TEMP);
+//
+//       Serial.println();
+//      Serial.print("A0"); Serial.print(": "); Serial.println(analogRead(A0));
+//      Serial.print("A1"); Serial.print(": "); Serial.println(analogRead(A1));
+//      Serial.print("A2"); Serial.print(": "); Serial.println(analogRead(A2));
+//      Serial.print("A3"); Serial.print(": "); Serial.println(analogRead(A3));
+//      Serial.print("A4"); Serial.print(": "); Serial.println(analogRead(A4));
+      Serial.print("A5"); Serial.print(": "); Serial.println(analogRead(A5));
+//      Serial.print("A6"); Serial.print(": "); Serial.println(analogRead(A6));
+//      Serial.print("A7"); Serial.print(": "); Serial.println(analogRead(A7));
+//      Serial.print("A8"); Serial.print(": "); Serial.println(analogRead(A8));
+//      Serial.print("A9"); Serial.print(": "); Serial.println(analogRead(A9));
+//      Serial.print("A10"); Serial.print(": "); Serial.println(analogRead(A10));
+//      Serial.print("A11"); Serial.print(": "); Serial.println(analogRead(A11));
+//      Serial.print("A12"); Serial.print(": "); Serial.println(analogRead(A12));
+//      Serial.print("A13"); Serial.print(": "); Serial.println(analogRead(A13));
+//      Serial.print("A15"); Serial.print(": "); Serial.println(analogRead(A15));
+      Serial.print("A16"); Serial.print(": "); Serial.println(analogRead(A16));
       }
 
+
+      
 
 
       // continually launch the calculateAndLaunchCAN function, as it
@@ -462,8 +482,8 @@ void analogToSensorVal( sensor &SENSOR )
   // sensMin = sensMin / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
   // sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
 
-  // print voltages
-  Serial.print(SENSOR.sensName); Serial.print(" voltage: "); Serial.println(sensAvg);
+  // print voltages for calibration
+  // Serial.print(SENSOR.sensName); Serial.print(" voltage: "); Serial.println(sensAvg);
 
   // sensor calibration (convert sensor voltage to CAN values)
   //                   zero volt of sens.    units per mV*10                inverse of the scale factor.
@@ -660,14 +680,17 @@ void calculateAndLaunchCAN()
         analogToSensorVal(RR_BRAKE_PRESSURE);
         analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
         msg.buf[0] = messageCount50Hz;
-        msg.buf[1] = RL_BRAKE_PRESSURE.actualAvg;
-        msg.buf[2] = RL_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[1] = 0; //RL_BRAKE_PRESSURE.actualAvg;
+        msg.buf[2] = 0; //RL_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[3] = 0; //RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS unit is installed
         msg.buf[4] = 0; //RR_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
         msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
         msg.buf[7] = 0;
         sendCAN(0x8D, 8, 1);
+
+        Serial.println(FL_BRAKE_PRESSURE.actualAvg);
+        //Serial.println(FR_BRAKE_PRESSURE.actualAvg);
 
       } // end 50 Hz messages
 
