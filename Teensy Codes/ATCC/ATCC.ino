@@ -292,12 +292,12 @@ void loop() {
     case 0:
 
       // read the sensors in this timer at 10,000 Hz
-      if ( micros() - SensTimer1000Hz >= 100000 ) //was 1
+      if ( micros() - SensTimer1000Hz >= 100000 ) // was 1
       {
         SensTimer1000Hz = micros();
 
         // read the sensors
-        analogReadSensor(FR_DAMPER_POS);
+        //analogReadSensor(FR_DAMPER_POS);
         //analogReadSensor(FL_DAMPER_POS);
         //analogReadSensor(TRACK_TEMP);
         //analogReadSensor(FR_BRAKE_PRESSURE);
@@ -307,6 +307,24 @@ void loop() {
         //analogReadSensor(WATER_TEMP_BETWEEN_RADS);
         //analogReadSensor(FR_ROTOR_TEMP);
         //analogReadSensor(FL_ROTOR_TEMP);
+
+        Serial.print(" A0, PIN   1: "); Serial.println(analogRead(A0));
+        Serial.print(" A1, PIN  10: "); Serial.println(analogRead(A1));
+        Serial.print(" A2, PIN  11: "); Serial.println(analogRead(A2));
+        Serial.print(" A3, PIN   2: "); Serial.println(analogRead(A3));
+        Serial.print(" A4, PIN  12: "); Serial.println(analogRead(A4));
+        Serial.print(" A5, PIN   3: "); Serial.println(analogRead(A5));
+        Serial.print(" A6, PIN  13: "); Serial.println(analogRead(A6));
+        Serial.print(" A7, PIN   4: "); Serial.println(analogRead(A7));
+        Serial.print(" A8, PIN  21: "); Serial.println(analogRead(A8));
+        Serial.print(" A9, PIN  29: "); Serial.println(analogRead(A9));
+        Serial.print("A10, PIN  28: "); Serial.println(analogRead(A10));
+        Serial.print("A11, PIN  20: "); Serial.println(analogRead(A11));
+        Serial.print("A12, PIN  18: "); Serial.println(analogRead(A12));
+        Serial.print("A13, PIN  27: "); Serial.println(analogRead(A13));
+        Serial.print("A15, PIN  26: "); Serial.println(analogRead(A14));
+        Serial.print("A16, PIN  19: "); Serial.println(analogRead(A15));
+
 
 
 
