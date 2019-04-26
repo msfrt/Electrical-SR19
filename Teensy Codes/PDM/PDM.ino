@@ -480,7 +480,7 @@ void setup() {
   // BRAKE LIGHT MORSE CODE "MSU"
   int morseUnit = 100; // in millis
   // dashes are 3 time units, dots are 1 time unit, and spaces between dashes and dots are 1 time unit
-  // spaces between lettersin words are 3 time units
+  // spaces between letters in words are 3 time units
   // words are seperated by silence equal to 7 time units
 
   // "M"
@@ -515,7 +515,7 @@ void setup() {
   delay(morseUnit); // dot
   analogWrite(A3, 0);
 
-  delay(morseUnit* 3); // letter delay
+  delay(morseUnit * 3); // letter delay
 
 
 

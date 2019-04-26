@@ -68,6 +68,7 @@ typedef struct
   // used to tell the status of the module
   uint8_t deviceStatus;
 
+  String sensName   = "";
   int pin           = 0;
   int readVal       = 0;
   int readMax       = -2147483647; // minimum number possible
@@ -134,51 +135,61 @@ void setup() {
     case 0:
 
       // sensor calibration
+      FR_DAMPER_POS.sensName    = "FR_DAMPER_POS";
       FR_DAMPER_POS.pin         = A0;
       FR_DAMPER_POS.zeroMVolt10 = 0; // mV*10
       FR_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       FR_DAMPER_POS.scaleFact   = 0.1;
 
+      FL_DAMPER_POS.sensName    = "FL_DAMPER_POS";
       FL_DAMPER_POS.pin         = A1;
       FL_DAMPER_POS.zeroMVolt10 = 0; // mV*10
       FL_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       FL_DAMPER_POS.scaleFact   = 0.1;
 
+      TRACK_TEMP.sensName    = "TRACK_TEMP";
       TRACK_TEMP.pin         = A2;
       TRACK_TEMP.zeroMVolt10 = 400; // mV*10
       TRACK_TEMP.mV10unit    = 300.0000; // mV*10 per sensor unit
       TRACK_TEMP.scaleFact   = 0.1;
 
+      FR_BRAKE_PRESSURE.sensName    = "FR_BRAKE_PRESSURE";
       FR_BRAKE_PRESSURE.pin         = A14;
       FR_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10 (.5V)
       FR_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit (Honeywell MLH2000PGB06A) Sens range .5V to 4.5V; 0psi to 2000psi
       FR_BRAKE_PRESSURE.scaleFact   = 0.1;
 
+      FL_BRAKE_PRESSURE.sensName    = "FL_BRAKE_PRESSURE";
       FL_BRAKE_PRESSURE.pin         = A15;
       FL_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
       FL_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       FL_BRAKE_PRESSURE.scaleFact   = 0.1;
 
+      RR_BRAKE_PRESSURE.sensName    = "RR_BRAKE_PRESSURE";
       RR_BRAKE_PRESSURE.pin         = A4;
       RR_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
       RR_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       RR_BRAKE_PRESSURE.scaleFact   = 0.1;
 
+      RL_BRAKE_PRESSURE.sensName    = "RL_BRAKE_PRESSURE";
       RL_BRAKE_PRESSURE.pin         = A5;
       RL_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
       RL_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       RL_BRAKE_PRESSURE.scaleFact   = 0.1;
 
+      WATER_TEMP_BETWEEN_RADS.sensName    = "WATER_TEMP_BETWEEN_RADS";
       WATER_TEMP_BETWEEN_RADS.pin         = A19;
       WATER_TEMP_BETWEEN_RADS.zeroMVolt10 = 0; // mV*10
       WATER_TEMP_BETWEEN_RADS.mV10unit    = 0; // mV*10 per sensor unit
       WATER_TEMP_BETWEEN_RADS.scaleFact   = 0.1;
 
+      FR_ROTOR_TEMP.sensName    = "FR_ROTOR_TEMP";
       FR_ROTOR_TEMP.pin         = A13;
       FR_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
       FR_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
       FR_ROTOR_TEMP.scaleFact   = 0.1;
 
+      FL_ROTOR_TEMP.sensName    = "FL_ROTOR_TEMP";
       FL_ROTOR_TEMP.pin         = A14;
       FL_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
       FL_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
@@ -281,21 +292,21 @@ void loop() {
     case 0:
 
       // read the sensors in this timer at 10,000 Hz
-      if ( micros() - SensTimer1000Hz >= 10000 ) //was 1
+      if ( micros() - SensTimer1000Hz >= 100000 ) //was 1
       {
         SensTimer1000Hz = micros();
 
         // read the sensors
         analogReadSensor(FR_DAMPER_POS);
-        analogReadSensor(FL_DAMPER_POS);
-        analogReadSensor(TRACK_TEMP);
-        analogReadSensor(FR_BRAKE_PRESSURE);
-        analogReadSensor(FL_BRAKE_PRESSURE);
-        analogReadSensor(RR_BRAKE_PRESSURE);
-        analogReadSensor(RL_BRAKE_PRESSURE);
-        analogReadSensor(WATER_TEMP_BETWEEN_RADS);
-        analogReadSensor(FR_ROTOR_TEMP);
-        analogReadSensor(FL_ROTOR_TEMP);
+        //analogReadSensor(FL_DAMPER_POS);
+        //analogReadSensor(TRACK_TEMP);
+        //analogReadSensor(FR_BRAKE_PRESSURE);
+        //analogReadSensor(FL_BRAKE_PRESSURE);
+        //analogReadSensor(RR_BRAKE_PRESSURE);
+        //analogReadSensor(RL_BRAKE_PRESSURE);
+        //analogReadSensor(WATER_TEMP_BETWEEN_RADS);
+        //analogReadSensor(FR_ROTOR_TEMP);
+        //analogReadSensor(FL_ROTOR_TEMP);
 
 
 
@@ -356,6 +367,9 @@ static void analogReadSensor( sensor &SENSOR )
   // add to the average and the counter
   SENSOR.readAvg = SENSOR.readAvg + SENSOR.readVal;
   SENSOR.count++;
+
+  // uncomment to read raw values
+  //Serial.print(SENSOR.sensName); Serial.print(" analog reads: "); Serial.println(SENSOR.readVal);
 
 
 }
@@ -570,6 +584,12 @@ void calculateAndLaunchCAN()
         msg.buf[7] = 0;
         sendCAN(0x8D, 8, 1);
 
+        // Serial.println();
+        // Serial.print("FL_BRAKE_PRESSURE: "); Serial.println(FL_BRAKE_PRESSURE.actualAvg);
+        // Serial.print("FR_BRAKE_PRESSURE: "); Serial.println(FR_BRAKE_PRESSURE.actualAvg);
+        // Serial.print("RL_BRAKE_PRESSURE: "); Serial.println(RL_BRAKE_PRESSURE.actualAvg);
+        // Serial.print("RR_BRAKE_PRESSURE: "); Serial.println(RR_BRAKE_PRESSURE.actualAvg);
+
 
         // ATCCF_02
         analogToSensorVal(FL_DAMPER_POS);
@@ -583,6 +603,10 @@ void calculateAndLaunchCAN()
         msg.buf[6] = 0;
         msg.buf[7] = 0;
         sendCAN(0x8E, 8, 1);
+
+        // Serial.println();
+        // Serial.print("FL_DAMPER_POS:"); Serial.println(FL_DAMPER_POS.actualAvg);
+        // Serial.print("FR_DAMPER_POS:"); Serial.println(FR_DAMPER_POS.actualAvg);
 
 
         // ATCCF_03
