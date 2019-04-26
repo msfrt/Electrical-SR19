@@ -187,9 +187,9 @@ int BOARD_temp;
 //------------------------------------------------------------------------------
 
 // initialize state variables for BRAKE LIGHT
-uint8_t BLIGHT_state;
-uint8_t BLIGHT_statePrev;
-int BLIGHT_minPressure = 1;
+uint8_t BLIGHT_state = 0;
+uint8_t BLIGHT_statePrev = 0;
+int BLIGHT_minPressure = 250; // in CAN format (psi * 10)
 
 
 //------------------------------------------------------------------------------
@@ -440,41 +440,101 @@ void setup() {
   CAN1_leftRadOutTemp.upperBound = 1800; //180C
 
   //RR Brake Pressure
-  CAN1_brakePressureRR.lowerBound = 0;
-  CAN1_brakePressureRR.upperBound = 0;
+  CAN1_brakePressureRR.lowerBound = -100;
+  CAN1_brakePressureRR.upperBound = 2000;
 
   //RL Brake Pressure
-  CAN1_brakePressureRL.lowerBound = 0;
-  CAN1_brakePressureRL.upperBound = 0;
+  CAN1_brakePressureRL.lowerBound = -100;
+  CAN1_brakePressureRL.upperBound = 2000;
 
   //FR Brake Pressure
-  CAN1_brakePressureFR.lowerBound = 0;
-  CAN1_brakePressureFR.upperBound = 0;
+  CAN1_brakePressureFR.lowerBound = -100;
+  CAN1_brakePressureFR.upperBound = 2000;
 
   //FL Brake Pressure
-  CAN1_brakePressureFL.lowerBound = 0;
-  CAN1_brakePressureFL.upperBound = 0;
+  CAN1_brakePressureFL.lowerBound = -100;
+  CAN1_brakePressureFL.upperBound = 2000;
 
 
-  // begin GPS initialization
-  Serial1.begin(9600);
+//  // begin GPS initialization
+//  Serial1.begin(9600);
+//
+//  char a[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x35,0x31,0x2C,0x31,0x31,0x35,0x32,0x30,0x30,0x2A,0x31,0x46,0x0D,0x0A};
+//  char b[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x32,0x30,0x2C,0x31,0x30,0x30,0x2A,0x32,0x46,0x0D,0x0A};
+//
+//  delay(2000);
+//  Serial1.write(a);
+//  delay(500);
+//  Serial1.end();
+//
+//  delay(1000);
+//
+//  Serial1.begin(115200);
+//  delay(500);
+//  Serial1.write(b);
+//  delay(500);
+//  Serial1.end();
+//  // END GPS initialization
 
-  char a[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x35,0x31,0x2C,0x31,0x31,0x35,0x32,0x30,0x30,0x2A,0x31,0x46,0x0D,0x0A};
-  char b[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x32,0x30,0x2C,0x31,0x30,0x30,0x2A,0x32,0x46,0x0D,0x0A};
 
-  delay(2000);
-  Serial1.write(a);
-  delay(500);
-  Serial1.end();
+  // BRAKE LIGHT MORSE CODE "MSU"
+  int morseUnit = 100; // in millis
+  // dashes are 3 time units, dots are 1 time unit, and spaces between dashes and dots are 1 time unit
+  // spaces between letters in words are 3 time units
+  // words are seperated by silence equal to 7 time units
 
-  delay(1000);
+  // "M"
+  analogWrite(A3, 255);
+  delay(morseUnit * 3); // dash
+  analogWrite(A3, 0);
 
-  Serial1.begin(115200);
-  delay(500);
-  Serial1.write(b);
-  delay(500);
-  Serial1.end();
-  // END GPS initialization
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit * 3); // dash
+  analogWrite(A3, 0);
+
+  delay(morseUnit * 3); // letter delay
+
+
+
+  // "S"
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit * 3); // letter delay
+
+
+
+  // "U"
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit * 3); // dash
+  analogWrite(A3, 0);
 
 }
 
@@ -590,9 +650,9 @@ void loop() {
   //
   //----------------------------------------------------------------------------
 
+  // blight state is 255 for on (max pwm), 0 for off. Initializes to off
   BLIGHT_state = BRAKE_LIGHT_STATE(CAN1_brakePressureFL.value, CAN1_brakePressureFR.value, CAN1_brakePressureRL.value, CAN1_brakePressureRR.value);
-  // digitalWrite(A3, BLIGHT_state) ***Note: you could just have this one statement, but it might not be the best to digitally write so frequently
-  // if ( BLIGHT_state != BLIGHT_statePrev ){ BLIGHT_statePrev = BLIGHT_state; digitalWrite(A3, BLIGHT_state) }
+  if ( BLIGHT_state != BLIGHT_statePrev ){ BLIGHT_statePrev = BLIGHT_state; analogWrite(A3, BLIGHT_state); }
 
 
 
@@ -1494,8 +1554,9 @@ void CAN_READ()
 
       switch (rxID)
       {
-        // ATCCF 0
-        case 0x0:
+        // ATCCF_00
+        case 0x8C:
+
           CAN1_brakePressureFL.value = rxData[1] + rxData[2] * 256;
           CAN1_brakePressureFR.value = rxData[3] + rxData[4] * 256;
 
@@ -1506,8 +1567,8 @@ void CAN_READ()
           check_canSensor_bounds(CAN1_brakePressureFR);
           break;
 
-        // ATCCF 1
-        case 0x1:
+        // ATCCF_01
+        case 0x8D:
           CAN1_brakePressureRL.value = rxData[1] + rxData[2] * 256;
           CAN1_brakePressureRR.value = rxData[3] + rxData[4] * 256;
 
@@ -2004,11 +2065,11 @@ uint8_t BRAKE_LIGHT_STATE(int FR_pressure, int FL_pressure, int RR_pressure, int
 
   if ( power )
   {
-    return HIGH;
+    return 255; //PWM value between 0-255
   }
   else
   {
-    return LOW;
+    return 0;
   }
 }
 
