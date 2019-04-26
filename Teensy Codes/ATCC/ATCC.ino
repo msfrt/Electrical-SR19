@@ -646,8 +646,8 @@ void calculateAndLaunchCAN()
         msg.buf[0] = messageCount50Hz; // counter
         msg.buf[1] = FL_BRAKE_PRESSURE.actualAvg;
         msg.buf[2] = FL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[3] = FR_BRAKE_PRESSURE.actualAvg;
-        msg.buf[4] = FR_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[3] = 0; //FR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS unit is installed
+        msg.buf[4] = 0; //FR_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[5] = TRACK_TEMP.actualAvg;
         msg.buf[6] = TRACK_TEMP.actualAvg >> 8;
         msg.buf[7] = 0;
@@ -662,8 +662,8 @@ void calculateAndLaunchCAN()
         msg.buf[0] = messageCount50Hz;
         msg.buf[1] = RL_BRAKE_PRESSURE.actualAvg;
         msg.buf[2] = RL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[3] = RR_BRAKE_PRESSURE.actualAvg;
-        msg.buf[4] = RR_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[3] = 0; //RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS unit is installed
+        msg.buf[4] = 0; //RR_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
         msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
         msg.buf[7] = 0;
