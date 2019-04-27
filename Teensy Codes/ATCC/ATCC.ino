@@ -91,8 +91,8 @@ typedef struct
   int zeroMVolt10   = 0; // in mV*10
   double mV10unit   = 0; // in mV*10 (mV per unit, ex. 30 could be 30mV/degree C)
   double scaleFact  = 0.1; // like in the DBC (.1, .01, .001 etc.)
-  double z1         = 6200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
-  double z2         = 12000.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
+  double z1         = 1200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
+  double z2         = 2200.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
                                   // if you want to change these per sensor, do it in calibration in the setup loop
 
 
@@ -147,7 +147,7 @@ void setup() {
       FR_DAMPER_POS.zeroMVolt10 = 0; // mV*10
       FR_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       FR_DAMPER_POS.scaleFact   = 0.1;
-      FR_DAMPER_POS.z1          = 6450;
+      // FR_DAMPER_POS.z1          = 6450;
       // FR_DAMPER_POS.z2          = 0;
 
       FL_DAMPER_POS.sensName    = "FL_DAMPER_POS";
@@ -179,7 +179,7 @@ void setup() {
       FL_BRAKE_PRESSURE.zeroMVolt10 = 4857; // mV*10
       FL_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       FL_BRAKE_PRESSURE.scaleFact   = 0.1;
-      FL_BRAKE_PRESSURE.z1          = 6400;
+      // FL_BRAKE_PRESSURE.z1          = 6400;
       // FL_BRAKE_PRESSURE.z2          = 0;
 
       RR_BRAKE_PRESSURE.sensName    = "RR_BRAKE_PRESSURE";
@@ -384,7 +384,7 @@ void loop() {
       }
 
 
-      
+
 
 
       // continually launch the calculateAndLaunchCAN function, as it
