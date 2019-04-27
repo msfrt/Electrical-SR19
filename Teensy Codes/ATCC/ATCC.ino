@@ -91,8 +91,8 @@ typedef struct
   int zeroMVolt10   = 0; // in mV*10
   double mV10unit   = 0; // in mV*10 (mV per unit, ex. 30 could be 30mV/degree C)
   double scaleFact  = 0.1; // like in the DBC (.1, .01, .001 etc.)
-  double z1         = 6200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
-  double z2         = 12000.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
+  double z1         = 1200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
+  double z2         = 2200.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
                                   // if you want to change these per sensor, do it in calibration in the setup loop
 
 
@@ -110,7 +110,7 @@ sensor RR_ROTOR_TEMP, RL_ROTOR_TEMP;
 
 // set the analog read resolution in bits (10 bits yeild an input 0-1023, etc.)
 // initialize a variable for a calculation of the readMaximum read value from pins
-const int read_resolution_bits = 10; // <--- modify this one
+const int read_resolution_bits = 13; // <--- modify this one
       int read_resolution      = 0;
 
 // teensy voltage in mV * 10
@@ -147,7 +147,7 @@ void setup() {
       FR_DAMPER_POS.zeroMVolt10 = 0; // mV*10
       FR_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       FR_DAMPER_POS.scaleFact   = 0.1;
-      FR_DAMPER_POS.z1          = 6450;
+      // FR_DAMPER_POS.z1          = 6450;
       // FR_DAMPER_POS.z2          = 0;
 
       FL_DAMPER_POS.sensName    = "FL_DAMPER_POS";
@@ -176,10 +176,10 @@ void setup() {
 
       FL_BRAKE_PRESSURE.sensName    = "FL_BRAKE_PRESSURE";
       FL_BRAKE_PRESSURE.pin         = A16;
-      FL_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
+      FL_BRAKE_PRESSURE.zeroMVolt10 = 4772; // mV*10
       FL_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       FL_BRAKE_PRESSURE.scaleFact   = 0.1;
-      FL_BRAKE_PRESSURE.z1          = 6400;
+      // FL_BRAKE_PRESSURE.z1          = 6400;
       // FL_BRAKE_PRESSURE.z2          = 0;
 
       RR_BRAKE_PRESSURE.sensName    = "RR_BRAKE_PRESSURE";
@@ -324,8 +324,8 @@ void loop() {
         SensTimer2000Hz = micros();
 
         //read the sensors
-        analogReadSensor(FR_DAMPER_POS);
-        analogReadSensor(FL_DAMPER_POS);
+        // analogReadSensor(FR_DAMPER_POS); - disabled, not set up
+        // analogReadSensor(FL_DAMPER_POS); - disabled, not set up
       }
 
 
@@ -336,9 +336,9 @@ void loop() {
 
         // read the sensors
         analogReadSensor(FL_BRAKE_PRESSURE);
-        analogReadSensor(FR_BRAKE_PRESSURE);
-        analogReadSensor(RL_BRAKE_PRESSURE);
-        analogReadSensor(RR_BRAKE_PRESSURE);
+        // analogReadSensor(FR_BRAKE_PRESSURE); -- disabled until ABS
+        // analogReadSensor(RL_BRAKE_PRESSURE); -- disabled due to faulty sensor
+        // analogReadSensor(RR_BRAKE_PRESSURE); -- disabled until ABS
       }
 
 
@@ -349,8 +349,8 @@ void loop() {
         SensTimer100Hz = millis();
 
         // read the sensors
-        analogReadSensor(FR_ROTOR_TEMP);
-        analogReadSensor(FL_ROTOR_TEMP);
+        // analogReadSensor(FR_ROTOR_TEMP); - disabled, not set up
+        // analogReadSensor(FL_ROTOR_TEMP); - disabled, not set up
       }
 
 
@@ -361,30 +361,12 @@ void loop() {
         SensTimer50Hz = millis();
 
         // read the sensors
-        analogReadSensor(WATER_TEMP_BETWEEN_RADS);
-        analogReadSensor(TRACK_TEMP);
-//
-//       Serial.println();
-//      Serial.print("A0"); Serial.print(": "); Serial.println(analogRead(A0));
-//      Serial.print("A1"); Serial.print(": "); Serial.println(analogRead(A1));
-//      Serial.print("A2"); Serial.print(": "); Serial.println(analogRead(A2));
-//      Serial.print("A3"); Serial.print(": "); Serial.println(analogRead(A3));
-//      Serial.print("A4"); Serial.print(": "); Serial.println(analogRead(A4));
-      Serial.print("A5"); Serial.print(": "); Serial.println(analogRead(A5));
-//      Serial.print("A6"); Serial.print(": "); Serial.println(analogRead(A6));
-//      Serial.print("A7"); Serial.print(": "); Serial.println(analogRead(A7));
-//      Serial.print("A8"); Serial.print(": "); Serial.println(analogRead(A8));
-//      Serial.print("A9"); Serial.print(": "); Serial.println(analogRead(A9));
-//      Serial.print("A10"); Serial.print(": "); Serial.println(analogRead(A10));
-//      Serial.print("A11"); Serial.print(": "); Serial.println(analogRead(A11));
-//      Serial.print("A12"); Serial.print(": "); Serial.println(analogRead(A12));
-//      Serial.print("A13"); Serial.print(": "); Serial.println(analogRead(A13));
-//      Serial.print("A15"); Serial.print(": "); Serial.println(analogRead(A15));
-      Serial.print("A16"); Serial.print(": "); Serial.println(analogRead(A16));
+        // analogReadSensor(WATER_TEMP_BETWEEN_RADS); - disabled, not set up
+        // analogReadSensor(TRACK_TEMP); - disabled, not set up
       }
 
 
-      
+
 
 
       // continually launch the calculateAndLaunchCAN function, as it
@@ -483,7 +465,7 @@ void analogToSensorVal( sensor &SENSOR )
   // sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
 
   // print voltages for calibration
-  // Serial.print(SENSOR.sensName); Serial.print(" voltage: "); Serial.println(sensAvg);
+  Serial.print(SENSOR.sensName); Serial.print(" sensor voltage: "); Serial.println(sensAvg);
 
   // sensor calibration (convert sensor voltage to CAN values)
   //                   zero volt of sens.    units per mV*10                inverse of the scale factor.
@@ -634,10 +616,10 @@ void calculateAndLaunchCAN()
         analogToSensorVal(FL_DAMPER_POS);
         analogToSensorVal(FR_DAMPER_POS);
         msg.buf[0] = messageCount200Hz;
-        msg.buf[1] = FL_DAMPER_POS.actualAvg;
-        msg.buf[2] = FL_DAMPER_POS.actualAvg >> 8;
-        msg.buf[3] = FR_DAMPER_POS.actualAvg;
-        msg.buf[4] = FR_DAMPER_POS.actualAvg >> 8;
+        msg.buf[1] = 0;//FL_DAMPER_POS.actualAvg; -- disabled, not in use
+        msg.buf[2] = 0;//FL_DAMPER_POS.actualAvg >> 8;
+        msg.buf[3] = 0;//FR_DAMPER_POS.actualAvg; -- disabled, not in use
+        msg.buf[4] = 0;//FR_DAMPER_POS.actualAvg >> 8;
         msg.buf[5] = 0;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
@@ -666,10 +648,10 @@ void calculateAndLaunchCAN()
         msg.buf[0] = messageCount50Hz; // counter
         msg.buf[1] = FL_BRAKE_PRESSURE.actualAvg;
         msg.buf[2] = FL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[3] = 0; //FR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS unit is installed
-        msg.buf[4] = 0; //FR_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[5] = TRACK_TEMP.actualAvg;
-        msg.buf[6] = TRACK_TEMP.actualAvg >> 8;
+        msg.buf[3] = 0;//FR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS
+        msg.buf[4] = 0;//FR_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[5] = 0;//TRACK_TEMP.actualAvg; -- disabled, not in use
+        msg.buf[6] = 0;//TRACK_TEMP.actualAvg >> 8;
         msg.buf[7] = 0;
         // send the message
         sendCAN(0x8C, 8, 1);
@@ -680,17 +662,15 @@ void calculateAndLaunchCAN()
         analogToSensorVal(RR_BRAKE_PRESSURE);
         analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
         msg.buf[0] = messageCount50Hz;
-        msg.buf[1] = 0; //RL_BRAKE_PRESSURE.actualAvg;
-        msg.buf[2] = 0; //RL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[3] = 0; //RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS unit is installed
-        msg.buf[4] = 0; //RR_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
-        msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
+        msg.buf[1] = 0;//RL_BRAKE_PRESSURE.actualAvg; -- disabled due to faulty sensor
+        msg.buf[2] = 0;//RL_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[3] = 0;//RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS
+        msg.buf[4] = 0;//RR_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[5] = 0;//WATER_TEMP_BETWEEN_RADS.actualAvg; -- disabled until board components are added
+        msg.buf[6] = 0;//WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
         msg.buf[7] = 0;
         sendCAN(0x8D, 8, 1);
 
-        Serial.println(FL_BRAKE_PRESSURE.actualAvg);
-        //Serial.println(FR_BRAKE_PRESSURE.actualAvg);
 
       } // end 50 Hz messages
 
@@ -708,10 +688,10 @@ void calculateAndLaunchCAN()
         analogToSensorVal(FL_ROTOR_TEMP);
         analogToSensorVal(FR_ROTOR_TEMP);
         msg.buf[0] = messageCount10Hz;
-        msg.buf[1] = FL_ROTOR_TEMP.actualAvg;
-        msg.buf[2] = FL_ROTOR_TEMP.actualAvg >> 8;
-        msg.buf[3] = FR_ROTOR_TEMP.actualAvg;
-        msg.buf[4] = FR_ROTOR_TEMP.actualAvg >> 8;
+        msg.buf[1] = 0;//FL_ROTOR_TEMP.actualAvg; -- disabled, not in use
+        msg.buf[2] = 0;//FL_ROTOR_TEMP.actualAvg >> 8;
+        msg.buf[3] = 0;//FR_ROTOR_TEMP.actualAvg; -- disabled, not in use
+        msg.buf[4] = 0;//FR_ROTOR_TEMP.actualAvg >> 8;
         msg.buf[5] = 0;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
