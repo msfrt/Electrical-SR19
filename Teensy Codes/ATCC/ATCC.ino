@@ -176,7 +176,7 @@ void setup() {
 
       FL_BRAKE_PRESSURE.sensName    = "FL_BRAKE_PRESSURE";
       FL_BRAKE_PRESSURE.pin         = A16;
-      FL_BRAKE_PRESSURE.zeroMVolt10 = 4857; // mV*10
+      FL_BRAKE_PRESSURE.zeroMVolt10 = 4772; // mV*10
       FL_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       FL_BRAKE_PRESSURE.scaleFact   = 0.1;
       // FL_BRAKE_PRESSURE.z1          = 6400;
