@@ -110,7 +110,7 @@ sensor RR_ROTOR_TEMP, RL_ROTOR_TEMP;
 
 // set the analog read resolution in bits (10 bits yeild an input 0-1023, etc.)
 // initialize a variable for a calculation of the readMaximum read value from pins
-const int read_resolution_bits = 10; // <--- modify this one
+const int read_resolution_bits = 13; // <--- modify this one
       int read_resolution      = 0;
 
 // teensy voltage in mV * 10
@@ -361,26 +361,8 @@ void loop() {
         SensTimer50Hz = millis();
 
         // read the sensors
-        analogReadSensor(WATER_TEMP_BETWEEN_RADS);
+        // analogReadSensor(WATER_TEMP_BETWEEN_RADS); - disabled, not set up
         // analogReadSensor(TRACK_TEMP); - disabled, not set up
-//
-//       Serial.println();
-//      Serial.print("A0"); Serial.print(": "); Serial.println(analogRead(A0));
-//      Serial.print("A1"); Serial.print(": "); Serial.println(analogRead(A1));
-//      Serial.print("A2"); Serial.print(": "); Serial.println(analogRead(A2));
-//      Serial.print("A3"); Serial.print(": "); Serial.println(analogRead(A3));
-//      Serial.print("A4"); Serial.print(": "); Serial.println(analogRead(A4));
-//      Serial.print("A5"); Serial.print(": "); Serial.println(analogRead(A5));
-//      Serial.print("A6"); Serial.print(": "); Serial.println(analogRead(A6));
-//      Serial.print("A7"); Serial.print(": "); Serial.println(analogRead(A7));
-//      Serial.print("A8"); Serial.print(": "); Serial.println(analogRead(A8));
-//      Serial.print("A9"); Serial.print(": "); Serial.println(analogRead(A9));
-//      Serial.print("A10"); Serial.print(": "); Serial.println(analogRead(A10));
-//      Serial.print("A11"); Serial.print(": "); Serial.println(analogRead(A11));
-//      Serial.print("A12"); Serial.print(": "); Serial.println(analogRead(A12));
-//      Serial.print("A13"); Serial.print(": "); Serial.println(analogRead(A13));
-//      Serial.print("A15"); Serial.print(": "); Serial.println(analogRead(A15));
-//      Serial.print("A16"); Serial.print(": "); Serial.println(analogRead(A16));
       }
 
 
@@ -684,8 +666,8 @@ void calculateAndLaunchCAN()
         msg.buf[2] = 0;//RL_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[3] = 0;//RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS
         msg.buf[4] = 0;//RR_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
-        msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
+        msg.buf[5] = 0;//WATER_TEMP_BETWEEN_RADS.actualAvg; -- disabled until board components are added
+        msg.buf[6] = 0;//WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
         msg.buf[7] = 0;
         sendCAN(0x8D, 8, 1);
 
