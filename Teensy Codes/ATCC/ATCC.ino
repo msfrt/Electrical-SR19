@@ -634,10 +634,10 @@ void calculateAndLaunchCAN()
         analogToSensorVal(FL_DAMPER_POS);
         analogToSensorVal(FR_DAMPER_POS);
         msg.buf[0] = messageCount200Hz;
-        msg.buf[1] = FL_DAMPER_POS.actualAvg;
-        msg.buf[2] = FL_DAMPER_POS.actualAvg >> 8;
-        msg.buf[3] = FR_DAMPER_POS.actualAvg;
-        msg.buf[4] = FR_DAMPER_POS.actualAvg >> 8;
+        msg.buf[1] = 0;//FL_DAMPER_POS.actualAvg; -- disabled, not in use
+        msg.buf[2] = 0;//FL_DAMPER_POS.actualAvg >> 8;
+        msg.buf[3] = 0;//FR_DAMPER_POS.actualAvg; -- disabled, not in use
+        msg.buf[4] = 0;//FR_DAMPER_POS.actualAvg >> 8;
         msg.buf[5] = 0;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
@@ -666,10 +666,10 @@ void calculateAndLaunchCAN()
         msg.buf[0] = messageCount50Hz; // counter
         msg.buf[1] = FL_BRAKE_PRESSURE.actualAvg;
         msg.buf[2] = FL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[3] = FR_BRAKE_PRESSURE.actualAvg;
-        msg.buf[4] = FR_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[5] = TRACK_TEMP.actualAvg;
-        msg.buf[6] = TRACK_TEMP.actualAvg >> 8;
+        msg.buf[3] = 0;//FR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS
+        msg.buf[4] = 0;//FR_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[5] = 0;//TRACK_TEMP.actualAvg; -- disabled, not in use
+        msg.buf[6] = 0;//TRACK_TEMP.actualAvg >> 8;
         msg.buf[7] = 0;
         // send the message
         sendCAN(0x8C, 8, 1);
@@ -680,10 +680,10 @@ void calculateAndLaunchCAN()
         analogToSensorVal(RR_BRAKE_PRESSURE);
         analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
         msg.buf[0] = messageCount50Hz;
-        msg.buf[1] = RL_BRAKE_PRESSURE.actualAvg;
-        msg.buf[2] = RL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[3] = RR_BRAKE_PRESSURE.actualAvg;
-        msg.buf[4] = RR_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[1] = 0;//RL_BRAKE_PRESSURE.actualAvg; -- disabled due to faulty sensor
+        msg.buf[2] = 0;//RL_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[3] = 0;//RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS
+        msg.buf[4] = 0;//RR_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
         msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
         msg.buf[7] = 0;
@@ -706,10 +706,10 @@ void calculateAndLaunchCAN()
         analogToSensorVal(FL_ROTOR_TEMP);
         analogToSensorVal(FR_ROTOR_TEMP);
         msg.buf[0] = messageCount10Hz;
-        msg.buf[1] = FL_ROTOR_TEMP.actualAvg;
-        msg.buf[2] = FL_ROTOR_TEMP.actualAvg >> 8;
-        msg.buf[3] = FR_ROTOR_TEMP.actualAvg;
-        msg.buf[4] = FR_ROTOR_TEMP.actualAvg >> 8;
+        msg.buf[1] = 0;//FL_ROTOR_TEMP.actualAvg; -- disabled, not in use
+        msg.buf[2] = 0;//FL_ROTOR_TEMP.actualAvg >> 8;
+        msg.buf[3] = 0;//FR_ROTOR_TEMP.actualAvg; -- disabled, not in use
+        msg.buf[4] = 0;//FR_ROTOR_TEMP.actualAvg >> 8;
         msg.buf[5] = 0;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
