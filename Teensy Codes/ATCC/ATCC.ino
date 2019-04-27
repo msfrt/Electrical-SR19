@@ -324,8 +324,8 @@ void loop() {
         SensTimer2000Hz = micros();
 
         //read the sensors
-        //analogReadSensor(FR_DAMPER_POS);
-        //analogReadSensor(FL_DAMPER_POS);
+        // analogReadSensor(FR_DAMPER_POS); - disabled, not set up
+        // analogReadSensor(FL_DAMPER_POS); - disabled, not set up
       }
 
 
@@ -336,9 +336,9 @@ void loop() {
 
         // read the sensors
         analogReadSensor(FL_BRAKE_PRESSURE);
-        analogReadSensor(FR_BRAKE_PRESSURE);
-        analogReadSensor(RL_BRAKE_PRESSURE);
-        analogReadSensor(RR_BRAKE_PRESSURE);
+        // analogReadSensor(FR_BRAKE_PRESSURE); -- disabled until ABS
+        // analogReadSensor(RL_BRAKE_PRESSURE); -- disabled due to faulty sensor
+        // analogReadSensor(RR_BRAKE_PRESSURE); -- disabled until ABS
       }
 
 
@@ -349,8 +349,8 @@ void loop() {
         SensTimer100Hz = millis();
 
         // read the sensors
-        //analogReadSensor(FR_ROTOR_TEMP);
-        //analogReadSensor(FL_ROTOR_TEMP);
+        // analogReadSensor(FR_ROTOR_TEMP); - disabled, not set up
+        // analogReadSensor(FL_ROTOR_TEMP); - disabled, not set up
       }
 
 
@@ -361,8 +361,8 @@ void loop() {
         SensTimer50Hz = millis();
 
         // read the sensors
-        //analogReadSensor(WATER_TEMP_BETWEEN_RADS);
-        //analogReadSensor(TRACK_TEMP);
+        analogReadSensor(WATER_TEMP_BETWEEN_RADS);
+        // analogReadSensor(TRACK_TEMP); - disabled, not set up
 //
 //       Serial.println();
 //      Serial.print("A0"); Serial.print(": "); Serial.println(analogRead(A0));
@@ -666,8 +666,8 @@ void calculateAndLaunchCAN()
         msg.buf[0] = messageCount50Hz; // counter
         msg.buf[1] = FL_BRAKE_PRESSURE.actualAvg;
         msg.buf[2] = FL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[3] = 0; //FR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS unit is installed
-        msg.buf[4] = 0; //FR_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[3] = FR_BRAKE_PRESSURE.actualAvg;
+        msg.buf[4] = FR_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[5] = TRACK_TEMP.actualAvg;
         msg.buf[6] = TRACK_TEMP.actualAvg >> 8;
         msg.buf[7] = 0;
@@ -680,17 +680,15 @@ void calculateAndLaunchCAN()
         analogToSensorVal(RR_BRAKE_PRESSURE);
         analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
         msg.buf[0] = messageCount50Hz;
-        msg.buf[1] = 0; //RL_BRAKE_PRESSURE.actualAvg;
-        msg.buf[2] = 0; //RL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[3] = 0; //RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS unit is installed
-        msg.buf[4] = 0; //RR_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[1] = RL_BRAKE_PRESSURE.actualAvg;
+        msg.buf[2] = RL_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[3] = RR_BRAKE_PRESSURE.actualAvg;
+        msg.buf[4] = RR_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
         msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
         msg.buf[7] = 0;
         sendCAN(0x8D, 8, 1);
 
-        Serial.println(FL_BRAKE_PRESSURE.actualAvg);
-        //Serial.println(FR_BRAKE_PRESSURE.actualAvg);
 
       } // end 50 Hz messages
 
