@@ -176,7 +176,7 @@ void setup() {
 
       FL_BRAKE_PRESSURE.sensName    = "FL_BRAKE_PRESSURE";
       FL_BRAKE_PRESSURE.pin         = A16;
-      FL_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
+      FL_BRAKE_PRESSURE.zeroMVolt10 = 4857; // mV*10
       FL_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       FL_BRAKE_PRESSURE.scaleFact   = 0.1;
       FL_BRAKE_PRESSURE.z1          = 6400;
@@ -324,8 +324,8 @@ void loop() {
         SensTimer2000Hz = micros();
 
         //read the sensors
-        analogReadSensor(FR_DAMPER_POS);
-        analogReadSensor(FL_DAMPER_POS);
+        //analogReadSensor(FR_DAMPER_POS);
+        //analogReadSensor(FL_DAMPER_POS);
       }
 
 
@@ -349,8 +349,8 @@ void loop() {
         SensTimer100Hz = millis();
 
         // read the sensors
-        analogReadSensor(FR_ROTOR_TEMP);
-        analogReadSensor(FL_ROTOR_TEMP);
+        //analogReadSensor(FR_ROTOR_TEMP);
+        //analogReadSensor(FL_ROTOR_TEMP);
       }
 
 
@@ -361,8 +361,8 @@ void loop() {
         SensTimer50Hz = millis();
 
         // read the sensors
-        analogReadSensor(WATER_TEMP_BETWEEN_RADS);
-        analogReadSensor(TRACK_TEMP);
+        //analogReadSensor(WATER_TEMP_BETWEEN_RADS);
+        //analogReadSensor(TRACK_TEMP);
 //
 //       Serial.println();
 //      Serial.print("A0"); Serial.print(": "); Serial.println(analogRead(A0));
@@ -370,7 +370,7 @@ void loop() {
 //      Serial.print("A2"); Serial.print(": "); Serial.println(analogRead(A2));
 //      Serial.print("A3"); Serial.print(": "); Serial.println(analogRead(A3));
 //      Serial.print("A4"); Serial.print(": "); Serial.println(analogRead(A4));
-      Serial.print("A5"); Serial.print(": "); Serial.println(analogRead(A5));
+//      Serial.print("A5"); Serial.print(": "); Serial.println(analogRead(A5));
 //      Serial.print("A6"); Serial.print(": "); Serial.println(analogRead(A6));
 //      Serial.print("A7"); Serial.print(": "); Serial.println(analogRead(A7));
 //      Serial.print("A8"); Serial.print(": "); Serial.println(analogRead(A8));
@@ -380,7 +380,7 @@ void loop() {
 //      Serial.print("A12"); Serial.print(": "); Serial.println(analogRead(A12));
 //      Serial.print("A13"); Serial.print(": "); Serial.println(analogRead(A13));
 //      Serial.print("A15"); Serial.print(": "); Serial.println(analogRead(A15));
-      Serial.print("A16"); Serial.print(": "); Serial.println(analogRead(A16));
+//      Serial.print("A16"); Serial.print(": "); Serial.println(analogRead(A16));
       }
 
 
@@ -483,7 +483,7 @@ void analogToSensorVal( sensor &SENSOR )
   // sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
 
   // print voltages for calibration
-  // Serial.print(SENSOR.sensName); Serial.print(" voltage: "); Serial.println(sensAvg);
+  Serial.print(SENSOR.sensName); Serial.print(" sensor voltage: "); Serial.println(sensAvg);
 
   // sensor calibration (convert sensor voltage to CAN values)
   //                   zero volt of sens.    units per mV*10                inverse of the scale factor.
