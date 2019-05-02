@@ -132,7 +132,7 @@ const int shiftPoint = 12000;
 
 //intialize throttle position bar constants--------
 
-const int ledBrightness = 10;       //Value between 0-255
+const int ledBrightness = 150;       //Value between 0-255 -- 10 for nighttime value, 255 for daylight
 const int ledBrightnessFlash = 150; //Value between 0-255
 
 //initialize timers---------------------------
@@ -176,7 +176,6 @@ void setup()
   pixelsLeft.show();
   pixelsRight.show();
 
-  delay(1500);
 
   //flash the LEDs on to test
   ledInitialize();
@@ -191,7 +190,6 @@ void setup()
   tftRight.fillScreen(ILI9340_BLACK);
   tftLeft.fillScreen(ILI9340_BLACK);
 
-  delay(1000);
 
 //  // initialize SD card
 //  Serial.print("Initializing SD card...");
