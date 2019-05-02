@@ -365,6 +365,7 @@ void canDecode()
           // MultID 0x4
           case 0x4:
             CAN0_engTemp.value = rxData[4] * 256 + rxData[5];
+            CAN0_fuelPressure.value = rxData[6] * 256 + rxData[7];
             break;
 
           // MultID 0x5
