@@ -78,7 +78,7 @@ typedef struct
 }canSensor;
 
 // CAN0 sensors
-canSensor CAN0_rpm, CAN0_currentGear, CAN0_oilPressure, CAN0_fuelTemp, CAN0_engTemp;
+canSensor CAN0_rpm, CAN0_currentGear, CAN0_oilPressure, CAN0_fuelTemp, CAN0_fuelPressure, CAN0_engTemp;
 canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage, CAN0_oilTemp;
 canSensor CAN1_pdmCurrent, CAN1_wpCurrent, CAN1_fanrCurrent, CAN1_wpPWM, CAN1_fanrWPM;
 
