@@ -200,11 +200,7 @@ void setup() {
 
       WATER_TEMP_BETWEEN_RADS.sensName    = "WATER_TEMP_BETWEEN_RADS";
       WATER_TEMP_BETWEEN_RADS.pin         = A19;
-      WATER_TEMP_BETWEEN_RADS.zeroMVolt10 = 0; // mV*10
-      WATER_TEMP_BETWEEN_RADS.mV10unit    = 0; // mV*10 per sensor unit
       WATER_TEMP_BETWEEN_RADS.scaleFact   = 0.1;
-      // WATER_TEMP_BETWEEN_RADS.z1          = 0;
-      // WATER_TEMP_BETWEEN_RADS.z2          = 0;
 
       FR_ROTOR_TEMP.sensName    = "FR_ROTOR_TEMP";
       FR_ROTOR_TEMP.pin         = A12;
@@ -308,6 +304,9 @@ void loop() {
 
 
 
+
+
+
   switch ( ATCC )
   {
 
@@ -361,7 +360,7 @@ void loop() {
         SensTimer50Hz = millis();
 
         // read the sensors
-        // analogReadSensor(WATER_TEMP_BETWEEN_RADS); - disabled, not set up
+        analogReadSensor(WATER_TEMP_BETWEEN_RADS);
         // analogReadSensor(TRACK_TEMP); - disabled, not set up
       }
 
@@ -465,7 +464,7 @@ void analogToSensorVal( sensor &SENSOR )
   // sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
 
   // print voltages for calibration
-  Serial.print(SENSOR.sensName); Serial.print(" sensor voltage: "); Serial.println(sensAvg);
+  // Serial.print(SENSOR.sensName); Serial.print(" sensor voltage: "); Serial.println(sensAvg);
 
   // sensor calibration (convert sensor voltage to CAN values)
   //                   zero volt of sens.    units per mV*10                inverse of the scale factor.
@@ -510,12 +509,10 @@ void analogToBoschTempVal( sensor &SENSOR )
   // float sensMax = SENSOR.readMax * (teensy_voltage_mV10 / read_resolution);
 
 
-
-  // convert the teensy voltage (3.3V) to sensor voltage by doing the opposite
-  // operations of a voltage divider (in ohms). For reference: en.wikipedia.org/wiki/Voltage_divider
-  sensAvg = sensAvg / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
-  // sensMin = sensMin / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
-  // sensMax = sensMax / SENSOR.z2 * (SENSOR.z2 + SENSOR.z1);
+  // turn mV*10 values into straight up V
+  sensAvg /= 10000;
+  // sensMin /= 10000;
+  // sensMax /= 10000;
 
 
   // sensor calibration (convert sensor voltage to celsius values)
@@ -666,8 +663,8 @@ void calculateAndLaunchCAN()
         msg.buf[2] = 0;//RL_BRAKE_PRESSURE.actualAvg >> 8;
         msg.buf[3] = 0;//RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS
         msg.buf[4] = 0;//RR_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[5] = 0;//WATER_TEMP_BETWEEN_RADS.actualAvg; -- disabled until board components are added
-        msg.buf[6] = 0;//WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
+        msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
+        msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
         msg.buf[7] = 0;
         sendCAN(0x8D, 8, 1);
 
