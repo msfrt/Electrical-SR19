@@ -78,7 +78,7 @@ typedef struct
 }canSensor;
 
 // CAN0 sensors
-canSensor CAN0_rpm, CAN0_currentGear, CAN0_oilPressure, CAN0_fuelTemp, CAN0_engTemp;
+canSensor CAN0_rpm, CAN0_currentGear, CAN0_oilPressure, CAN0_fuelTemp, CAN0_fuelPressure, CAN0_engTemp;
 canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage, CAN0_oilTemp;
 canSensor CAN1_pdmCurrent, CAN1_wpCurrent, CAN1_fanrCurrent, CAN1_wpPWM, CAN1_fanrWPM;
 
@@ -132,7 +132,7 @@ const int shiftPoint = 12000;
 
 //intialize throttle position bar constants--------
 
-const int ledBrightness = 10;       //Value between 0-255
+const int ledBrightness = 150;       //Value between 0-255 -- 10 for nighttime value, 255 for daylight
 const int ledBrightnessFlash = 150; //Value between 0-255
 
 //initialize timers---------------------------
@@ -176,7 +176,6 @@ void setup()
   pixelsLeft.show();
   pixelsRight.show();
 
-  delay(1500);
 
   //flash the LEDs on to test
   ledInitialize();
@@ -191,7 +190,6 @@ void setup()
   tftRight.fillScreen(ILI9340_BLACK);
   tftLeft.fillScreen(ILI9340_BLACK);
 
-  delay(1000);
 
 //  // initialize SD card
 //  Serial.print("Initializing SD card...");
@@ -365,6 +363,7 @@ void canDecode()
           // MultID 0x4
           case 0x4:
             CAN0_engTemp.value = rxData[4] * 256 + rxData[5];
+            CAN0_fuelPressure.value = rxData[6] * 256 + rxData[7];
             break;
 
           // MultID 0x5
@@ -573,11 +572,12 @@ void pdmCurrentReadout()
 {
   char out[6];
 
-  double currentDouble = (double)CAN1_pdmCurrent.value;
-  currentDouble /= 100;
-  sprintf(out, "%6.2f", currentDouble);
+  // frankenstiened(?) fuel pressure in here for christian ;)
+  double fuelPressureDouble = (double)CAN0_fuelPressure.value;
+  fuelPressureDouble /= 10;
+  sprintf(out, "%5.1f", fuelPressureDouble);
 
-  tftRight.setCursor(140, pdmCurrentScreenPos);
+  tftRight.setCursor(170, pdmCurrentScreenPos);
   tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
   tftRight.setTextSize(5);
   tftRight.print(out);
@@ -718,7 +718,7 @@ void clearScreens()
   tftRight.setCursor(1, pdmCurrentScreenPos);
   tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
   tftRight.setTextSize(5);
-  tftRight.print("PDM:");
+  tftRight.print("FUELP:");
 
   // Print
   tftRight.setCursor(1, wpCurrentScreenPos);
