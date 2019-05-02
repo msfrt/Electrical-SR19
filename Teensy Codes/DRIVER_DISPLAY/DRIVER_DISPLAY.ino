@@ -574,11 +574,12 @@ void pdmCurrentReadout()
 {
   char out[6];
 
-  double currentDouble = (double)CAN1_pdmCurrent.value;
-  currentDouble /= 100;
-  sprintf(out, "%6.2f", currentDouble);
+  // frankenstiened(?) fuel pressure in here for christian ;)
+  double fuelPressureDouble = (double)CAN0_fuelPressure.value;
+  fuelPressureDouble /= 10;
+  sprintf(out, "%5.1f", fuelPressureDouble);
 
-  tftRight.setCursor(140, pdmCurrentScreenPos);
+  tftRight.setCursor(170, pdmCurrentScreenPos);
   tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
   tftRight.setTextSize(5);
   tftRight.print(out);
@@ -719,7 +720,7 @@ void clearScreens()
   tftRight.setCursor(1, pdmCurrentScreenPos);
   tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
   tftRight.setTextSize(5);
-  tftRight.print("PDM:");
+  tftRight.print("FUELP:");
 
   // Print
   tftRight.setCursor(1, wpCurrentScreenPos);
