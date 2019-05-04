@@ -1105,7 +1105,7 @@ void ledInitialize()
 
     led++;
 
-    delay(80);
+    delay(40);
   }
 
   for (int i = 11; i > 0; i--)
@@ -1130,7 +1130,7 @@ void ledInitialize()
 
     led--;
 
-    delay(80);
+    delay(40);
   }
 }
 
