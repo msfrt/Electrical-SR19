@@ -79,41 +79,73 @@ uint8_t messageCount100Hz = 0;
 
 
 
-
-// variable stucture to hold information linked to certain outputs
+// structure for sensor reading
 typedef struct
 {
 
-  String sensName = "";
-  int pin = 0;
+  String sensName   = "";
+  int pin           = 0;
 
-  // used to tell the status of the module
-  uint8_t state;
-  uint8_t statePrev;
 
-  // voltage sensing
-  int voltReadVal = 0;
-  int voltMax = 0;
-  int voltMin = 8191;
-  int voltAvg = 0;
-  int voltReadCount = 0;
+  int readVal       = 0;
+  int readMax       = -2147483647; // minimum number possible
+  int readMin       =  2147483647; // maximum number possible
+  int readAvg       = 0;
+  int actualMax     = 0;
+  int actualMin     = 0;
+  int actualAvg     = 0;
+  int count         = 0;
 
-  // current sensing
-  int currentReadVal = 0;
-  int currentMax = 0;
-  int currentMin = 8191;
-  int currentAvg = 0;
-  int currentReadCount = 0;
 
-  // pulse width modulation
-  int currentPwmRate = 0;
-  int targetPwmRate = 0;
-  int currentPwmFreq = 0;
-  int targetPwmFreq = 0;
+  int zeroMVolt10   = 0; // in mV*10
+  double mV10unit   = 0; // in mV*10 (mV per unit, ex. 30 could be 30mV/degree C)
+  double scaleFact  = 0.1; // like in the DBC (.1, .01, .001 etc.)
+  double z1         = 1200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
+  double z2         = 2200.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
+                                  // if you want to change these per sensor, do it in calibration in the setup loop
 
-} pdmVariable;
 
-pdmVariable MAIN, DATA, PDM, FUEL, FANR, FANL, WP, BLIGHT;
+} sensor;
+
+sensor FANR_CURRENT,  FANR_VOLTAGE;
+sensor FANL_CURRENT,  FANL_VOLTAGE;
+sensor   WP_CURRENT,    WP_VOLTAGE;
+sensor  PDM_CURRENT,   PDM_VOLTAGE;
+sensor FUEL_CURRENT,  FUEL_VOLTAGE;
+sensor                MAIN_VOLTAGE;
+sensor                 PDM_VOLTAGE;
+sensor BOARD_TEMP;
+
+
+
+
+// variable structure for outputs
+typedef struct
+{
+
+  int currentPWMrate = 0;
+  int targetPWMrate = 0;
+  int minPWMrate = 0;
+  int maxPWMrate = 255;
+  int PWMincrement = 1
+
+  // beware, changing the frequency for one PWM output will change the frequency
+  // for all outputs on the same PWM timer. Google "Teensy 3.6 PWM timers" for more info
+  int currentPWMfreq;
+  int targetPWMfreq;
+
+  // variables for lookup tables
+  int xLesser  = 0;
+  int xGreater = 0;
+  int yLesser  = 0;
+  int yGreater = 0;
+
+} output;
+
+output FANL_OUT;
+output FANR_OUT;
+output WP_OUT;
+output BLIGHT_OUT;
 
 //------------------------------------------------------------------------------
 //
