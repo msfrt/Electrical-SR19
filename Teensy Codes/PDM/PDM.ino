@@ -8,38 +8,16 @@
 //       ╚═════╝  ╚═════╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝
 //
 //------------------------------------------------------------------------------
-//  Written by:     Nicholas Kopec & Dave Yonkers
-//  Version:        1.0
+//  Written by:     Dave Yonkers
 //  Purpose:        Make a car go faster
 //  Description:    PDM code
 //------------------------------------------------------------------------------
 
-// CASES:
-//    0 - Fuel current
-//      - FanR current
-//      - FanL current
-//      - WP current
-//      - PDM voltage
-//      - Data voltage
-//      - Main voltage
-//      - Fuel voltage
-//      - FanL voltage
-//      - FanR voltage
-//      - WP voltage
-//
-//    1 - Board temp
 
 
-//------------------------------------------------------------------------------
-//
-//                  CAN Bus Initialization
-//
-//------------------------------------------------------------------------------
 
-// CAN Bus 0 is the critical bus - recieve messages only
-// CAN Bus 1 is the non critical bus - send and recieve
 
-// include and initialize CAN ----------------------------------
+// include CAN
 
 // if CAN is not working make sure that FlexCAN is not
 // installed. (Check the onenote for instructions)
@@ -51,11 +29,8 @@ static CAN_message_t msg;
 static CAN_message_t rxmsg;
 
 
-//------------------------------------------------------------------------------
-//
-//             Timer Initialization
-//
-//------------------------------------------------------------------------------
+
+
 
 // initialize the CAN send timer variables
 unsigned long SendTimer1000Hz   = 0;
@@ -83,83 +58,52 @@ unsigned long SensTimer1Hz      = 0;
 unsigned long TestingTimer       = 0;
 
 // initialize the led blinking timer variable
-unsigned long LEDTimer40Hz      = 0;
+unsigned long LEDTimer           = 0;
+
+
+
+
+
 
 // initialize a variable to keep track of the led
 bool LED_on = false;
 
+
+
+
+
 // initialize the CAN message counters
 uint8_t messageCount100Hz = 0;
 
-//------------------------------------------------------------------------------
-//
-//             Structures for PDM Output Channels
-//
-//------------------------------------------------------------------------------
 
-// structure for PDM channels with only voltage logging
+
+
+
+
+// variable stucture to hold information linked to certain outputs
 typedef struct
 {
 
-  // used to tell the status of the module
-  uint8_t deviceStatus;
-
-  // voltage sensing
-  int voltSensVal = 0;
-  int voltMax = -2147483647;      // minimum possible value for int
-  int voltMin =  2147483647;      // maximum possible value for int
-  int voltAvg = 0;
-  int voltSensCount = 0;
-
-} senseVolt;
-
-senseVolt MAIN, DATA;
-
-// structure for PDM channels with only voltage and current logging
-typedef struct
-{
+  String sensName = "";
+  int pin = 0;
 
   // used to tell the status of the module
-  uint8_t deviceStatus;
+  uint8_t state;
+  uint8_t statePrev;
 
   // voltage sensing
-  int voltSensVal = 0;
-  int voltMax = -2147483647;
-  int voltMin = 2147483647;
-  int voltAvg = 0;
-  int voltSensCount = 0;
-
-  // current sensing
-  int currentSensVal = 0;
-  int currentMax = -2147483647;
-  int currentMin = 2147483647;
-  int currentAvg = 0;
-  int currentSensCount = 0;
-
-} senseVoltCurrent;
-
-senseVoltCurrent PDM, FUEL;
-
-// structure for PDM channels with voltage, current, and PWM logging
-typedef struct
-{
-
-  // used to tell the status of the module
-  uint8_t deviceStatus;
-
-  // voltage sensing
-  int voltSensVal = 0;
+  int voltReadVal = 0;
   int voltMax = 0;
   int voltMin = 8191;
   int voltAvg = 0;
-  int voltSensCount = 0;
+  int voltReadCount = 0;
 
   // current sensing
-  int currentSensVal = 0;
+  int currentReadVal = 0;
   int currentMax = 0;
   int currentMin = 8191;
   int currentAvg = 0;
-  int currentSensCount = 0;
+  int currentReadCount = 0;
 
   // pulse width modulation
   int currentPwmRate = 0;
@@ -167,9 +111,9 @@ typedef struct
   int currentPwmFreq = 0;
   int targetPwmFreq = 0;
 
-} senseVoltCurrentPWM;
+} pdmVariable;
 
-senseVoltCurrentPWM FANR, FANL, WP;
+pdmVariable MAIN, DATA, PDM, FUEL, FANR, FANL, WP, BLIGHT;
 
 //------------------------------------------------------------------------------
 //
@@ -555,9 +499,9 @@ void loop() {
   //
   //----------------------------------------------------------------------------
 
-  if ( millis() - LEDTimer40Hz >= 25)
+  if ( millis() - LEDTimer >= 25)
   {
-    LEDTimer40Hz = millis();
+    LEDTimer = millis();
     //analogWrite(A7, 255);
 
     if      ( LED_on == false ){ digitalWrite(13, HIGH); LED_on = true; }
