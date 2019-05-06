@@ -79,7 +79,7 @@ typedef struct
 
 // CAN0 sensors
 canSensor CAN0_rpm, CAN0_currentGear, CAN0_oilPressure, CAN0_fuelTemp, CAN0_fuelPressure, CAN0_engTemp;
-canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage, CAN0_oilTemp;
+canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage, CAN0_oilTemp, CAN0_tc;
 canSensor CAN1_pdmCurrent, CAN1_wpCurrent, CAN1_fanrCurrent, CAN1_wpPWM, CAN1_fanrWPM;
 
 //initialize screen position variables------------------------------------------
@@ -204,7 +204,7 @@ void setup()
   // display startup message
   startupMessage();
 
-  delay(1000);
+  delay(500);
 
   clearScreens();
   // pedalPositionScale();
@@ -278,17 +278,17 @@ void loop()
         previousTime = time;
 
         showWarnings();
-        //tcReadout();
+        tcReadout();
         engineTemperatureReadout();
         // oilTempReadout(); // remove from rpm and uncomment this when engine is reliable
         OilPressureReadout();
         batteryVoltageReadout();
 
-        pdmCurrentReadout();
-        fanrCurrentReadout();
-        wpCurrentReadout();
-        fanrPWMReadout();
-        wpPWMReadout();
+      //   pdmCurrentReadout();
+      //   fanrCurrentReadout();
+      //   wpCurrentReadout();
+      //   fanrPWMReadout();
+      //   wpPWMReadout();
       }
     }
 
@@ -391,6 +391,20 @@ void canDecode()
 
       }
 
+      // from C50, message ID 16
+      case 16:
+
+        switch (rxMultID)
+        {
+          // multiplexor ID 1
+          case 1:
+            CAN0_tc.value = rxData[6] + rxData[7] * 256;
+            break;
+        }
+
+
+        break;
+
       // PDM msgs (intel byte order!)
       case 0x9A:
         CAN1_pdmCurrent.value = rxData[3] + rxData[4] * 256;
@@ -487,8 +501,8 @@ void tcReadout()
   //display tc settings
   tftRight.setCursor(40, 85);
   tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
-  tftRight.setTextSize(10);
-  tftRight.print("TC");
+  tftRight.setTextSize(15);
+  tftRight.print(CAN0_tc.value);
 }
 
 void rpmReadout()
@@ -713,36 +727,36 @@ void clearScreens()
   tftLeft.setTextSize(5);
   tftLeft.print("VOLT:");
 
-  // right
-  // Print
-  tftRight.setCursor(1, pdmCurrentScreenPos);
-  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
-  tftRight.setTextSize(5);
-  tftRight.print("FUELP:");
-
-  // Print
-  tftRight.setCursor(1, wpCurrentScreenPos);
-  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
-  tftRight.setTextSize(5);
-  tftRight.print("WP:");
-
-  //Print
-  tftRight.setCursor(1, fanrCurrentScreenPos);
-  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
-  tftRight.setTextSize(5);
-  tftRight.print("FANR:");
-
-  // Print
-  tftRight.setCursor(1, wpPWMScreenPos);
-  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
-  tftRight.setTextSize(5);
-  tftRight.print("WP:");
-
-  // Print
-  tftRight.setCursor(1, fanrPWMScreenPos);
-  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
-  tftRight.setTextSize(5);
-  tftRight.print("FANR:");
+  // // right
+  // // Print
+  // tftRight.setCursor(1, pdmCurrentScreenPos);
+  // tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  // tftRight.setTextSize(5);
+  // tftRight.print("FUELP:");
+  //
+  // // Print
+  // tftRight.setCursor(1, wpCurrentScreenPos);
+  // tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  // tftRight.setTextSize(5);
+  // tftRight.print("WP:");
+  //
+  // //Print
+  // tftRight.setCursor(1, fanrCurrentScreenPos);
+  // tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  // tftRight.setTextSize(5);
+  // tftRight.print("FANR:");
+  //
+  // // Print
+  // tftRight.setCursor(1, wpPWMScreenPos);
+  // tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
+  // tftRight.setTextSize(5);
+  // tftRight.print("WP:");
+  //
+  // // Print
+  // tftRight.setCursor(1, fanrPWMScreenPos);
+  // tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
+  // tftRight.setTextSize(5);
+  // tftRight.print("FANR:");
 
 }
 
