@@ -36,6 +36,10 @@ BS_:
 BU_: C50 MM5 PDM DRIVERDISPLAY M400
 
 
+BO_ 24 C50_dataSet1: 8 Vector__XXX
+ SG_ C50_tcUpDown m1 : 48|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ C50_rowCounterDataSet1 M : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
 BO_ 1519 M400_dataSet2: 8 M400
  SG_ M400_fuelAcutalPulseW m13 : 55|16@0- (0.002,0) [-65.536|65.534] "" Vector__XXX
  SG_ M400_fuel4IndivTrim m12 : 55|16@0- (1,0) [-32768|32767] "" Vector__XXX
@@ -114,6 +118,7 @@ BO_ 372 MM5_00: 8 MM5
 
 
 
+CM_ SG_ 24 C50_tcUpDown "TC setting value between -10 and 10";
 CM_ SG_ 1519 M400_fuelAcutalPulseW "Fuel Actual Pulse Width";
 CM_ SG_ 1519 M400_fuel4IndivTrim "Fuel 4 Individual Trim";
 CM_ SG_ 1519 M400_fuel1IndivTrim "Fuel 1 Individual Trim";
