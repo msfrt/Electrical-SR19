@@ -93,7 +93,7 @@ typedef struct
   double scaleFact  = 0.1; // like in the DBC (.1, .01, .001 etc.)
   double z1         = 1200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
   double z2         = 2200.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
-                                  // if you want to change these per sensor, do it in calibration in the setup loop
+                                  // if you want to change these per sensor, do it in calibration in the setup function
 
 
 } sensor;

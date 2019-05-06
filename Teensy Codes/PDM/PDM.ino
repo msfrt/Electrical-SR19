@@ -83,7 +83,7 @@ uint8_t messageCount100Hz = 0;
 typedef struct
 {
 
-  String sensName   = "";
+  String Name       = ""; // "name" is a buit-in arduino thingy. uppercase N avoids this.
   int pin           = 0;
 
 
@@ -95,15 +95,18 @@ typedef struct
   int actualMin     = 0;
   int actualAvg     = 0;
   int count         = 0;
+  int relationship  = 1; // 1 for positive, -1 for negative. For example, as analog read voltage increase, does
+                         // the sensor unit (Ex. temperature) increase or decrease? Useful for things
+                         // like board temp, where there is a negative relationship.
 
 
   int zeroMVolt10   = 0; // in mV*10
   double mV10unit   = 0; // in mV*10 (mV per unit, ex. 30 could be 30mV/degree C)
-  double scaleFact  = 0.1; // like in the DBC (.1, .01, .001 etc.)
-  double z1         = 1200.0000; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
-  double z2         = 2200.0000; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
-                                  // if you want to change these per sensor, do it in calibration in the setup loop
-
+  double scaleFact  = 1; // like in the DBC (.1, .01, .001 etc.)
+  double z1         = 0; // z1 & z2 are for the voltage divider (units are ohms) (default is for 5V)
+  double z2         = 1; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
+                         // if you want to change these per sensor, do it in calibration in the setup function.
+                         // The defaults, z1=0 and z2=1, essentially perform no voltage division
 
 } sensor;
 
@@ -113,8 +116,18 @@ sensor   WP_CURRENT,    WP_VOLTAGE;
 sensor  PDM_CURRENT,   PDM_VOLTAGE;
 sensor FUEL_CURRENT,  FUEL_VOLTAGE;
 sensor                MAIN_VOLTAGE;
+sensor                DATA_VOLTAGE;
 sensor                 PDM_VOLTAGE;
 sensor BOARD_TEMP;
+
+// set the analog read resolution in bits (10 bits yeild an input 0-1023, etc.)
+// initialize a variable for a calculation of the readMaximum read value from pins
+const int read_resolution_bits = 10; // <--- modify this one
+      int read_resolution      = 0;
+
+// teensy voltage in mV * 10
+const int teensy_voltage_mV10 = 33000;
+
 
 
 
@@ -122,6 +135,9 @@ sensor BOARD_TEMP;
 // variable structure for outputs
 typedef struct
 {
+
+  String Name = "":
+  int pin = 0;
 
   int currentPWMrate = 0;
   int targetPWMrate = 0;
@@ -146,42 +162,92 @@ output FANL_OUT;
 output FANR_OUT;
 output WP_OUT;
 output BLIGHT_OUT;
+output TEENSY_LED_OUT;
 
-//------------------------------------------------------------------------------
-//
-//              Other Analog Inputs Initialization
-//
-//------------------------------------------------------------------------------
 
-// board temp sensing
-int BOARD_temp;
-
-//------------------------------------------------------------------------------
-//
-//              Component State Initialization
-//
-//------------------------------------------------------------------------------
-
-// initialize state variables for BRAKE LIGHT
-uint8_t BLIGHT_state = 0;
-uint8_t BLIGHT_statePrev = 0;
+// minimum pressure for brake light activation
 int BLIGHT_minPressure = 200; // in CAN format (psi * 10)
 
 
-//------------------------------------------------------------------------------
-//
-//              CAN Input Variable Initialization
-//
-//------------------------------------------------------------------------------
+
+
+//    rows: temp in degrees celcius * 10
+// columns: battery voltage in mV * 10
+int fanLeftTable[FAN_numTempEntries][FAN_numVoltEntries] =
+{
+  {    0, 80000, 90000, 100000, 105000, 110000, 119000, 120000, 130000, 137000, 138000, 139000, 142000, 145000},
+  {    0,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0},
+  {  700,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0},
+  {  850,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     25},
+  {  855,    15,    15,     15,     15,     15,     15,     15,     15,     15,     30,     30,     30,     30},
+  {  920,    15,    15,     15,     15,     15,     15,     15,     15,     15,     50,     50,     50,     50},
+  {  921,    15,    15,     15,     15,     25,     25,     25,     25,     25,     65,     65,     65,     65},
+  {  950,    75,    75,     75,     75,     75,     75,     75,     75,     75,     75,     75,     75,     75},
+  {  951,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
+  { 1000,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
+  { 1001,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
+  { 1500,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
+};
+
+
+
+
+//    rows: temp in degrees celcius * 10
+// columns: battery voltage in mV * 10
+int fanRightTable[FAN_numTempEntries][FAN_numVoltEntries] =
+{
+  {    0, 80000, 90000, 100000, 105000, 110000, 119000, 120000, 130000, 137000, 138000, 139000, 142000, 145000},
+  {    0,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0},
+  {  700,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0},
+  {  850,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     25},
+  {  851,    15,    15,     15,     15,     15,     15,     15,     15,     15,     30,     30,     30,     30},
+  {  920,    15,    15,     15,     15,     15,     15,     15,     15,     15,     50,     50,     50,     50},
+  {  921,    15,    15,     15,     15,     25,     25,     25,     25,     25,     65,     65,     65,     65},
+  {  950,    75,    75,     75,     75,     75,     75,     75,     75,     75,     75,     75,     75,     75},
+  {  951,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
+  { 1000,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
+  { 1001,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
+  { 1500,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100}
+};
+
+
+
+
+//    rows: temp in degrees celcius * 10
+// columns: RPM
+int waterPumpTable[WP_numTempEntries][WP_numRPMEntries] =
+{
+  {   00,   0,  10,  20, 500, 510,  5000, 15000},
+  {  100,   0,   0,   0,   0,  20,    20,    20},
+  {  200,   0,   0,   0,   0,  20,    20,    20},
+  {  400,   0,   0,   0,   0,  35,    35,    35},
+  {  500,   0,   0,   0,   0,  35,    35,    35},
+  {  600,   0,   0,   0,   0,  35,    35,    35},
+  {  699,   0,   0,   0,   0,  35,    35,    35},
+  {  700,   0,   0,   0,   0,  40,    40,    40},
+  {  845,   0,   0,   0,   0,  50,    50,    50},
+  {  846,  25,  25,   0,   0,  60,    60,    60},
+  { 1000, 100, 100,   0,   0, 100,   100,   100},
+  { 1500, 100, 100,   0,   0, 100,   100,   100},
+};
+
+
+
+
+
+
+
 
 // structure to store the attributes of messages recieved on the CAN Bus
 typedef struct
 {
   bool valid = 0;
   unsigned long lastRecieve = 0;
-  int16_t value = 0;
+  int16_t canValue = 0;
+  int realValue = 0;
   int16_t lowerBound = 0;
   int16_t upperBound = 0;
+  int scaleFact = 1;
 
 }canSensor;
 
@@ -287,65 +353,7 @@ const int WP_numRPMEntries = 8;
 
 
 
-//    rows: temp in degrees celcius * 10
-// columns: battery voltage in mV * 10
-int fanLeftTable[FAN_numTempEntries][FAN_numVoltEntries] =
-{
-  {    0, 80000, 90000, 100000, 105000, 110000, 119000, 120000, 130000, 137000, 138000, 139000, 142000, 145000},
-  {    0,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0},
-  {  700,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0},
-  {  850,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     25},
-  {  855,    15,    15,     15,     15,     15,     15,     15,     15,     15,     30,     30,     30,     30},
-  {  920,    15,    15,     15,     15,     15,     15,     15,     15,     15,     50,     50,     50,     50},
-  {  921,    15,    15,     15,     15,     25,     25,     25,     25,     25,     65,     65,     65,     65},
-  {  950,    75,    75,     75,     75,     75,     75,     75,     75,     75,     75,     75,     75,     75},
-  {  951,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
-  { 1000,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
-  { 1001,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
-  { 1500,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
-};
 
-
-
-
-//    rows: temp in degrees celcius * 10
-// columns: battery voltage in mV * 10
-int fanRightTable[FAN_numTempEntries][FAN_numVoltEntries] =
-{
-  {    0, 80000, 90000, 100000, 105000, 110000, 119000, 120000, 130000, 137000, 138000, 139000, 142000, 145000},
-  {    0,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0},
-  {  700,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0},
-  {  850,     0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     25},
-  {  851,    15,    15,     15,     15,     15,     15,     15,     15,     15,     30,     30,     30,     30},
-  {  920,    15,    15,     15,     15,     15,     15,     15,     15,     15,     50,     50,     50,     50},
-  {  921,    15,    15,     15,     15,     25,     25,     25,     25,     25,     65,     65,     65,     65},
-  {  950,    75,    75,     75,     75,     75,     75,     75,     75,     75,     75,     75,     75,     75},
-  {  951,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
-  { 1000,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
-  { 1001,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100},
-  { 1500,   100,   100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100,    100}
-};
-
-
-
-
-//    rows: temp in degrees celcius * 10
-// columns: RPM
-int waterPumpTable[WP_numTempEntries][WP_numRPMEntries] =
-{
-  {   00,   0,  10,  20, 500, 510,  5000, 15000},
-  {  100,   0,   0,   0,   0,  20,    20,    20},
-  {  200,   0,   0,   0,   0,  20,    20,    20},
-  {  400,   0,   0,   0,   0,  35,    35,    35},
-  {  500,   0,   0,   0,   0,  35,    35,    35},
-  {  600,   0,   0,   0,   0,  35,    35,    35},
-  {  699,   0,   0,   0,   0,  35,    35,    35},
-  {  700,   0,   0,   0,   0,  40,    40,    40},
-  {  845,   0,   0,   0,   0,  50,    50,    50},
-  {  846,  25,  25,   0,   0,  60,    60,    60},
-  { 1000, 100, 100,   0,   0, 100,   100,   100},
-  { 1500, 100, 100,   0,   0, 100,   100,   100},
-};
 
 
 //------------------------------------------------------------------------------
@@ -368,8 +376,164 @@ void setup() {
 
   Serial.begin(9600);
 
-  // set the resolution of the analog input from 0-1023 (10bit) to 0-1891 (13bit)
-  analogReadResolution(10);
+  // set the resolution to read the input pins
+  analogReadResolution(read_resolution_bits);
+
+  // calculate the readMaximum binary input read value from the read resolution
+  // (used for dynamic sensor conversion accuracy)
+  read_resolution = pow(2, read_resolution_bits) - 1;
+
+
+
+  // sensor and output calibration
+
+
+  FUEL_CURRENT.Name        = "FUEL_CURRENT";
+  FUEL_CURRENT.pin         = A0;
+  FUEL_CURRENT.zeroMVolt10 = 16500; // mV*10
+  FUEL_CURRENT.mV10unit    = 264; // mV*10 per sensor unit
+  FUEL_CURRENT.scaleFact   = 0.01;
+  //FUEL_CURRENT.z1          = 0;
+  //FUEL_CURRENT.z2          = 1;
+
+
+  FANR_CURRENT.Name        = "FANR_CURRENT";
+  FANR_CURRENT.pin         = A1;
+  FANR_CURRENT.zeroMVolt10 = 16390; // mV*10
+  FANR_CURRENT.mV10unit    = 264; // mV*10 per sensor unit
+  FANR_CURRENT.scaleFact   = 0.01;
+  //FANR_CURRENT.z1          = 0;
+  //FANR_CURRENT.z2          = 1;
+
+
+  FANL_CURRENT.Name        = "FANL_CURRENT";
+  FANL_CURRENT.pin         = A2;
+  FANL_CURRENT.zeroMVolt10 = 16390; // mV*10
+  FANL_CURRENT.mV10unit    = 264; // mV*10 per sensor unit
+  FANL_CURRENT.scaleFact   = 0.01;
+  //FANL_CURRENT.z1          = 0;
+  //FANL_CURRENT.z2          = 1;
+
+
+  WP_CURRENT.Name        = "WP_CURRENT";
+  WP_CURRENT.pin         = A4;
+  WP_CURRENT.zeroMVolt10 = 16390; // mV*10
+  WP_CURRENT.mV10unit    = 264; // mV*10 per sensor unit
+  WP_CURRENT.scaleFact   = 0.01;
+  //WP_CURRENT.z1          = 0;
+  //WP_CURRENT.z2          = 1;
+
+
+  WP_CURRENT.Name        = "WP_CURRENT";
+  WP_CURRENT.pin         = A22;
+  WP_CURRENT.zeroMVolt10 = 16390; // mV*10
+  WP_CURRENT.mV10unit    = 264; // mV*10 per sensor unit
+  WP_CURRENT.scaleFact   = 0.01;
+  //WP_CURRENT.z1          = 0;
+  //WP_CURRENT.z2          = 1;
+
+
+  PDM_CURRENT.Name        = "PDM_CURRENT";
+  PDM_CURRENT.pin         = A9;
+  PDM_CURRENT.zeroMVolt10 = 16390; // mV*10
+  PDM_CURRENT.mV10unit    = 132; // mV*10 per sensor unit
+  PDM_CURRENT.scaleFact   = 0.01;
+  //PDM_CURRENT.z1          = 0;
+  //PDM_CURRENT.z2          = 1;
+
+
+
+
+  PDM_VOLTAGE.Name        = "PDM_VOLTAGE";
+  PDM_VOLTAGE.pin         = A5;
+  PDM_VOLTAGE.zeroMVolt10 = 0; // mV*10
+  PDM_VOLTAGE.mV10unit    = 10; // mV*10 per sensor unit
+  PDM_VOLTAGE.scaleFact   = 1;
+  PDM_VOLTAGE.z1          = 39000.0000;
+  PDM_VOLTAGE.z2          = 10000.0000;
+
+
+  DATA_VOLTAGE.Name        = "DATA_VOLTAGE";
+  DATA_VOLTAGE.pin         = A17;
+  DATA_VOLTAGE.zeroMVolt10 = 0; // mV*10
+  DATA_VOLTAGE.mV10unit    = 10; // mV*10 per sensor unit
+  DATA_VOLTAGE.scaleFact   = 1;
+  DATA_VOLTAGE.z1          = 39000.0000;
+  DATA_VOLTAGE.z2          = 10000.0000;
+
+
+  MAIN_VOLTAGE.Name        = "MAIN_VOLTAGE";
+  MAIN_VOLTAGE.pin         = A18;
+  MAIN_VOLTAGE.zeroMVolt10 = 0; // mV*10
+  MAIN_VOLTAGE.mV10unit    = 10; // mV*10 per sensor unit
+  MAIN_VOLTAGE.scaleFact   = 1;
+  MAIN_VOLTAGE.z1          = 39000.0000;
+  MAIN_VOLTAGE.z2          = 10000.0000;
+
+
+  FUEL_VOLTAGE.Name        = "FUEL_VOLTAGE";
+  FUEL_VOLTAGE.pin         = A19;
+  FUEL_VOLTAGE.zeroMVolt10 = 0; // mV*10
+  FUEL_VOLTAGE.mV10unit    = 10; // mV*10 per sensor unit
+  FUEL_VOLTAGE.scaleFact   = 1;
+  FUEL_VOLTAGE.z1          = 39000.0000;
+  FUEL_VOLTAGE.z2          = 10000.0000;
+
+
+  FANL_VOLTAGE.Name        = "FANL_VOLTAGE";
+  FANL_VOLTAGE.pin         = A20;
+  FANL_VOLTAGE.zeroMVolt10 = 0; // mV*10
+  FANL_VOLTAGE.mV10unit    = 10; // mV*10 per sensor unit
+  FANL_VOLTAGE.scaleFact   = 1;
+  FANL_VOLTAGE.z1          = 39000.0000;
+  FANL_VOLTAGE.z2          = 10000.0000;
+
+
+  FANR_VOLTAGE.Name        = "FANR_VOLTAGE";
+  FANR_VOLTAGE.pin         = A21;
+  FANR_VOLTAGE.zeroMVolt10 = 0; // mV*10
+  FANR_VOLTAGE.mV10unit    = 10; // mV*10 per sensor unit
+  FANR_VOLTAGE.scaleFact   = 0.1;
+  FANR_VOLTAGE.z1          = 39000.0000;
+  FANR_VOLTAGE.z2          = 10000.0000;
+
+
+
+
+  BOARD_TEMP.Name         = "BOARD_TEMP";
+  BOARD_TEMP.pin          = A16;
+  BOARD_TEMP.zeroMVolt10  = 5587.8137; // mV*10
+  BOARD_TEMP.mV10unit     = 20; // mV*10 per sensor unit
+  BOARD_TEMP.scaleFact    = 0.1;
+  BOARD_TEMP.relationship = -1; // negative relationship
+  //BOARD_TEMP.z1           = 39000.0000;
+  //BOARD_TEMP.z2           = 10000.0000;
+
+
+
+
+  BLIGHT_OUT.Name = "BLIGHT_OUT";
+  BLIGHT_OUT.pin  = A3;
+
+
+  FANL_OUT.Name = "FANL_OUT";
+  FANL_OUT.pin  = A6;
+
+
+  FANR_OUT.Name = "FANR_OUT";
+  FANR_OUT.pin  = A7;
+
+
+  WP_OUT.Name = "WP_OUT";
+  WP_OUT.pin  = A8;
+
+
+  TEENSY_LED_OUT.Name = "TEENSY_LED_OUT";
+  TEENSY_LED_OUT.pin  = 13;
+
+
+
+
 
   // set the pins as inputs or outputs
   pinMode(A0, INPUT); // Fuel Current Sensor
