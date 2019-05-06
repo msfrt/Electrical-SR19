@@ -251,6 +251,7 @@ void loop()
     rpmTimer = millis();
     rpmReadout();
     oilTempReadout();
+    tcReadout();
     }
 
   // if (CAN0_rpm.value >= shiftPoint)
@@ -278,7 +279,6 @@ void loop()
         previousTime = time;
 
         showWarnings();
-        tcReadout();
         engineTemperatureReadout();
         // oilTempReadout(); // remove from rpm and uncomment this when engine is reliable
         OilPressureReadout();
@@ -348,7 +348,6 @@ void canDecode()
       // M400_dataSet2
       // ID 0x5EF
       case 0x5EF:
-      {
 
         // read the multiplexor
         switch(rxMultID)
@@ -389,21 +388,30 @@ void canDecode()
 
         }
 
-      }
+        // break out of m400 ID 0x5EF
+        break;
+
 
       // from C50, message ID 16
-      case 24: //(0x18 in hex)
-
-        switch (rxMultID)
+      case 0x18: //(0x18 in hex)
+      
+        // the c50 is weird, and the multiplexor is in the first two bits;
+        Serial.println(rxMultID);
+        
+        switch(rxMultID)
         {
+          
           // multiplexor ID 1
-          case 1:
-            CAN0_tc.value = rxData[6] + rxData[7] * 256;
+          case 0x1:
+            CAN0_tc.value = rxData[6] *256 + rxData[7];
+            Serial.print("CAN0_tc.value: "); Serial.println(CAN0_tc.value);
             break;
+            
         }
-
-
+        
+        // break out of 0x18 ID
         break;
+
 
       // PDM msgs (intel byte order!)
       case 0x9A:
@@ -498,11 +506,27 @@ void gearReadout()
 
 void tcReadout()
 {
+  char out[3];
+  int TC_output = CAN0_tc.value * 0.005; // factor from the DBC
+  sprintf(out, "%3d", TC_output);
   //display tc settings
-  tftRight.setCursor(40, 85);
-  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
-  tftRight.setTextSize(15);
-  tftRight.print(CAN0_tc.value);
+  tftRight.setCursor(10, 85);
+
+  // if the TC value is under -10 or over 10, notify the driver by changing the color
+  if (TC_output < -10 || TC_output > 10)
+  {
+    // pink color
+    tftRight.setTextColor(0xFB2C, ILI9340_BLACK);
+  }
+  else
+  {
+    // normal color (white)
+    tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  }
+
+  
+  tftRight.setTextSize(16);
+  tftRight.print(out);
 }
 
 void rpmReadout()
