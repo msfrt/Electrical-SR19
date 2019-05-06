@@ -392,7 +392,7 @@ void canDecode()
       }
 
       // from C50, message ID 16
-      case 16:
+      case 24: //(0x18 in hex)
 
         switch (rxMultID)
         {
