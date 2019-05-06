@@ -202,7 +202,7 @@ void setup()
 
 
   // display startup message
-  // startupMessage();
+  startupMessage();
 
   delay(1000);
 
@@ -753,10 +753,10 @@ void startupMessage()
   tftRight.fillScreen(ILI9340_BLACK);
   tftLeft.fillScreen(ILI9340_BLACK);
 
-  bmpDraw(tftLeft, "left.bmp", 0, 0);
-  bmpDraw(tftRight, "right.bmp", 0, 0);
-
-  delay(5000);
+//  bmpDraw(tftLeft, "left.bmp", 0, 0);
+//  bmpDraw(tftRight, "right.bmp", 0, 0);
+//
+//  delay(5000);
 
   tftRight.fillScreen(ILI9340_BLACK);
   tftLeft.fillScreen(ILI9340_BLACK);
