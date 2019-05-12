@@ -78,8 +78,8 @@ typedef struct
 }canSensor;
 
 // CAN0 sensors
-canSensor CAN0_rpm, CAN0_currentGear, CAN0_oilPressure, CAN0_fuelTemp, CAN0_engTemp;
-canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage, CAN0_oilTemp;
+canSensor CAN0_rpm, CAN0_currentGear, CAN0_oilPressure, CAN0_fuelTemp, CAN0_fuelPressure, CAN0_engTemp;
+canSensor CAN0_throttle, CAN0_lastThrottle, CAN0_batteryVoltage, CAN0_oilTemp, CAN0_tc;
 canSensor CAN1_pdmCurrent, CAN1_wpCurrent, CAN1_fanrCurrent, CAN1_wpPWM, CAN1_fanrWPM;
 
 //initialize screen position variables------------------------------------------
@@ -126,13 +126,13 @@ const int batteryProtection1 = 1150;
 const int batteryProtection2 = 1050;
 
 //initialize rpm bar constants--------------
-const int rpmMax = 13500;
+const int rpmMax = 11850;
 const int rpmMin = 1400;
 const int shiftPoint = 12000;
 
 //intialize throttle position bar constants--------
 
-const int ledBrightness = 10;       //Value between 0-255
+const int ledBrightness = 255;       //Value between 0-255 -- 10 for nighttime value, 255 for daylight
 const int ledBrightnessFlash = 150; //Value between 0-255
 
 //initialize timers---------------------------
@@ -176,7 +176,6 @@ void setup()
   pixelsLeft.show();
   pixelsRight.show();
 
-  delay(1500);
 
   //flash the LEDs on to test
   ledInitialize();
@@ -191,7 +190,6 @@ void setup()
   tftRight.fillScreen(ILI9340_BLACK);
   tftLeft.fillScreen(ILI9340_BLACK);
 
-  delay(1000);
 
 //  // initialize SD card
 //  Serial.print("Initializing SD card...");
@@ -204,9 +202,9 @@ void setup()
 
 
   // display startup message
-  // startupMessage();
+  startupMessage();
 
-  delay(1000);
+  delay(500);
 
   clearScreens();
   // pedalPositionScale();
@@ -253,6 +251,7 @@ void loop()
     rpmTimer = millis();
     rpmReadout();
     oilTempReadout();
+    tcReadout();
     }
 
   // if (CAN0_rpm.value >= shiftPoint)
@@ -280,17 +279,16 @@ void loop()
         previousTime = time;
 
         showWarnings();
-        //tcReadout();
         engineTemperatureReadout();
         // oilTempReadout(); // remove from rpm and uncomment this when engine is reliable
         OilPressureReadout();
         batteryVoltageReadout();
 
-        pdmCurrentReadout();
-        fanrCurrentReadout();
-        wpCurrentReadout();
-        fanrPWMReadout();
-        wpPWMReadout();
+      //   pdmCurrentReadout();
+      //   fanrCurrentReadout();
+      //   wpCurrentReadout();
+      //   fanrPWMReadout();
+      //   wpPWMReadout();
       }
     }
 
@@ -350,7 +348,6 @@ void canDecode()
       // M400_dataSet2
       // ID 0x5EF
       case 0x5EF:
-      {
 
         // read the multiplexor
         switch(rxMultID)
@@ -365,6 +362,7 @@ void canDecode()
           // MultID 0x4
           case 0x4:
             CAN0_engTemp.value = rxData[4] * 256 + rxData[5];
+            CAN0_fuelPressure.value = rxData[6] * 256 + rxData[7];
             break;
 
           // MultID 0x5
@@ -390,7 +388,30 @@ void canDecode()
 
         }
 
-      }
+        // break out of m400 ID 0x5EF
+        break;
+
+
+      // from C50, message ID 16
+      case 0x18: //(0x18 in hex)
+
+        // the c50 is weird, and the multiplexor is in the first two bits;
+        Serial.println(rxMultID);
+
+        switch(rxMultID)
+        {
+
+          // multiplexor ID 1
+          case 0x1:
+            CAN0_tc.value = rxData[6] *256 + rxData[7];
+            Serial.print("CAN0_tc.value: "); Serial.println(CAN0_tc.value);
+            break;
+
+        }
+
+        // break out of 0x18 ID
+        break;
+
 
       // PDM msgs (intel byte order!)
       case 0x9A:
@@ -485,11 +506,27 @@ void gearReadout()
 
 void tcReadout()
 {
+  char out[3];
+  int TC_output = CAN0_tc.value * 0.005; // factor from the DBC
+  sprintf(out, "%3d", TC_output);
   //display tc settings
-  tftRight.setCursor(40, 85);
-  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
-  tftRight.setTextSize(10);
-  tftRight.print("TC");
+  tftRight.setCursor(10, 85);
+
+  // if the TC value is under -10 or over 10, notify the driver by changing the color
+  if (TC_output < -10 || TC_output > 10)
+  {
+    // pink color
+    tftRight.setTextColor(0xFB2C, ILI9340_BLACK);
+  }
+  else
+  {
+    // normal color (white)
+    tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  }
+
+
+  tftRight.setTextSize(16);
+  tftRight.print(out);
 }
 
 void rpmReadout()
@@ -573,11 +610,12 @@ void pdmCurrentReadout()
 {
   char out[6];
 
-  double currentDouble = (double)CAN1_pdmCurrent.value;
-  currentDouble /= 100;
-  sprintf(out, "%6.2f", currentDouble);
+  // frankenstiened(?) fuel pressure in here for christian ;)
+  double fuelPressureDouble = (double)CAN0_fuelPressure.value;
+  fuelPressureDouble /= 10;
+  sprintf(out, "%5.1f", fuelPressureDouble);
 
-  tftRight.setCursor(140, pdmCurrentScreenPos);
+  tftRight.setCursor(170, pdmCurrentScreenPos);
   tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
   tftRight.setTextSize(5);
   tftRight.print(out);
@@ -713,36 +751,36 @@ void clearScreens()
   tftLeft.setTextSize(5);
   tftLeft.print("VOLT:");
 
-  // right
-  // Print
-  tftRight.setCursor(1, pdmCurrentScreenPos);
-  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
-  tftRight.setTextSize(5);
-  tftRight.print("PDM:");
-
-  // Print
-  tftRight.setCursor(1, wpCurrentScreenPos);
-  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
-  tftRight.setTextSize(5);
-  tftRight.print("WP:");
-
-  //Print
-  tftRight.setCursor(1, fanrCurrentScreenPos);
-  tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
-  tftRight.setTextSize(5);
-  tftRight.print("FANR:");
-
-  // Print
-  tftRight.setCursor(1, wpPWMScreenPos);
-  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
-  tftRight.setTextSize(5);
-  tftRight.print("WP:");
-
-  // Print
-  tftRight.setCursor(1, fanrPWMScreenPos);
-  tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
-  tftRight.setTextSize(5);
-  tftRight.print("FANR:");
+  // // right
+  // // Print
+  // tftRight.setCursor(1, pdmCurrentScreenPos);
+  // tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  // tftRight.setTextSize(5);
+  // tftRight.print("FUELP:");
+  //
+  // // Print
+  // tftRight.setCursor(1, wpCurrentScreenPos);
+  // tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  // tftRight.setTextSize(5);
+  // tftRight.print("WP:");
+  //
+  // //Print
+  // tftRight.setCursor(1, fanrCurrentScreenPos);
+  // tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
+  // tftRight.setTextSize(5);
+  // tftRight.print("FANR:");
+  //
+  // // Print
+  // tftRight.setCursor(1, wpPWMScreenPos);
+  // tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
+  // tftRight.setTextSize(5);
+  // tftRight.print("WP:");
+  //
+  // // Print
+  // tftRight.setCursor(1, fanrPWMScreenPos);
+  // tftRight.setTextColor(ILI9340_RED, ILI9340_BLACK);
+  // tftRight.setTextSize(5);
+  // tftRight.print("FANR:");
 
 }
 
@@ -753,10 +791,10 @@ void startupMessage()
   tftRight.fillScreen(ILI9340_BLACK);
   tftLeft.fillScreen(ILI9340_BLACK);
 
-  bmpDraw(tftLeft, "left.bmp", 0, 0);
-  bmpDraw(tftRight, "right.bmp", 0, 0);
-
-  delay(5000);
+//  bmpDraw(tftLeft, "left.bmp", 0, 0);
+//  bmpDraw(tftRight, "right.bmp", 0, 0);
+//
+//  delay(5000);
 
   tftRight.fillScreen(ILI9340_BLACK);
   tftLeft.fillScreen(ILI9340_BLACK);
@@ -1105,7 +1143,7 @@ void ledInitialize()
 
     led++;
 
-    delay(80);
+    delay(40);
   }
 
   for (int i = 11; i > 0; i--)
@@ -1130,7 +1168,7 @@ void ledInitialize()
 
     led--;
 
-    delay(80);
+    delay(40);
   }
 }
 

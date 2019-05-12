@@ -1,0 +1,193 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: C50 MM5 PDM DRIVERDISPLAY M400
+
+
+BO_ 0 New_Message_7: 8 Vector__XXX
+ SG_ New_Signal_69 : 48|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 24 C50_dataSet1: 8 Vector__XXX
+ SG_ C50_tcUpDown m1 : 55|16@0- (0.005,0) [0|0] "" Vector__XXX
+ SG_ C50_rowCounterDataSet1 M : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1519 M400_dataSet2: 8 M400
+ SG_ M400_fuelAcutalPulseW m13 : 55|16@0- (0.002,0) [-65.536|65.534] "" Vector__XXX
+ SG_ M400_fuel4IndivTrim m12 : 55|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_fuel1IndivTrim m11 : 55|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_ign3Advance m10 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_fuelTemp m9 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_la1AimValue m8 : 55|16@0- (0.001,0) [-32.768|32.767] "" Vector__XXX
+ SG_ M400_exhaustGasTemp4 m7 : 55|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_exhaustGasTemp1 m6 : 55|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_oilTemp m5 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_fuelPressure m4 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_internalTemp m3 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_aux7OutDutyCycle m2 : 55|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_aux4OutDutyCycle m1 : 55|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_aux1OutDutyCycle m0 : 55|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_gearDet m14 : 39|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_fuelInjDutyCycle m13 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_fuel3IndivTrim m12 : 39|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_ignitionAdvance m11 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_ign2Advance m10 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_la1ShortTermTrim m9 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_lambda1 m8 : 39|16@0- (0.001,0) [-32.768|32.767] "" Vector__XXX
+ SG_ M400_exhaustGasTemp3 m7 : 39|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_manifoldPressure m6 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_oilPressure m5 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_engineTemp m4 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_cpuUsage m3 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_aux6OutDutyCycle m2 : 39|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_aux3OutDutyCycle m1 : 39|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_rpm m0 : 39|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_gear m14 : 23|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_fuelOverallTrim m13 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_fuel2IndivTrim m12 : 23|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_ign4Advance m11 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_ign1Advance m10 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_la1LongTermTrim m9 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_fuelCutLevelTotal m8 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_exhaustGasTemp2 m7 : 23|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_throttlePosition m6 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_inletAirTemp m5 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_steeringAngleSensor m4 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_aux8OutDutyCycle m3 : 23|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_aux5OutDutyCycle m2 : 23|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_aux2OutDutyCycle m1 : 23|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_batteryVoltage m0 : 23|16@0- (0.01,0) [-327.68|327.67] "" Vector__XXX
+ SG_ M400_rowCounterDataSet2 M : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1520 M400_dataSet1: 8 M400
+ SG_ M400_gearSensorVoltage m4 : 55|16@0- (0.001,0) [-32.768|32.767] "" Vector__XXX
+ SG_ M400_gearAngle m4 : 39|16@0- (0.072,0) [-2359.296|2359.224] "" Vector__XXX
+ SG_ M400_ignCutLevelTotal m4 : 23|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_wheelSlip m3 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_tcSlipAimValue m3 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_tcSlipAimError m3 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_tcPowerReduction m2 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_tcLaunchAimRPM m2 : 39|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_tcIgnRetard m2 : 23|16@0- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ M400_groundSpeedRight m1 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_driveSpeedRight m1 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_groundSpeedLeft m1 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_driveSpeedLeft m0 : 55|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_groundSpeed m0 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_driveSpeed m0 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
+ SG_ M400_rowCounterDataSet1 M : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 380 MM5_02: 8 MM5
+ SG_ MM5_Az : 32|16@1+ (-0.0001274,4.17464) [0|0] "" Vector__XXX
+
+BO_ 376 MM5_01: 8 MM5
+ SG_ MM5_Ax : 32|16@1+ (-0.0001274,4.2) [0|0] "" Vector__XXX
+ SG_ MM5_rollRate : 0|16@1+ (-0.005,163.9) [0|0] "" Vector__XXX
+
+BO_ 372 MM5_00: 8 MM5
+ SG_ MM5_Ay : 32|16@1+ (-0.0001274,4.17464) [0|0] "" Vector__XXX
+ SG_ MM5_yawRate : 0|16@1+ (0.005,-163.9) [0|0] "" Vector__XXX
+
+
+
+CM_ SG_ 24 C50_tcUpDown "TC setting value between -10 and 10";
+CM_ SG_ 1519 M400_fuelAcutalPulseW "Fuel Actual Pulse Width";
+CM_ SG_ 1519 M400_fuel4IndivTrim "Fuel 4 Individual Trim";
+CM_ SG_ 1519 M400_fuel1IndivTrim "Fuel 1 Individual Trim";
+CM_ SG_ 1519 M400_ign3Advance "Ignition 3 Advance";
+CM_ SG_ 1519 M400_fuelTemp "Fuel Temp";
+CM_ SG_ 1519 M400_la1AimValue "Lambda Aim Value";
+CM_ SG_ 1519 M400_exhaustGasTemp4 "Exhaust Gas Temp 4";
+CM_ SG_ 1519 M400_exhaustGasTemp1 "Exhaust Gas Temp 1";
+CM_ SG_ 1519 M400_oilTemp "Oil Temperature";
+CM_ SG_ 1519 M400_fuelPressure "Fuel Pressure";
+CM_ SG_ 1519 M400_internalTemp "ECU Internal Temp";
+CM_ SG_ 1519 M400_aux7OutDutyCycle "Aux 7 Out Duty Cycle";
+CM_ SG_ 1519 M400_aux4OutDutyCycle "Aux 4 Out Duty Cycle";
+CM_ SG_ 1519 M400_aux1OutDutyCycle "Aux 1 Out Duty Cycle";
+CM_ SG_ 1519 M400_gearDet "Gear Detect";
+CM_ SG_ 1519 M400_fuelInjDutyCycle "Fuel Injector Duty Cycle";
+CM_ SG_ 1519 M400_fuel3IndivTrim "Fuel 3 Individual Trim";
+CM_ SG_ 1519 M400_ignitionAdvance "Ingition Advance";
+CM_ SG_ 1519 M400_ign2Advance "Ignition 2 Advance";
+CM_ SG_ 1519 M400_la1ShortTermTrim "Lambda Short Term Trim";
+CM_ SG_ 1519 M400_lambda1 "Lambda 1";
+CM_ SG_ 1519 M400_exhaustGasTemp3 "Exhaust Gas Temp 3";
+CM_ SG_ 1519 M400_manifoldPressure "TMAP Manifold Pressure";
+CM_ SG_ 1519 M400_oilPressure "Oil Pressure";
+CM_ SG_ 1519 M400_engineTemp "Engine Temp";
+CM_ SG_ 1519 M400_cpuUsage "ECU CPU Usage";
+CM_ SG_ 1519 M400_aux6OutDutyCycle "Aux 6 Out Duty Cycle";
+CM_ SG_ 1519 M400_aux3OutDutyCycle "Aux 3 Out Duty Cycle";
+CM_ SG_ 1519 M400_rpm "RPM";
+CM_ SG_ 1519 M400_gear "Gear";
+CM_ SG_ 1519 M400_fuelOverallTrim "Fuel Overal Trim";
+CM_ SG_ 1519 M400_fuel2IndivTrim "Fuel 2 Individual Trim";
+CM_ SG_ 1519 M400_ign4Advance "Ignition 4 Advance";
+CM_ SG_ 1519 M400_ign1Advance "Ignition 1 Advance";
+CM_ SG_ 1519 M400_la1LongTermTrim "Lambda Long Term Trim";
+CM_ SG_ 1519 M400_fuelCutLevelTotal "Fuel Cut Level Total";
+CM_ SG_ 1519 M400_exhaustGasTemp2 "Exhaust Gas Temp 2";
+CM_ SG_ 1519 M400_throttlePosition "Throttle Position";
+CM_ SG_ 1519 M400_inletAirTemp "TMAP Air Temp";
+CM_ SG_ 1519 M400_steeringAngleSensor "Steering Wheel Angle";
+CM_ SG_ 1519 M400_aux8OutDutyCycle "Aux 8 Out Duty Cycle";
+CM_ SG_ 1519 M400_aux5OutDutyCycle "Aux 5 Out Duty Cycle";
+CM_ SG_ 1519 M400_aux2OutDutyCycle "Aux 2 Out Duty Cycle";
+CM_ SG_ 1519 M400_batteryVoltage "Battery Voltage";
+CM_ SG_ 1519 M400_rowCounterDataSet2 "Multiplexer Row Counter";
+CM_ SG_ 1520 M400_gearSensorVoltage "Gear Sensor Voltage";
+CM_ SG_ 1520 M400_gearAngle "Gear Angle";
+CM_ SG_ 1520 M400_ignCutLevelTotal "Ignition Cut Level";
+CM_ SG_ 1520 M400_wheelSlip "Wheel Slip";
+CM_ SG_ 1520 M400_tcSlipAimValue "Traction Control Slip Aim Value";
+CM_ SG_ 1520 M400_tcSlipAimError "Traction Control Slip Aim Error";
+CM_ SG_ 1520 M400_tcPowerReduction "Traction Control Power Reduction";
+CM_ SG_ 1520 M400_tcLaunchAimRPM "Traction Control Launch Aim RPM";
+CM_ SG_ 1520 M400_tcIgnRetard "Traction Control Ignition Retard";
+CM_ SG_ 1520 M400_groundSpeedRight "Front Right Wheel Speed";
+CM_ SG_ 1520 M400_driveSpeedRight "Front Right Wheel Speed";
+CM_ SG_ 1520 M400_groundSpeedLeft "Rear Left Wheel Speed";
+CM_ SG_ 1520 M400_driveSpeedLeft "Rear Left Wheel Speed";
+CM_ SG_ 1520 M400_groundSpeed "Front Wheel Speeds";
+CM_ SG_ 1520 M400_driveSpeed "Rear Wheel Speeds";
+CM_ SG_ 1520 M400_rowCounterDataSet1 "Multiplexer Row Counter";
+CM_ SG_ 380 MM5_Az "Acceleration Z";
+CM_ SG_ 376 MM5_Ax "Acceleration X";
+CM_ SG_ 376 MM5_rollRate "Roll Rate";
+CM_ SG_ 372 MM5_Ay "Acceleration Y";
+CM_ SG_ 372 MM5_yawRate "Yaw Rate";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "BusType" "CAN";
+

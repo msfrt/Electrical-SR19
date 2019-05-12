@@ -187,9 +187,9 @@ int BOARD_temp;
 //------------------------------------------------------------------------------
 
 // initialize state variables for BRAKE LIGHT
-uint8_t BLIGHT_state;
-uint8_t BLIGHT_statePrev;
-int BLIGHT_minPressure = 1;
+uint8_t BLIGHT_state = 0;
+uint8_t BLIGHT_statePrev = 0;
+int BLIGHT_minPressure = 750; // in CAN format (psi * 10)
 
 
 //------------------------------------------------------------------------------
@@ -201,9 +201,11 @@ int BLIGHT_minPressure = 1;
 // structure to store the attributes of messages recieved on the CAN Bus
 typedef struct
 {
-  bool validity = 0;
+  bool valid = 0;
   unsigned long lastRecieve = 0;
   int16_t value = 0;
+  int16_t lowerBound = 0;
+  int16_t upperBound = 0;
 
 }canSensor;
 
@@ -218,6 +220,7 @@ canSensor CAN1_betweenRadTemp, CAN1_rightRadInTemp, CAN1_leftRadOutTemp;
 // values updated of PDM volt values after calculated in CAN send function
 // used in setFanSpeed and setWaterPumpSpeed
 int BatteryVoltAvg = 120000;
+int MainVoltAvg = 0;
 
 //------------------------------------------------------------------------------
 //
@@ -252,9 +255,9 @@ int PWM_startup_mode_range = 5; // PWM increments
 unsigned long PWM_startup_end_time = 0;
 int PWM_freq_status = 1; //this is just or testing. 1 = 488.28 Hz, 0 = 20 Hz. Sends under "water pump status" in DBC
 // used to store the minimum allowed PWM
-int FANL_minPWM = 30;
-int FANR_minPWM = 30;
-int WP_minPWM = 25;
+int FANL_minPWM = 40;
+int FANR_minPWM = 40;
+int WP_minPWM = 35;
 //used to store the max PWM, should be 255
 int FANL_maxPWM = 255;
 int FANR_maxPWM = 255;
@@ -280,6 +283,19 @@ int FAN_voltLesser = 0;
 int WP_rpmLesser = 0;
 int WP_rpmGreater = 0;
 
+// Variable to see if the car is on (true if the main circuit is powered)
+bool carOn = false;
+int carOnThreshold = 8000; // determine the car is on when the Main voltage is above 8V
+
+// Variables for controling the fan shutdown
+int fanShutdownTemp = 950; // 95C the temp at which the fan shutdown procedure will trigger
+unsigned long fanShutdownTime = 1; // stores the time at which the fans will shutoff must be 1 to avoid startup upon first boot
+int fanShutdownFactor = 1500; // 15sec/degC the factor to determine how long the fans will stay on
+
+// variables for controling the wp shutdown
+int wpShutdownTemp = 800; // 80C the temp at which the wp shutdown procedure will trigger
+unsigned long wpShutdownTime = 1;// stores the time at which the wp will shutoff must be 1 to avoid startup upon first boot
+int wpShutdownFactor = 1500;// 15sec/degC the factor to determine how long the wp will stay on
 
 // Number of temperature entries in the fan speed table
 const int FAN_numTempEntries = 12;
@@ -292,9 +308,6 @@ const int WP_numTempEntries = 12;
 
 // Number of battery voltage entries in the fan speed table
 const int WP_numRPMEntries = 8;
-
-
-
 
 
 
@@ -402,6 +415,127 @@ void setup() {
   pinMode(A21, INPUT); // FanR Voltage
   pinMode(A22, INPUT); // WP Voltage
 
+  //bounds for incoming CAN Messages----------
+
+  //Sensor Name             //logged value
+
+  //Engine RPM
+  CAN0_rpm.lowerBound = -100; //-10
+  CAN0_rpm.upperBound = 17000; //17000
+
+  //Engine Temp
+  CAN0_engTemp.lowerBound = -100; //-10C
+  CAN0_engTemp.upperBound = 1800; //180C
+
+  //Between Radiator Temp
+  CAN1_betweenRadTemp.lowerBound = -100; //-10C
+  CAN1_betweenRadTemp.upperBound = 1800; //180C
+
+  //Right Radiator Inlet Temp
+  CAN1_rightRadInTemp.lowerBound = -100; //-10C
+  CAN1_rightRadInTemp.upperBound = 1800; //180C
+
+  //Left Radiator Outlet Temp
+  CAN1_leftRadOutTemp.lowerBound = -100; //-10C
+  CAN1_leftRadOutTemp.upperBound = 1800; //180C
+
+  //RR Brake Pressure
+  CAN1_brakePressureRR.lowerBound = -100;
+  CAN1_brakePressureRR.upperBound = 2000;
+
+  //RL Brake Pressure
+  CAN1_brakePressureRL.lowerBound = -100;
+  CAN1_brakePressureRL.upperBound = 2000;
+
+  //FR Brake Pressure
+  CAN1_brakePressureFR.lowerBound = -100;
+  CAN1_brakePressureFR.upperBound = 2000;
+
+  //FL Brake Pressure
+  CAN1_brakePressureFL.lowerBound = -100;
+  CAN1_brakePressureFL.upperBound = 2000;
+
+
+//  // begin GPS initialization
+//  Serial1.begin(9600);
+//
+//  char a[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x35,0x31,0x2C,0x31,0x31,0x35,0x32,0x30,0x30,0x2A,0x31,0x46,0x0D,0x0A};
+//  char b[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x32,0x30,0x2C,0x31,0x30,0x30,0x2A,0x32,0x46,0x0D,0x0A};
+//
+//  delay(2000);
+//  Serial1.write(a);
+//  delay(500);
+//  Serial1.end();
+//
+//  delay(1000);
+//
+//  Serial1.begin(115200);
+//  delay(500);
+//  Serial1.write(b);
+//  delay(500);
+//  Serial1.end();
+//  // END GPS initialization
+
+
+  // BRAKE LIGHT MORSE CODE "MSU"
+  int morseUnit = 100; // in millis
+  // dashes are 3 time units, dots are 1 time unit, and spaces between dashes and dots are 1 time unit
+  // spaces between letters in words are 3 time units
+  // words are seperated by silence equal to 7 time units
+
+  // "M"
+  analogWrite(A3, 255);
+  delay(morseUnit * 3); // dash
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit * 3); // dash
+  analogWrite(A3, 0);
+
+  delay(morseUnit * 3); // letter delay
+
+
+
+  // "S"
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit * 3); // letter delay
+
+
+
+  // "U"
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit); // dot
+  analogWrite(A3, 0);
+
+  delay(morseUnit); // signal delay
+
+  analogWrite(A3, 255);
+  delay(morseUnit * 3); // dash
+  analogWrite(A3, 0);
+
 }
 
 //------------------------------------------------------------------------------
@@ -441,7 +575,8 @@ void loop() {
   {
     PWM_calc_timer = millis();
 
-
+    //check to see if the car is on
+    carOn = car_on();
 
     // left fan calculations
     FAN_findTemp(fanLeftTable);
@@ -473,6 +608,7 @@ void loop() {
     if (FANL_livePWM != FANL_livePWM2) {FANL_livePWM2 = FANL_livePWM; analogWrite(A6, FANL_livePWM);}
     if (FANR_livePWM != FANR_livePWM2) {FANR_livePWM2 = FANR_livePWM; analogWrite(A7, FANR_livePWM);}
     if (WP_livePWM != WP_livePWM2) {WP_livePWM2 = WP_livePWM; analogWrite(A8, WP_livePWM);}
+    //analogWrite(A8, 255); -- MIS PUMP ISSUE TESTING
   }
 
 
@@ -515,9 +651,9 @@ void loop() {
   //
   //----------------------------------------------------------------------------
 
+  // blight state is 255 for on (max pwm), 0 for off. Initializes to off
   BLIGHT_state = BRAKE_LIGHT_STATE(CAN1_brakePressureFL.value, CAN1_brakePressureFR.value, CAN1_brakePressureRL.value, CAN1_brakePressureRR.value);
-  // digitalWrite(A3, BLIGHT_state) ***Note: you could just have this one statement, but it might not be the best to digitally write so frequently
-  // if ( BLIGHT_state != BLIGHT_statePrev ){ BLIGHT_statePrev = BLIGHT_state; digitalWrite(A3, BLIGHT_state) }
+  if ( BLIGHT_state != BLIGHT_statePrev ){ BLIGHT_statePrev = BLIGHT_state; analogWrite(A3, BLIGHT_state); }
 
 
 
@@ -542,6 +678,11 @@ void loop() {
 //------------------------------------------------------------------------------
 
 
+bool car_on()
+//returns true if the current Main voltage is above the set threshold
+{
+  return MainVoltAvg > carOnThreshold;
+}
 
 
 static void ANA_READ( int sensGroup )
@@ -840,6 +981,8 @@ static void ANA_TO_SENSORVAL( int sensGroup )
       MAIN.voltMin /= 10;
       MAIN.voltMax /= 10;
       MAIN.voltAvg /= 10;
+      // store the avg Main voltage in a variable that doesn't reset every cycle (used to determine if the Main circuit is on)
+      MainVoltAvg = MAIN.voltAvg;
 
       DATA.voltMin = DATA.voltMin         * (33000 / 1023)              / 10000.0000 * (10000.0000 + 39000.0000);
       DATA.voltMax = DATA.voltMax         * (33000 / 1023)              / 10000.0000 * (10000.0000 + 39000.0000);
@@ -1314,7 +1457,7 @@ static void CAN_DATA_SEND(int id, int len, int busNo)
       break;
 
     case 1:
-      Can0.write(msg);  // this is send the static
+      Can1.write(msg);  // this is send the static
       break;
   }
 
@@ -1370,11 +1513,19 @@ void CAN_READ()
           // MultID 0x0
           case 0x0:
             CAN0_rpm.value = rxData[4] * 256 + rxData[5];
+
+            CAN0_rpm.lastRecieve = millis();
+
+            check_canSensor_bounds(CAN0_rpm);
             break;
 
           // MultID 0x4
           case 0x4:
             CAN0_engTemp.value = rxData[4] * 256 + rxData[5];
+
+            CAN0_engTemp.lastRecieve = millis();
+
+            check_canSensor_bounds(CAN0_engTemp);
             break;
         }
 
@@ -1404,16 +1555,29 @@ void CAN_READ()
 
       switch (rxID)
       {
-        // ATCCF 0
-        case 0x0:
+        // ATCCF_00
+        case 0x8C:
+
           CAN1_brakePressureFL.value = rxData[1] + rxData[2] * 256;
           CAN1_brakePressureFR.value = rxData[3] + rxData[4] * 256;
+
+          CAN1_brakePressureFL.lastRecieve = millis();
+          CAN1_brakePressureFR.lastRecieve = millis();
+
+          check_canSensor_bounds(CAN1_brakePressureFL);
+          check_canSensor_bounds(CAN1_brakePressureFR);
           break;
 
-        // ATCCF 1
-        case 0x1:
+        // ATCCF_01
+        case 0x8D:
           CAN1_brakePressureRL.value = rxData[1] + rxData[2] * 256;
           CAN1_brakePressureRR.value = rxData[3] + rxData[4] * 256;
+
+          CAN1_brakePressureRL.lastRecieve = millis();
+          CAN1_brakePressureRR.lastRecieve = millis();
+
+          check_canSensor_bounds(CAN1_brakePressureRL);
+          check_canSensor_bounds(CAN1_brakePressureRR);
           break;
       }
     }
@@ -1422,7 +1586,22 @@ void CAN_READ()
 
 
 
-
+void check_canSensor_bounds(canSensor &SENSOR)
+//------------------------------------------------------------------------------
+//Given a canSensor, check_canSensor_bounds will return true if the sensors
+//current value is within the sensors bounds which are declared at the top of
+//the file.
+//
+{
+  if( SENSOR.value < SENSOR.lowerBound || SENSOR.value > SENSOR.upperBound )
+  {
+    SENSOR.valid = false;
+  }
+  else
+  {
+    SENSOR.valid = true;
+  }
+}
 
 
 
@@ -1623,20 +1802,56 @@ int FAN_PERCENT(int table[FAN_numTempEntries][FAN_numVoltEntries])
 // Returns percentage (0-100) of maximum pump speed
 // -------------------------------------------------------------------------------------------------------------------------
 {
-  // map the actual temp input between the max and min temp in the table,
-  // to the corresponding bottom and top rates found in voltLesser
-  int map1 = map(CAN0_engTemp.value, table[FAN_temperatureLesser][0], table[FAN_temperatureGreater][0], table[FAN_temperatureLesser][FAN_voltLesser], table[FAN_temperatureGreater][FAN_voltLesser]);
+
+  int fanSpeed = 0;
+
+  //if the car is on run the normal operation
+  if(carOn)
+  {
+
+    fanShutdownTime = 0;
+    // map the actual temp input between the max and min temp in the table,
+    // to the corresponding bottom and top rates found in voltLesser
+    int map1 = map(CAN0_engTemp.value, table[FAN_temperatureLesser][0], table[FAN_temperatureGreater][0], table[FAN_temperatureLesser][FAN_voltLesser], table[FAN_temperatureGreater][FAN_voltLesser]);
 
 
-  // do the same as map1, only map it to the corresponding voltLesser values in the fan table
-  int map2 = map(CAN0_engTemp.value, table[FAN_temperatureLesser][0], table[FAN_temperatureGreater][0], table[FAN_temperatureLesser][FAN_voltGreater], table[FAN_temperatureGreater][FAN_voltGreater]);
+    // do the same as map1, only map it to the corresponding voltLesser values in the fan table
+    int map2 = map(CAN0_engTemp.value, table[FAN_temperatureLesser][0], table[FAN_temperatureGreater][0], table[FAN_temperatureLesser][FAN_voltGreater], table[FAN_temperatureGreater][FAN_voltGreater]);
 
 
 
-  // now, map the opposite direction in the table, by mapping the actual rpm between the min and max in the table
-  // to the results of the previous map
-  int fanSpeed = map(BatteryVoltAvg, table[0][FAN_voltLesser], table[0][FAN_voltGreater], map1, map2);
+    // now, map the opposite direction in the table, by mapping the actual rpm between the min and max in the table
+    // to the results of the previous map
+    fanSpeed = map(BatteryVoltAvg, table[0][FAN_voltLesser], table[0][FAN_voltGreater], map1, map2);
+  }
 
+  //if the car is off run the fan shutdown precedure
+  //this precedure works by keeping the fans running for a period of time after
+  //the car has been shutoff if the engine temp was above a certin threshold.
+  else
+  {
+
+    //check to see if the shutdown should be calculated to enable the fans
+    if( fanShutdownTime == 0 && CAN0_engTemp.value > fanShutdownTemp )
+    {
+      //calculate the shutdown time by multpilying enginetemp by a factor and
+      //then adding it to the current time
+      fanShutdownTime = millis() + (long(CAN0_engTemp.value - fanShutdownTemp)*fanShutdownFactor);
+    }
+
+    //if the shutdown time has not been reached, turn the fans on
+    if( fanShutdownTime > millis() )
+    {
+      fanSpeed = 10;
+    }
+
+    //else turn the fans off
+    else
+    {
+      fanSpeed = 0;
+    }
+
+  }
 
 
   return fanSpeed;
@@ -1661,20 +1876,48 @@ int WATER_PUMP_PERCENT(int table[WP_numTempEntries][WP_numRPMEntries])
 // Returns percentage (0-100) of maximum pump speed
 // -----------------------------------------------------------------------------------------------------------------------
 {
-  // map the actual temp input between the max and min temp in the table,
-  // to the corresponding bottom and top rates found in rpmLesser
-  int map1 = map(CAN0_engTemp.value, table[WP_temperatureLesser][0], table[WP_temperatureGreater][0], table[WP_temperatureLesser][WP_rpmLesser], table[WP_temperatureGreater][WP_rpmLesser]);
+
+  int pumpSpeed = 0;
+
+  if(carOn)
+  {
+    wpShutdownTime = 0;
+
+    // map the actual temp input between the max and min temp in the table,
+    // to the corresponding bottom and top rates found in rpmLesser
+    int map1 = map(CAN0_engTemp.value, table[WP_temperatureLesser][0], table[WP_temperatureGreater][0], table[WP_temperatureLesser][WP_rpmLesser], table[WP_temperatureGreater][WP_rpmLesser]);
 
 
-  // do the same as map1, only map it to the corresponding rpmLesser values in the fan table
-  int map2 = map(CAN0_engTemp.value, table[WP_temperatureLesser][0], table[WP_temperatureGreater][0], table[WP_temperatureLesser][WP_rpmGreater], table[WP_temperatureGreater][WP_rpmGreater]);
+    // do the same as map1, only map it to the corresponding rpmLesser values in the fan table
+    int map2 = map(CAN0_engTemp.value, table[WP_temperatureLesser][0], table[WP_temperatureGreater][0], table[WP_temperatureLesser][WP_rpmGreater], table[WP_temperatureGreater][WP_rpmGreater]);
 
 
-  // now, map the opposite direction in the table, by mapping the actual rpm between the min and max in the table
-  // to the results of the previous map
-  int pumpSpeed = map(CAN0_rpm.value, table[0][WP_rpmLesser], table[0][WP_rpmGreater], map1, map2);
+    // now, map the opposite direction in the table, by mapping the actual rpm between the min and max in the table
+    // to the results of the previous map
+    pumpSpeed = map(CAN0_rpm.value, table[0][WP_rpmLesser], table[0][WP_rpmGreater], map1, map2);
+  }
+  else
+  {
+    //check to see if the shutdown should be calculated to enable the fans
+    if( wpShutdownTime == 0 && CAN0_engTemp.value > wpShutdownTemp )
+    {
+      //calculate the shutdown time by multpilying enginetemp by a factor and
+      //then adding it to the current time
+      wpShutdownTime = millis() + (long(CAN0_engTemp.value - wpShutdownTemp)*wpShutdownFactor);
+    }
 
+    //if the shutdown time has not been reached, turn the fans on
+    if( wpShutdownTime > millis() )
+    {
+      pumpSpeed = 10;
+    }
 
+    //else turn the fans off
+    else
+    {
+      pumpSpeed = 0;
+    }
+  }
 
   return pumpSpeed;
 }
@@ -1823,11 +2066,11 @@ uint8_t BRAKE_LIGHT_STATE(int FR_pressure, int FL_pressure, int RR_pressure, int
 
   if ( power )
   {
-    return HIGH;
+    return 255; //PWM value between 0-255
   }
   else
   {
-    return LOW;
+    return 0;
   }
 }
 
