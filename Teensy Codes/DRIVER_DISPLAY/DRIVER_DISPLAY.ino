@@ -126,13 +126,13 @@ const int batteryProtection1 = 1150;
 const int batteryProtection2 = 1050;
 
 //initialize rpm bar constants--------------
-const int rpmMax = 13500;
+const int rpmMax = 11850;
 const int rpmMin = 1400;
 const int shiftPoint = 12000;
 
 //intialize throttle position bar constants--------
 
-const int ledBrightness = 150;       //Value between 0-255 -- 10 for nighttime value, 255 for daylight
+const int ledBrightness = 255;       //Value between 0-255 -- 10 for nighttime value, 255 for daylight
 const int ledBrightnessFlash = 150; //Value between 0-255
 
 //initialize timers---------------------------
@@ -394,21 +394,21 @@ void canDecode()
 
       // from C50, message ID 16
       case 0x18: //(0x18 in hex)
-      
+
         // the c50 is weird, and the multiplexor is in the first two bits;
         Serial.println(rxMultID);
-        
+
         switch(rxMultID)
         {
-          
+
           // multiplexor ID 1
           case 0x1:
             CAN0_tc.value = rxData[6] *256 + rxData[7];
             Serial.print("CAN0_tc.value: "); Serial.println(CAN0_tc.value);
             break;
-            
+
         }
-        
+
         // break out of 0x18 ID
         break;
 
@@ -524,7 +524,7 @@ void tcReadout()
     tftRight.setTextColor(ILI9340_WHITE, ILI9340_BLACK);
   }
 
-  
+
   tftRight.setTextSize(16);
   tftRight.print(out);
 }

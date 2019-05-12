@@ -189,7 +189,7 @@ int BOARD_temp;
 // initialize state variables for BRAKE LIGHT
 uint8_t BLIGHT_state = 0;
 uint8_t BLIGHT_statePrev = 0;
-int BLIGHT_minPressure = 200; // in CAN format (psi * 10)
+int BLIGHT_minPressure = 750; // in CAN format (psi * 10)
 
 
 //------------------------------------------------------------------------------
@@ -608,6 +608,7 @@ void loop() {
     if (FANL_livePWM != FANL_livePWM2) {FANL_livePWM2 = FANL_livePWM; analogWrite(A6, FANL_livePWM);}
     if (FANR_livePWM != FANR_livePWM2) {FANR_livePWM2 = FANR_livePWM; analogWrite(A7, FANR_livePWM);}
     if (WP_livePWM != WP_livePWM2) {WP_livePWM2 = WP_livePWM; analogWrite(A8, WP_livePWM);}
+    //analogWrite(A8, 255); -- MIS PUMP ISSUE TESTING
   }
 
 
