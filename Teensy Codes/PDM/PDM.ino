@@ -424,14 +424,6 @@ void setup() {
   //WP_CURRENT.z2          = 1;
 
 
-  WP_CURRENT.Name        = "WP_CURRENT";
-  WP_CURRENT.pin         = A22;
-  WP_CURRENT.zeroMVolt10 = 16390; // mV*10
-  WP_CURRENT.mV10unit    = 264; // mV*10 per sensor unit
-  WP_CURRENT.scaleFact   = 0.01;
-  //WP_CURRENT.z1          = 0;
-  //WP_CURRENT.z2          = 1;
-
 
   PDM_CURRENT.Name        = "PDM_CURRENT";
   PDM_CURRENT.pin         = A9;
@@ -498,6 +490,15 @@ void setup() {
   FANR_VOLTAGE.z2          = 10000.0000;
 
 
+  WP_CURRENT.Name        = "WP_VOLTAGE";
+  WP_CURRENT.pin         = A22;
+  WP_CURRENT.zeroMVolt10 = 0; // mV*10
+  WP_CURRENT.mV10unit    = 10; // mV*10 per sensor unit
+  WP_CURRENT.scaleFact   = 0.1;
+  WP_CURRENT.z1          = 39000.0000;
+  WP_CURRENT.z2          = 10000.0000;
+
+
 
 
   BOARD_TEMP.Name         = "BOARD_TEMP";
@@ -536,24 +537,27 @@ void setup() {
 
 
   // set the pins as inputs or outputs
-  pinMode(A0, INPUT); // Fuel Current Sensor
-  pinMode(A1, INPUT); // FanR Current Sensor
-  pinMode(A2, INPUT); // FanL Current Sensor
-  pinMode(A3, OUTPUT); // Brake Light Signal
-  pinMode(A4, INPUT); // WP Current Sensor
-  pinMode(A5, INPUT); // PDM Voltage
-  pinMode(A6, OUTPUT); // FanL Signal
-  pinMode(A7, OUTPUT); // FanR Signal
-  pinMode(A8, OUTPUT); // Water Pump Signal
-  pinMode(A9, INPUT); // PDM Current Sense
-  pinMode(13, OUTPUT); // Onboard LED
-  pinMode(A16, INPUT); // Board Temperature
-  pinMode(A17, INPUT); // Data Voltage
-  pinMode(A18, INPUT); // Main Voltage
-  pinMode(A19, INPUT); // Fuel Voltage
-  pinMode(A20, INPUT); // FanL Voltage
-  pinMode(A21, INPUT); // FanR Voltage
-  pinMode(A22, INPUT); // WP Voltage
+  pinMode(FUEL_CURRENT.pin, INPUT);
+  pinMode(FANR_CURRENT.pin, INPUT);
+  pinMode(FANL_CURRENT.pin, INPUT);
+  pinMode(WP_CURRENT.pin, INPUT);
+  pinMode(PDM_CURRENT.pin, INPUT);
+
+  pinMode(PDM_VOLTAGE.pin, INPUT);
+  pinMode(DATA_VOLTAGE.pin, INPUT);
+  pinMode(MAIN_VOLTAGE.pin, INPUT);
+  pinMode(FUEL_VOLTAGE.pin, INPUT);
+  pinMode(FANL_VOLTAGE.pin, INPUT);
+  pinMode(FANR_VOLTAGE.pin, INPUT);
+  pinMode(WP_VOLTAGE.pin, INPUT);
+
+  pinMode(BLIGHT_OUT.pin, OUTPUT); // Brake Light Signal
+  pinMode(FANL_OUT.pin, OUTPUT); // FanL Signal
+  pinMode(FANR_OUT.pin, OUTPUT); // FanR Signal
+  pinMode(WP_OUT.pin, OUTPUT); // Water Pump Signal
+  pinMode(TEENSY_LED_OUT.pin, OUTPUT); // Onboard LED
+  pinMode(BOARD_TEMP.pin, INPUT); // Board Temperature
+
 
   //bounds for incoming CAN Messages----------
 
