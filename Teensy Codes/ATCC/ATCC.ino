@@ -425,7 +425,7 @@ static void analogReadSensor( sensor &SENSOR )
   SENSOR.count++;
 
   // uncomment to read raw values
-  Serial.print(SENSOR.sensName); Serial.print(" analog reads: "); Serial.println(SENSOR.readVal);
+  // Serial.print(SENSOR.sensName); Serial.print(" analog reads: "); Serial.println(SENSOR.readVal);
 
 
 }

@@ -166,7 +166,7 @@ output TEENSY_LED_OUT;
 
 
 // minimum pressure for brake light activation
-int BLIGHT_minPressure = 200; // in CAN format (psi * 10)
+int BLIGHT_minPressure = 750; // in CAN format (psi * 10)
 
 
 
@@ -537,92 +537,29 @@ void setup() {
 
 
   // set the pins as inputs or outputs
-  pinMode(FUEL_CURRENT.pin, INPUT);
-  pinMode(FANR_CURRENT.pin, INPUT);
-  pinMode(FANL_CURRENT.pin, INPUT);
-  pinMode(WP_CURRENT.pin, INPUT);
-  pinMode(PDM_CURRENT.pin, INPUT);
-
-  pinMode(PDM_VOLTAGE.pin, INPUT);
-  pinMode(DATA_VOLTAGE.pin, INPUT);
   pinMode(MAIN_VOLTAGE.pin, INPUT);
-  pinMode(FUEL_VOLTAGE.pin, INPUT);
-  pinMode(FANL_VOLTAGE.pin, INPUT);
-  pinMode(FANR_VOLTAGE.pin, INPUT);
-  pinMode(WP_VOLTAGE.pin, INPUT);
-
-  pinMode(BLIGHT_OUT.pin, OUTPUT); // Brake Light Signal
-  pinMode(FANL_OUT.pin, OUTPUT); // FanL Signal
-  pinMode(FANR_OUT.pin, OUTPUT); // FanR Signal
-  pinMode(WP_OUT.pin, OUTPUT); // Water Pump Signal
-  pinMode(TEENSY_LED_OUT.pin, OUTPUT); // Onboard LED
-  pinMode(BOARD_TEMP.pin, INPUT); // Board Temperature
-
-
-  //bounds for incoming CAN Messages----------
-
-  //Sensor Name             //logged value
-
-  //Engine RPM
-  CAN0_rpm.lowerBound = -100; //-10
-  CAN0_rpm.upperBound = 17000; //17000
-
-  //Engine Temp
-  CAN0_engTemp.lowerBound = -100; //-10C
-  CAN0_engTemp.upperBound = 1800; //180C
-
-  //Between Radiator Temp
-  CAN1_betweenRadTemp.lowerBound = -100; //-10C
-  CAN1_betweenRadTemp.upperBound = 1800; //180C
-
-  //Right Radiator Inlet Temp
-  CAN1_rightRadInTemp.lowerBound = -100; //-10C
-  CAN1_rightRadInTemp.upperBound = 1800; //180C
-
-  //Left Radiator Outlet Temp
-  CAN1_leftRadOutTemp.lowerBound = -100; //-10C
-  CAN1_leftRadOutTemp.upperBound = 1800; //180C
-
-  //RR Brake Pressure
-  CAN1_brakePressureRR.lowerBound = -100;
-  CAN1_brakePressureRR.upperBound = 2000;
-
-  //RL Brake Pressure
-  CAN1_brakePressureRL.lowerBound = -100;
-  CAN1_brakePressureRL.upperBound = 2000;
-
-  //FR Brake Pressure
-  CAN1_brakePressureFR.lowerBound = -100;
-  CAN1_brakePressureFR.upperBound = 2000;
-
-  //FL Brake Pressure
-  CAN1_brakePressureFL.lowerBound = -100;
-  CAN1_brakePressureFL.upperBound = 2000;
-
-
-//  // begin GPS initialization
-//  Serial1.begin(9600);
-//
-//  char a[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x35,0x31,0x2C,0x31,0x31,0x35,0x32,0x30,0x30,0x2A,0x31,0x46,0x0D,0x0A};
-//  char b[] = {0x24,0x50,0x4D,0x54,0x4B,0x32,0x32,0x30,0x2C,0x31,0x30,0x30,0x2A,0x32,0x46,0x0D,0x0A};
-//
-//  delay(2000);
-//  Serial1.write(a);
-//  delay(500);
-//  Serial1.end();
-//
-//  delay(1000);
-//
-//  Serial1.begin(115200);
-//  delay(500);
-//  Serial1.write(b);
-//  delay(500);
-//  Serial1.end();
-//  // END GPS initialization
+  pinMode(  FUEL_CURRENT.pin,  INPUT);
+  pinMode(  FANR_CURRENT.pin,  INPUT);
+  pinMode(  FANL_CURRENT.pin,  INPUT);
+  pinMode(    WP_CURRENT.pin,  INPUT);
+  pinMode(   PDM_CURRENT.pin,  INPUT);
+  pinMode(   PDM_VOLTAGE.pin,  INPUT);
+  pinMode(  DATA_VOLTAGE.pin,  INPUT);
+  pinMode(  MAIN_VOLTAGE.pin,  INPUT);
+  pinMode(  FUEL_VOLTAGE.pin,  INPUT);
+  pinMode(  FANL_VOLTAGE.pin,  INPUT);
+  pinMode(  FANR_VOLTAGE.pin,  INPUT);
+  pinMode(    WP_VOLTAGE.pin,  INPUT);
+  pinMode(    BOARD_TEMP.pin,  INPUT);
+  pinMode(    BLIGHT_OUT.pin, OUTPUT);
+  pinMode(      FANL_OUT.pin, OUTPUT);
+  pinMode(      FANR_OUT.pin, OUTPUT);
+  pinMode(        WP_OUT.pin, OUTPUT);
+  pinMode(TEENSY_LED_OUT.pin, OUTPUT);
 
 
   // BRAKE LIGHT MORSE CODE "MSU"
-  int morseUnit = 100; // in millis
+  int morseUnit = 75; // in millis
   // dashes are 3 time units, dots are 1 time unit, and spaces between dashes and dots are 1 time unit
   // spaces between letters in words are 3 time units
   // words are seperated by silence equal to 7 time units
@@ -682,23 +619,29 @@ void setup() {
 
 }
 
-//------------------------------------------------------------------------------
-//
-//              LOOP
-//
-//------------------------------------------------------------------------------
 
-void loop() {
 
-  //analogWrite(A7, 100);
 
-  CAN_READ();
-  //----------------------------------------------------------------------------
-  //
-  //              Timer for LED Blink
-  //
-  //----------------------------------------------------------------------------
 
+
+
+
+
+
+
+
+
+void loop()
+// the main loop, where are functions are called
+{
+
+  // read the CAN busses every loop to ensure that no messages are missed
+  readCAN();
+
+
+
+
+  // switch the teensy led on or off depending on its previous state
   if ( millis() - LEDTimer >= 25)
   {
     LEDTimer = millis();
@@ -708,13 +651,15 @@ void loop() {
     else if ( LED_on == true ){ digitalWrite(13, LOW); LED_on = false; }
   }
 
+
+
+
   //----------------------------------------------------------------------------
   //
   //              Get Fan and Water Pump Speeds
   //
   //----------------------------------------------------------------------------
 
-  // Left Fan
   if (millis() - PWM_calc_timer >= 50)
   {
     PWM_calc_timer = millis();
@@ -828,93 +773,32 @@ bool car_on()
 }
 
 
-static void ANA_READ( int sensGroup )
+
+
+
+static void analogReadSensor( sensor &SENSOR )
+// calls the analogRead function for the specified sensor
+// determines if the read values are mins or maxes; modifies globals
+// adds the value to the average, adds one to the counter globals
+// note: the "&" allows us to operate on the original variable, rather than
+// initializing new ones for this function's scope.
 {
 
-  //----------------------------------------------------------------------------
-  // Reads the analog value of the pins ( 0 - 8191) and
-  // assigns it to the correct SensVal
-  //----------------------------------------------------------------------------
+  // read the sensor
+  SENSOR.readVal = analogRead(SENSOR.pin);
 
-  switch ( sensGroup ) {
+  // determine if its a min or max
+  if      ( SENSOR.readVal < SENSOR.readMin ){ SENSOR.readMin = SENSOR.readVal; }
+  else if ( SENSOR.readVal > SENSOR.readMax ){ SENSOR.readMax = SENSOR.readVal; }
 
-    case 0:
+  // add to the average and the counter
+  SENSOR.readAvg = SENSOR.readAvg + SENSOR.readVal;
+  SENSOR.count++;
 
-      // Read Analog Pins ------------------------------------------
-
-      FUEL.currentSensVal   = analogRead(A0);   //Fuel Current Sense
-      FANR.currentSensVal   = analogRead(A1);   // FanR Current Sense
-      FANL.currentSensVal   = analogRead(A2);   // FanL Current Sense
-      //placeHolder         = analogRead(A3);   // Teensy Brake Sig
-      WP.currentSensVal     = analogRead(A4);   // WP Current Sense
-      PDM.voltSensVal       = analogRead(A5);   // PDM Voltage
-      //placeHolder         = analogRead(A6);   // FanL Signal
-      //placeHolder         = analogRead(A7);   // FanR Signal
-      //placeHolder         = analogRead(A8);   // Water Pump Signal
-      PDM.currentSensVal    = analogRead(A9);   // PDM Current Sense
-      //placeHolder         = analogRead(A10);
-      //placeHolder         = analogRead(A11);
-      //placeHolder         = analogRead(A12);
-      //placeHolder         = analogRead(A13);
-      //placeHolder         = analogRead(A14);
-      //placeHolder         = analogRead(A15);
-      //BOARD_temp          = analogRead(A16);  // Board Temperature
-      DATA.voltSensVal      = analogRead(A17);  // Data Voltage
-      MAIN.voltSensVal      = analogRead(A18);  // Main Voltage
-      FUEL.voltSensVal      = analogRead(A19);  // Fuel Voltage
-      FANL.voltSensVal      = analogRead(A20);  // FanL Voltage
-      FANR.voltSensVal      = analogRead(A21);  // FanR Voltage
-      WP.voltSensVal        = analogRead(A22);  // WP Voltage
-
-      // print what what the teensy is reading
-      // Serial.println();
-      // Serial.print("      Fuel current = "); Serial.println(FUEL.currentSensVal);
-      // Serial.print("      FanR current = "); Serial.println(FANR.currentSensVal);
-      // Serial.print("      FanL current = "); Serial.println(FANL.currentSensVal);
-      // Serial.print("Water Pump current = "); Serial.println(WP.currentSensVal);
-      // Serial.print("       PDM current = "); Serial.println(PDM.currentSensVal);
-      // Serial.print("      Data voltage = "); Serial.println(DATA.voltSensVal);
-      // Serial.print("      Main voltage = "); Serial.println(MAIN.voltSensVal);
-      // Serial.print("      Fuel voltage = "); Serial.println(FUEL.voltSensVal);
-      // Serial.print("      FanL voltage = "); Serial.println(FANL.voltSensVal);
-      // Serial.print("      FanR voltage = "); Serial.println(FANR.voltSensVal);
-      // Serial.print("Water Pump voltage = "); Serial.println(WP.voltSensVal);
+  // uncomment to read raw values
+  // Serial.print(SENSOR.sensName); Serial.print(" analog reads: "); Serial.println(SENSOR.readVal);
 
 
-
-      break;
-
-    case 1:
-
-      // Read Analog Pins ------------------------------------------
-
-      //FUEL.currentSensVal   = analogRead(A0);   //Fuel Current Sense
-      //FANR.currentSensVal   = analogRead(A1);   // FanR Current Sense
-      //FANL.currentSensVal   = analogRead(A2);   // FanL Current Sense
-      //placeHolder         = analogRead(A3);   // Teensy Brake Sig
-      //WP.currentSensVal     = analogRead(A4);   // WP Current Sense
-      //PDM.currentSensVal    = analogRead(A5);   // PDM Voltage
-      //placeHolder         = analogRead(A6);   // FanL Signal
-      //placeHolder         = analogRead(A7);   // FanR Signal
-      //placeHolder         = analogRead(A8);   // Water Pump Signal
-      //PDM.currentSensVal    = analogRead(A9);   // PDM Current Sense
-      //placeHolder         = analogRead(A10);
-      //placeHolder         = analogRead(A11);
-      //placeHolder         = analogRead(A12);
-      //placeHolder         = analogRead(A13);
-      //placeHolder         = analogRead(A14);
-      //placeHolder         = analogRead(A15);
-      BOARD_temp            = analogRead(A16);  // Board Temperature
-      //DATA.voltSensVal      = analogRead(A17);  // Data Voltage
-      //MAIN.voltSensVal      = analogRead(A18);  // Main Voltage
-      //FUEL.voltSensVal      = analogRead(A19);  // Fuel Voltage
-      //FANL.voltSensVal      = analogRead(A20);  // FanL Voltage
-      //FANR.voltSensVal      = analogRead(A21);  // FanR Voltage
-      //WP.voltSensVal        = analogRead(A22);  // WP Voltage
-
-      break;
-
-  }
 }
 
 
@@ -1616,11 +1500,9 @@ static void CAN_DATA_SEND(int id, int len, int busNo)
 
 
 
-void CAN_READ()
+void readCAN()
 {
-  //----------------------------------------------------------------------------
-  //              CAN 0
-  //----------------------------------------------------------------------------
+  // CAN0 -----
 
   if ( Can0.read(rxmsg) )
   {
@@ -1656,19 +1538,15 @@ void CAN_READ()
           // MultID 0x0
           case 0x0:
             CAN0_rpm.value = rxData[4] * 256 + rxData[5];
-
             CAN0_rpm.lastRecieve = millis();
 
-            check_canSensor_bounds(CAN0_rpm);
             break;
 
           // MultID 0x4
           case 0x4:
             CAN0_engTemp.value = rxData[4] * 256 + rxData[5];
-
             CAN0_engTemp.lastRecieve = millis();
 
-            check_canSensor_bounds(CAN0_engTemp);
             break;
         }
 
@@ -1702,25 +1580,21 @@ void CAN_READ()
         case 0x8C:
 
           CAN1_brakePressureFL.value = rxData[1] + rxData[2] * 256;
-          CAN1_brakePressureFR.value = rxData[3] + rxData[4] * 256;
-
           CAN1_brakePressureFL.lastRecieve = millis();
+
+          CAN1_brakePressureFR.value = rxData[3] + rxData[4] * 256;
           CAN1_brakePressureFR.lastRecieve = millis();
 
-          check_canSensor_bounds(CAN1_brakePressureFL);
-          check_canSensor_bounds(CAN1_brakePressureFR);
           break;
 
         // ATCCF_01
         case 0x8D:
           CAN1_brakePressureRL.value = rxData[1] + rxData[2] * 256;
-          CAN1_brakePressureRR.value = rxData[3] + rxData[4] * 256;
-
           CAN1_brakePressureRL.lastRecieve = millis();
+
+          CAN1_brakePressureRR.value = rxData[3] + rxData[4] * 256;
           CAN1_brakePressureRR.lastRecieve = millis();
 
-          check_canSensor_bounds(CAN1_brakePressureRL);
-          check_canSensor_bounds(CAN1_brakePressureRR);
           break;
       }
     }
@@ -1745,11 +1619,6 @@ void check_canSensor_bounds(canSensor &SENSOR)
     SENSOR.valid = true;
   }
 }
-
-
-
-
-
 
 
 
