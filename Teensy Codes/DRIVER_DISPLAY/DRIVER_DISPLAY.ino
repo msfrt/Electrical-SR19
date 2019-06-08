@@ -126,14 +126,14 @@ const int batteryProtection1 = 1150;
 const int batteryProtection2 = 1050;
 
 //initialize rpm bar constants--------------
-const int rpmMax = 11850;
+const int rpmMax = 14000;
 const int rpmMin = 1400;
 const int shiftPoint = 12000;
 
 //intialize throttle position bar constants--------
 
-const int ledBrightness = 255;       //Value between 0-255 -- 10 for nighttime value, 255 for daylight
-const int ledBrightnessFlash = 150; //Value between 0-255
+const int ledBrightness = 10;       //Value between 0-255 -- 10 for nighttime value, 255 for daylight
+const int ledBrightnessFlash = 10; //Value between 0-255
 
 //initialize timers---------------------------
 unsigned long rpmTimer = 0;
