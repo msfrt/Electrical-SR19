@@ -204,16 +204,16 @@ void setup() {
 
       FR_ROTOR_TEMP.sensName    = "FR_ROTOR_TEMP";
       FR_ROTOR_TEMP.pin         = A12;
-      FR_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
-      FR_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
+      FR_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
+      FR_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
       FR_ROTOR_TEMP.scaleFact   = 0.1;
       // FR_ROTOR_TEMP.z1          = 0;
       // FR_ROTOR_TEMP.z2          = 0;
 
       FL_ROTOR_TEMP.sensName    = "FL_ROTOR_TEMP";
       FL_ROTOR_TEMP.pin         = A15;
-      FL_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
-      FL_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
+      FL_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
+      FL_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
       FL_ROTOR_TEMP.scaleFact   = 0.1;
       // FR_ROTOR_TEMP.z1          = 0;
       // FR_ROTOR_TEMP.z2          = 0;
