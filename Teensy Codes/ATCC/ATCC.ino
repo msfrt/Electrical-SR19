@@ -204,16 +204,16 @@ void setup() {
 
       FR_ROTOR_TEMP.sensName    = "FR_ROTOR_TEMP";
       FR_ROTOR_TEMP.pin         = A12;
-      FR_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
-      FR_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
+      FR_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
+      FR_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
       FR_ROTOR_TEMP.scaleFact   = 0.1;
       // FR_ROTOR_TEMP.z1          = 0;
       // FR_ROTOR_TEMP.z2          = 0;
 
       FL_ROTOR_TEMP.sensName    = "FL_ROTOR_TEMP";
       FL_ROTOR_TEMP.pin         = A15;
-      FL_ROTOR_TEMP.zeroMVolt10 = 400; // mV*10
-      FL_ROTOR_TEMP.mV10unit    = 300; // mV*10 per sensor unit
+      FL_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
+      FL_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
       FL_ROTOR_TEMP.scaleFact   = 0.1;
       // FR_ROTOR_TEMP.z1          = 0;
       // FR_ROTOR_TEMP.z2          = 0;
@@ -348,8 +348,8 @@ void loop() {
         SensTimer100Hz = millis();
 
         // read the sensors
-        // analogReadSensor(FR_ROTOR_TEMP); - disabled, not set up
-        // analogReadSensor(FL_ROTOR_TEMP); - disabled, not set up
+        analogReadSensor(FR_ROTOR_TEMP);
+        analogReadSensor(FL_ROTOR_TEMP);
       }
 
 
@@ -425,7 +425,7 @@ static void analogReadSensor( sensor &SENSOR )
   SENSOR.count++;
 
   // uncomment to read raw values
-  Serial.print(SENSOR.sensName); Serial.print(" analog reads: "); Serial.println(SENSOR.readVal);
+  // Serial.print(SENSOR.sensName); Serial.print(" analog reads: "); Serial.println(SENSOR.readVal);
 
 
 }
@@ -610,8 +610,8 @@ void calculateAndLaunchCAN()
 
 
         // ATCCF_02
-        analogToSensorVal(FL_DAMPER_POS);
-        analogToSensorVal(FR_DAMPER_POS);
+        // analogToSensorVal(FL_DAMPER_POS);
+        // analogToSensorVal(FR_DAMPER_POS);
         msg.buf[0] = messageCount200Hz;
         msg.buf[1] = 0;//FL_DAMPER_POS.actualAvg; -- disabled, not in use
         msg.buf[2] = 0;//FL_DAMPER_POS.actualAvg >> 8;
@@ -640,7 +640,7 @@ void calculateAndLaunchCAN()
         // turn the raw numbers into the ones we can read over CAN.
         analogToSensorVal(FL_BRAKE_PRESSURE);
         analogToSensorVal(FR_BRAKE_PRESSURE);
-        analogToSensorVal(TRACK_TEMP);
+        // analogToSensorVal(TRACK_TEMP);
         // put the results into a message buffer
         msg.buf[0] = messageCount50Hz; // counter
         msg.buf[1] = FL_BRAKE_PRESSURE.actualAvg;
@@ -655,9 +655,9 @@ void calculateAndLaunchCAN()
 
 
         // ATCCF_01
-        analogToSensorVal(RL_BRAKE_PRESSURE);
-        analogToSensorVal(RR_BRAKE_PRESSURE);
-        analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
+        // analogToSensorVal(RL_BRAKE_PRESSURE);
+        // analogToSensorVal(RR_BRAKE_PRESSURE);
+        // analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
         msg.buf[0] = messageCount50Hz;
         msg.buf[1] = 0;//RL_BRAKE_PRESSURE.actualAvg; -- disabled due to faulty sensor
         msg.buf[2] = 0;//RL_BRAKE_PRESSURE.actualAvg >> 8;
@@ -685,10 +685,10 @@ void calculateAndLaunchCAN()
         analogToSensorVal(FL_ROTOR_TEMP);
         analogToSensorVal(FR_ROTOR_TEMP);
         msg.buf[0] = messageCount10Hz;
-        msg.buf[1] = 0;//FL_ROTOR_TEMP.actualAvg; -- disabled, not in use
-        msg.buf[2] = 0;//FL_ROTOR_TEMP.actualAvg >> 8;
-        msg.buf[3] = 0;//FR_ROTOR_TEMP.actualAvg; -- disabled, not in use
-        msg.buf[4] = 0;//FR_ROTOR_TEMP.actualAvg >> 8;
+        msg.buf[1] = FL_ROTOR_TEMP.actualAvg;
+        msg.buf[2] = FL_ROTOR_TEMP.actualAvg >> 8;
+        msg.buf[3] = FR_ROTOR_TEMP.actualAvg;
+        msg.buf[4] = FR_ROTOR_TEMP.actualAvg >> 8;
         msg.buf[5] = 0;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
@@ -763,7 +763,7 @@ void sendCAN(int id, int len, int busNo)
   switch(busNo)
   {
     case 1:
-      Can0.write(msg);  // this is send the static
+      Can0.write(msg); // let er rip
       break;
   }
 
