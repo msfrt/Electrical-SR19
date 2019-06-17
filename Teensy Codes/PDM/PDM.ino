@@ -1500,6 +1500,22 @@ void CAN_READ()
 
     switch(rxID)
     {
+
+      // from atcc
+      case 0x8F:
+        // relay rotor temps with ID 69 hehehe
+        msg.buf[0] = rxData[0];
+        msg.buf[1] = rxData[1];
+        msg.buf[2] = rxData[2];
+        msg.buf[3] = rxData[3];
+        msg.buf[4] = rxData[4];
+        msg.buf[5] = 0;
+        msg.buf[6] = 0;
+        msg.buf[7] = 0;
+        CAN_DATA_SEND(69, 8, 0);
+
+        break;
+
       // MOTEC M400 MESSAGES *KEEP AT TOP*
       // M400_dataSet2
       // ID 0x5F0

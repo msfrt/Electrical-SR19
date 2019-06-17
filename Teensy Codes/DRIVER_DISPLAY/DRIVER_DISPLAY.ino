@@ -343,6 +343,13 @@ void canDecode()
     switch(rxID)
     {
 
+      // to read msg from pdm
+      case 69:
+        CAN0_rpm.value = rxData[1] + rxData[2] * 256;
+
+        CAN0_engTemp.value = rxData[3] + rxData[4] * 256;
+        break;
+
       // MOTEC M400 MESSAGES *KEEP AT TOP*
 
       // M400_dataSet2
@@ -356,7 +363,6 @@ void canDecode()
           // MultID 0x0
           case 0x0:
             CAN0_batteryVoltage.value = rxData[2] * 256 + rxData[3];
-            CAN0_rpm.value = rxData[4] * 256 + rxData[5];
             break;
 
           // MultID 0x4
@@ -529,18 +535,25 @@ void tcReadout()
   tftRight.print(out);
 }
 
+// use for front left rotor temp
 void rpmReadout()
 {
+  // factor down by 10
+  double engineTempDouble = (double)CAN0_rpm.value;
+  engineTempDouble /= 10;
+
   char out[6];
-  sprintf(out, "%05d", CAN0_rpm.value);
+  sprintf(out, "%5.1f", engineTempDouble);
 
   tftLeft.setCursor(170, rpmScreenPos);
   tftLeft.setTextColor(rpmColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
   tftLeft.print(out);
-  // Serial.println(out);
+  Serial.print("CAN: "); Serial.println(CAN0_rpm.value);
+  Serial.println(out);
 }
 
+// use for front right rotor temp
 void engineTemperatureReadout()
 {
   // factor down by 10
@@ -725,13 +738,13 @@ void clearScreens()
   tftLeft.setCursor(1, rpmScreenPos);
   tftLeft.setTextColor(rpmColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
-  tftLeft.print("RPM:");
+  tftLeft.print("FL:");
 
   // Print "ENG:"
   tftLeft.setCursor(1, engineTempScreenPos);
   tftLeft.setTextColor(engineTemperatureColor, ILI9340_BLACK);
   tftLeft.setTextSize(5);
-  tftLeft.print("ENG:");
+  tftLeft.print("FR:");
 
   //Print "OILT:"
   tftLeft.setCursor(1, oilTempScreenPos);
