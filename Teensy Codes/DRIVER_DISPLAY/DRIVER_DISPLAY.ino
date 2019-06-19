@@ -132,7 +132,7 @@ const int shiftPoint = 12000;
 
 //intialize throttle position bar constants--------
 
-const int ledBrightness = 10;       //Value between 0-255 -- 10 for nighttime value, 255 for daylight
+const int ledBrightness = 255;       //Value between 0-255 -- 10 for nighttime value, 255 for daylight
 const int ledBrightnessFlash = 10; //Value between 0-255
 
 //initialize timers---------------------------
