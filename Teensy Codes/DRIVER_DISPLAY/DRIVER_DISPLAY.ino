@@ -1027,64 +1027,51 @@ void rpmBar()
 
 
 
-// copy of rpm bar function with temporary ability for throttle
-void throttleBar()
+// give the driver an oil pressure warning
+void oilBarBar()
 {
 
-  int ledValue = map(CAN0_throttle.value, 0, 1000, 0, 600);
+  double oilPressureDouble = (double)CAN0_oilPressure.value;
+  oilPressureDouble /= 10;
 
-  //         .setPixelColor(LED#, red, green, blue)
-  //----------------------------------------------------------------------------
-  if (ledValue > 450 && ledValue <= 600)
-  {
-    pixelsRight.setPixelColor(3,  ledValue - 450, 0, 0);
+  // oil pressure warning limit in psi
+  double pressureLimit = 5;
 
-    // Turn these LEDs on
-    pixelsRight.setPixelColor(2, 150, 50, 0);
-    pixelsRight.setPixelColor(1, 75, 150, 0);
-    pixelsRight.setPixelColor(0, 0, 150, 0);
+  // rpm to check oil pressure above - idle is around 2000
+  double rpmLimit = 2500
 
+  if ((oilPressureDouble <= pressureLimit) && (CAN0_rpm.value > rpmLimit)){
+  	// illuminate the right LEDS red
+  	pixelsRight.setPixelColor(0, 255, 0, 0);
+  	pixelsRight.setPixelColor(1, 255, 0, 0);
+  	pixelsRight.setPixelColor(2, 255, 0, 0);
+  	pixelsRight.setPixelColor(3, 255, 0, 0);
 
+  	// illuminate the left LEDs red
+  	pixelsLeft.setPixelColor(0, 255, 0, 0);
+  	pixelsLeft.setPixelColor(1, 255, 0, 0);
+  	pixelsLeft.setPixelColor(2, 255, 0, 0);
+  	pixelsLeft.setPixelColor(3, 255, 0, 0);
 
   }
+  else {
+	//turn them all off
+	pixelsRight.setPixelColor(0, 0, 0, 0);
+	pixelsRight.setPixelColor(1, 0, 0, 0);
+	pixelsRight.setPixelColor(2, 0, 0, 0);
+	pixelsRight.setPixelColor(3, 0, 0, 0);
 
-  //----------------------------------------------------------------------------
-  else if (ledValue > 300 && ledValue <= 450)
-  {
-    pixelsRight.setPixelColor(2,  ledValue - 300, (ledValue - 300) / 3 , 0);
-
-    // Turn these LEDs on
-    pixelsRight.setPixelColor(1, 50, 150, 0);
-    pixelsRight.setPixelColor(0, 0, 150, 0);
-
-    // Turn these LEDs off
-    pixelsRight.setPixelColor(3, 0, 0, 0);
+	// illuminate the left LEDs red
+	pixelsLeft.setPixelColor(0, 0, 0, 0);
+	pixelsLeft.setPixelColor(1, 0, 0, 0);
+	pixelsLeft.setPixelColor(2, 0, 0, 0);
+	pixelsLeft.setPixelColor(3, 0, 0, 0);
   }
 
-  //----------------------------------------------------------------------------
-  else if (ledValue > 150 && ledValue <= 300)
-  {
-    pixelsRight.setPixelColor(1,  (ledValue / 3) - 50, ledValue - 150 , 0);
-
-    // Turn these LEDs on
-    pixelsRight.setPixelColor(0, 0, 150, 0);
-
-    // Turn these LEDs off
-    pixelsRight.setPixelColor(2, 0, 0, 0);
-    pixelsRight.setPixelColor(3, 0, 0, 0);
-  }
-
-  //----------------------------------------------------------------------------
-  else
-  {
-    pixelsRight.setPixelColor(0, 0, ledValue, 0);
-
-    // Turn these LEDs off
-    for (int led = 1; led <= 3; led++)
-      pixelsTop.setPixelColor(led, 0, 0, 0);
-  }
-  //----------------------------------------------------------------------------
+  // show them
+  pixelsLeft.show();
   pixelsRight.show();
+
 }
 
 
