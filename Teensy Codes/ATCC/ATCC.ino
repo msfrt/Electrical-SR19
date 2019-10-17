@@ -283,6 +283,12 @@ void setup() {
       pinMode(FL_ROTOR_TEMP.pin,            INPUT);
       pinMode(FL_BRAKE_PRESSURE.pin,        INPUT);
       pinMode(WATER_TEMP_BETWEEN_RADS.pin,  INPUT);
+      pinMode(TIRETEMP_FL_I.pin,            INPUT);
+      pinMode(TIRETEMP_FL_M.pin,            INPUT);
+      pinMode(TIRETEMP_FL_O.pin,            INPUT);
+      pinMode(TIRETEMP_FR_I.pin,            INPUT);
+      pinMode(TIRETEMP_FR_M.pin,            INPUT);
+      pinMode(TIRETEMP_FR_O.pin,            INPUT);
 
       break;
 
