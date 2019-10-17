@@ -103,6 +103,8 @@ typedef struct
 sensor FR_DAMPER_POS, FL_DAMPER_POS, TRACK_TEMP, FR_BRAKE_PRESSURE;
 sensor FL_BRAKE_PRESSURE, RR_BRAKE_PRESSURE, RL_BRAKE_PRESSURE;
 sensor WATER_TEMP_BETWEEN_RADS, FR_ROTOR_TEMP, FL_ROTOR_TEMP;
+sensor TIRETEMP_FL_I, TIRETEMP_FL_M, TIRETEMP_FL_O; // inner, middle outer
+sensor TIRETEMP_FR_I, TIRETEMP_FR_M, TIRETEMP_FR_O; // inner, middle outer
 
 // rear ATCC
 sensor RR_DAMPER_POS, RL_DAMPER_POS, RIGHT_RAD_TEMP, LEFT_RAD_TEMP;
@@ -217,6 +219,56 @@ void setup() {
       FL_ROTOR_TEMP.scaleFact   = 0.1;
       // FR_ROTOR_TEMP.z1          = 0;
       // FR_ROTOR_TEMP.z2          = 0;
+
+      TIRETEMP_FL_I.sensName    = "TIRETEMP_FL_I";
+      TIRETEMP_FL_I.pin         = A15;
+      TIRETEMP_FL_I.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_FL_I.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_FL_I.scaleFact   = 0.1;
+      // TIRETEMP_FL_I.z1          = 0;
+      // TIRETEMP_FL_I.z2          = 0;
+
+      TIRETEMP_FL_M.sensName    = "TIRETEMP_FL_M";
+      TIRETEMP_FL_M.pin         = A15;
+      TIRETEMP_FL_M.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_FL_M.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_FL_M.scaleFact   = 0.1;
+      // TIRETEMP_FL_M.z1          = 0;
+      // TIRETEMP_FL_M.z2          = 0;
+
+      TIRETEMP_FL_O.sensName    = "TIRETEMP_FL_O";
+      TIRETEMP_FL_O.pin         = A15;
+      TIRETEMP_FL_O.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_FL_O.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_FL_O.scaleFact   = 0.1;
+      // TIRETEMP_FL_O.z1          = 0;
+      // TIRETEMP_FL_O.z2          = 0;
+
+      TIRETEMP_FR_I.sensName    = "TIRETEMP_FR_I";
+      TIRETEMP_FR_I.pin         = A15;
+      TIRETEMP_FR_I.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_FR_I.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_FR_I.scaleFact   = 0.1;
+      // TIRETEMP_FR_I.z1          = 0;
+      // TIRETEMP_FR_I.z2          = 0;
+
+      TIRETEMP_FR_M.sensName    = "TIRETEMP_FR_M";
+      TIRETEMP_FR_M.pin         = A15;
+      TIRETEMP_FR_M.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_FR_M.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_FR_M.scaleFact   = 0.1;
+      // TIRETEMP_FR_M.z1          = 0;
+      // TIRETEMP_FR_M.z2          = 0;
+
+      TIRETEMP_FR_O.sensName    = "TIRETEMP_FR_O";
+      TIRETEMP_FR_O.pin         = A15;
+      TIRETEMP_FR_O.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_FR_O.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_FR_O.scaleFact   = 0.1;
+      // TIRETEMP_FR_O.z1          = 0;
+      // TIRETEMP_FR_O.z2          = 0;
+
+
 
 
       // assign the pins output or input
