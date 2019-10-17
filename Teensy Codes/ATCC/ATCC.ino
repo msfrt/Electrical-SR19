@@ -103,12 +103,14 @@ typedef struct
 sensor FR_DAMPER_POS, FL_DAMPER_POS, TRACK_TEMP, FR_BRAKE_PRESSURE;
 sensor FL_BRAKE_PRESSURE, RR_BRAKE_PRESSURE, RL_BRAKE_PRESSURE;
 sensor WATER_TEMP_BETWEEN_RADS, FR_ROTOR_TEMP, FL_ROTOR_TEMP;
-sensor TIRETEMP_FL_I, TIRETEMP_FL_M, TIRETEMP_FL_O; // inner, middle outer
-sensor TIRETEMP_FR_I, TIRETEMP_FR_M, TIRETEMP_FR_O; // inner, middle outer
+sensor TIRETEMP_FL_I, TIRETEMP_FL_M, TIRETEMP_FL_O; // inner, middle, outer
+sensor TIRETEMP_FR_I, TIRETEMP_FR_M, TIRETEMP_FR_O; // inner, middle, outer
 
 // rear ATCC
 sensor RR_DAMPER_POS, RL_DAMPER_POS, RIGHT_RAD_TEMP, LEFT_RAD_TEMP;
 sensor RR_ROTOR_TEMP, RL_ROTOR_TEMP;
+sensor TIRETEMP_RL_I, TIRETEMP_RL_M, TIRETEMP_RL_O; // inner, middle, outer
+sensor TIRETEMP_RR_I, TIRETEMP_RR_M, TIRETEMP_RR_O; // inner, middle, outer
 
 // set the analog read resolution in bits (10 bits yeild an input 0-1023, etc.)
 // initialize a variable for a calculation of the readMaximum read value from pins
@@ -327,7 +329,80 @@ void setup() {
       RL_ROTOR_TEMP.mV10unit    = 0; // mV*10 per sensor unit
       RL_ROTOR_TEMP.scaleFact   = 0.1;
 
-      pinMode(13, OUTPUT); // Onboard LED
+      FR_ROTOR_TEMP.sensName    = "FR_ROTOR_TEMP";
+      FR_ROTOR_TEMP.pin         = A12;
+      FR_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
+      FR_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
+      FR_ROTOR_TEMP.scaleFact   = 0.1;
+      // FR_ROTOR_TEMP.z1          = 0;
+      // FR_ROTOR_TEMP.z2          = 0;
+
+      FL_ROTOR_TEMP.sensName    = "FL_ROTOR_TEMP";
+      FL_ROTOR_TEMP.pin         = A15;
+      FL_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
+      FL_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
+      FL_ROTOR_TEMP.scaleFact   = 0.1;
+      // FR_ROTOR_TEMP.z1          = 0;
+      // FR_ROTOR_TEMP.z2          = 0;
+
+      TIRETEMP_RL_I.sensName    = "TIRETEMP_RL_I";
+      TIRETEMP_RL_I.pin         = A15;
+      TIRETEMP_RL_I.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_RL_I.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_RL_I.scaleFact   = 0.1;
+      // TIRETEMP_FL_I.z1          = 0;
+      // TIRETEMP_FL_I.z2          = 0;
+
+      TIRETEMP_RL_M.sensName    = "TIRETEMP_RL_M";
+      TIRETEMP_RL_M.pin         = A15;
+      TIRETEMP_RL_M.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_RL_M.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_RL_M.scaleFact   = 0.1;
+      // TIRETEMP_RL_M.z1          = 0;
+      // TIRETEMP_RL_M.z2          = 0;
+
+      TIRETEMP_RL_O.sensName    = "TIRETEMP_RL_O";
+      TIRETEMP_RL_O.pin         = A15;
+      TIRETEMP_RL_O.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_RL_O.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_RL_O.scaleFact   = 0.1;
+      // TIRETEMP_RL_O.z1          = 0;
+      // TIRETEMP_RL_O.z2          = 0;
+
+      TIRETEMP_RR_I.sensName    = "TIRETEMP_RR_I";
+      TIRETEMP_RR_I.pin         = A15;
+      TIRETEMP_RR_I.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_RR_I.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_RR_I.scaleFact   = 0.1;
+      // TIRETEMP_RR_I.z1          = 0;
+      // TIRETEMP_RR_I.z2          = 0;
+
+      TIRETEMP_RR_M.sensName    = "TIRETEMP_RR_M";
+      TIRETEMP_RR_M.pin         = A15;
+      TIRETEMP_RR_M.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_RR_M.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_RR_M.scaleFact   = 0.1;
+      // TIRETEMP_RR_M.z1          = 0;
+      // TIRETEMP_RR_M.z2          = 0;
+
+      TIRETEMP_RR_O.sensName    = "TIRETEMP_RR_O";
+      TIRETEMP_RR_O.pin         = A15;
+      TIRETEMP_RR_O.zeroMVolt10 = 4000; // mV*10
+      TIRETEMP_RR_O.mV10unit    = 300; // mV*10 per sensor unit
+      TIRETEMP_RR_O.scaleFact   = 0.1;
+      // TIRETEMP_RR_O.z1          = 0;
+      // TIRETEMP_RR_O.z2          = 0;
+
+
+
+      // pin more initialization
+      pinMode(13,                           OUTPUT); // Onboard LED
+      pinMode(TIRETEMP_FL_I.pin,            INPUT);
+      pinMode(TIRETEMP_FL_M.pin,            INPUT);
+      pinMode(TIRETEMP_FL_O.pin,            INPUT);
+      pinMode(TIRETEMP_FR_I.pin,            INPUT);
+      pinMode(TIRETEMP_FR_M.pin,            INPUT);
+      pinMode(TIRETEMP_FR_O.pin,            INPUT);
 
 
       break;
