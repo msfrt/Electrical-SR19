@@ -495,6 +495,12 @@ void loop() {
         // read the sensors
         analogReadSensor(WATER_TEMP_BETWEEN_RADS);
         // analogReadSensor(TRACK_TEMP); - disabled, not set up
+        analogReadSensor(TIRETEMP_FL_I);
+        analogReadSensor(TIRETEMP_FL_M);
+        analogReadSensor(TIRETEMP_FL_O);
+        analogReadSensor(TIRETEMP_FR_I);
+        analogReadSensor(TIRETEMP_FR_M);
+        analogReadSensor(TIRETEMP_FR_O);
       }
 
 
@@ -515,7 +521,18 @@ void loop() {
     // main loop for rear ATCC
     case 1:
 
+      if (millis() - SensTimer50Hz >= 20) // was 20
+      {
+        SensTimer50Hz = millis();
 
+        // read the sensors
+        analogReadSensor(TIRETEMP_RL_I);
+        analogReadSensor(TIRETEMP_RL_M);
+        analogReadSensor(TIRETEMP_RL_O);
+        analogReadSensor(TIRETEMP_RR_I);
+        analogReadSensor(TIRETEMP_RR_M);
+        analogReadSensor(TIRETEMP_RR_O);
+      }
 
       break;
 
