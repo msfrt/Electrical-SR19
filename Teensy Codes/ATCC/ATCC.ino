@@ -925,7 +925,7 @@ void calculateAndLaunchCAN()
       {
         SendTimer50Hz = millis();
 
-        //ATCCF_04
+        //ATCCR_02
         analogToSensorVal(TIRETEMP_RL_I);
         analogToSensorVal(TIRETEMP_RL_M);
         analogToSensorVal(TIRETEMP_RL_O);
@@ -937,9 +937,9 @@ void calculateAndLaunchCAN()
         msg.buf[5] = TIRETEMP_RL_O.actualAvg >> 8;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
-        sendCAN(0x92, 8, 1);
+        sendCAN(0x94, 8, 1);
 
-        //ATCCF_05
+        //ATCCR_03
         analogToSensorVal(TIRETEMP_RR_I);
         analogToSensorVal(TIRETEMP_RR_M);
         analogToSensorVal(TIRETEMP_RR_O);
@@ -951,7 +951,7 @@ void calculateAndLaunchCAN()
         msg.buf[5] = TIRETEMP_RR_O.actualAvg >> 8;
         msg.buf[6] = 0;
         msg.buf[7] = 0;
-        sendCAN(0x93, 8, 1);
+        sendCAN(0x95, 8, 1);
 
       } // end 100Hz timer messages
       break;
