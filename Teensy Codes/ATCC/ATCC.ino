@@ -920,6 +920,40 @@ void calculateAndLaunchCAN()
         sendCAN(0x5, 8, 1);
 
       } // end 100Hz timer messages
+
+      if ( millis() - SendTimer50Hz >= 50 ) // changed for testing
+      {
+        SendTimer50Hz = millis();
+
+        //ATCCF_04
+        analogToSensorVal(TIRETEMP_RL_I);
+        analogToSensorVal(TIRETEMP_RL_M);
+        analogToSensorVal(TIRETEMP_RL_O);
+        msg.buf[0] = TIRETEMP_RL_I.actualAvg;
+        msg.buf[1] = TIRETEMP_RL_I.actualAvg >> 8;
+        msg.buf[2] = TIRETEMP_RL_M.actualAvg;
+        msg.buf[3] = TIRETEMP_RL_M.actualAvg >> 8;
+        msg.buf[4] = TIRETEMP_RL_O.actualAvg;
+        msg.buf[5] = TIRETEMP_RL_O.actualAvg >> 8;
+        msg.buf[6] = 0;
+        msg.buf[7] = 0;
+        sendCAN(0x92, 8, 1);
+
+        //ATCCF_05
+        analogToSensorVal(TIRETEMP_RR_I);
+        analogToSensorVal(TIRETEMP_RR_M);
+        analogToSensorVal(TIRETEMP_RR_O);
+        msg.buf[0] = TIRETEMP_RR_I.actualAvg;
+        msg.buf[1] = TIRETEMP_RR_I.actualAvg >> 8;
+        msg.buf[2] = TIRETEMP_RR_M.actualAvg;
+        msg.buf[3] = TIRETEMP_RR_M.actualAvg >> 8;
+        msg.buf[4] = TIRETEMP_RR_O.actualAvg;
+        msg.buf[5] = TIRETEMP_RR_O.actualAvg >> 8;
+        msg.buf[6] = 0;
+        msg.buf[7] = 0;
+        sendCAN(0x93, 8, 1);
+
+      } // end 100Hz timer messages
       break;
   }
 }
