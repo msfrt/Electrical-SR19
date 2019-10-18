@@ -808,15 +808,43 @@ void calculateAndLaunchCAN()
         // analogToSensorVal(RL_BRAKE_PRESSURE);
         // analogToSensorVal(RR_BRAKE_PRESSURE);
         // analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
-        msg.buf[0] = messageCount50Hz;
-        msg.buf[1] = 0;//RL_BRAKE_PRESSURE.actualAvg; -- disabled due to faulty sensor
-        msg.buf[2] = 0;//RL_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[3] = 0;//RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS
-        msg.buf[4] = 0;//RR_BRAKE_PRESSURE.actualAvg >> 8;
-        msg.buf[5] = WATER_TEMP_BETWEEN_RADS.actualAvg;
-        msg.buf[6] = WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
+        // msg.buf[0] = messageCount50Hz;
+        // msg.buf[1] = 0;//RL_BRAKE_PRESSURE.actualAvg; -- disabled due to faulty sensor
+        // msg.buf[2] = 0;//RL_BRAKE_PRESSURE.actualAvg >> 8;
+        // msg.buf[3] = 0;//RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS
+        // msg.buf[4] = 0;//RR_BRAKE_PRESSURE.actualAvg >> 8;
+        // msg.buf[5] = 0; //WATER_TEMP_BETWEEN_RADS.actualAvg;
+        // msg.buf[6] = 0; //WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
+        // msg.buf[7] = 0;
+        // sendCAN(0x8D, 8, 1);
+
+        //ATCCF_04
+        analogToSensorVal(TIRETEMP_FL_I);
+        analogToSensorVal(TIRETEMP_FL_M);
+        analogToSensorVal(TIRETEMP_FL_O);
+        msg.buf[0] = TIRETEMP_FL_I.actualAvg;
+        msg.buf[1] = TIRETEMP_FL_I.actualAvg >> 8;
+        msg.buf[2] = TIRETEMP_FL_M.actualAvg;
+        msg.buf[3] = TIRETEMP_FL_M.actualAvg >> 8;
+        msg.buf[4] = TIRETEMP_FL_O.actualAvg;
+        msg.buf[5] = TIRETEMP_FL_O.actualAvg >> 8;
+        msg.buf[6] = 0;
         msg.buf[7] = 0;
-        sendCAN(0x8D, 8, 1);
+        sendCAN(0x92, 8, 1);
+
+        //ATCCF_05
+        analogToSensorVal(TIRETEMP_FR_I);
+        analogToSensorVal(TIRETEMP_FR_M);
+        analogToSensorVal(TIRETEMP_FR_O);
+        msg.buf[0] = TIRETEMP_FR_I.actualAvg;
+        msg.buf[1] = TIRETEMP_FR_I.actualAvg >> 8;
+        msg.buf[2] = TIRETEMP_FR_M.actualAvg;
+        msg.buf[3] = TIRETEMP_FR_M.actualAvg >> 8;
+        msg.buf[4] = TIRETEMP_FR_O.actualAvg;
+        msg.buf[5] = TIRETEMP_FR_O.actualAvg >> 8;
+        msg.buf[6] = 0;
+        msg.buf[7] = 0;
+        sendCAN(0x93, 8, 1);
 
 
       } // end 50 Hz messages
