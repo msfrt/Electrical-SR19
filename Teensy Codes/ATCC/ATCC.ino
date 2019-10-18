@@ -222,6 +222,8 @@ void setup() {
       // FR_ROTOR_TEMP.z1          = 0;
       // FR_ROTOR_TEMP.z2          = 0;
 
+      // CHANGE THE PINS BEFORE LOADING
+
       TIRETEMP_FL_I.sensName    = "TIRETEMP_FL_I";
       TIRETEMP_FL_I.pin         = A15;
       TIRETEMP_FL_I.zeroMVolt10 = 4000; // mV*10
