@@ -1,14 +1,14 @@
 //------------------------------------------------------------------------------
 //
 //       ██████╗  ██████╗      ██████╗ ██████╗ ███████╗███████╗███╗   ██╗
-//      ██╔════╝ ██╔═══██╗    ██╔════╝ ██╔══██╗██╔════╝██╔════╝████╗  ██║
+//      ██╔════╝ ██╔═══██╗    ██╔════╝ ██╔══██╗██╔════╝██╔s════╝████╗  ██║
 //      ██║  ███╗██║   ██║    ██║  ███╗██████╔╝█████╗  █████╗  ██╔██╗ ██║
 //      ██║   ██║██║   ██║    ██║   ██║██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║
 //      ╚██████╔╝╚██████╔╝    ╚██████╔╝██║  ██║███████╗███████╗██║ ╚████║
 //       ╚═════╝  ╚═════╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝
 //
 //------------------------------------------------------------------------------
-//  Written by:     Dave Yonkers
+//  Written by:     Dave Yonkers!
 //  Created:        03/04/2019
 //  Purpose:        Send some 1s and 0s over a couple of twisted wires
 //  Description:    Analog-to-CAN converter code
@@ -19,7 +19,7 @@
 // before uploading, update the "ATCC" definition to the correct module
 // possible values:   0 : FRONT
 //                    1 : REAR
-#define ATCC 0
+#define ATCC 1
 
 
 // include and initialize CAN
@@ -301,54 +301,40 @@ void setup() {
     case 1:
 
       // sensor calibration
-      RR_DAMPER_POS.pin         = 0;
+      RR_DAMPER_POS.sensName    = "RR_DAMPER_POS";
+      RR_DAMPER_POS.pin         = A0;
       RR_DAMPER_POS.zeroMVolt10 = 0; // mV*10
       RR_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       RR_DAMPER_POS.scaleFact   = 0.1;
 
-      RL_DAMPER_POS.pin         = 0;
+      RL_DAMPER_POS.sensName    = "RL_DAMPER_POS";
+      RL_DAMPER_POS.pin         = A1;
       RL_DAMPER_POS.zeroMVolt10 = 0; // mV*10
       RL_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       RL_DAMPER_POS.scaleFact   = 0.1;
 
-      RIGHT_RAD_TEMP.pin         = 0;
-      RIGHT_RAD_TEMP.zeroMVolt10 = 0; // mV*10
-      RIGHT_RAD_TEMP.mV10unit    = 0; // mV*10 per sensor unit
+      RIGHT_RAD_TEMP.sensName    = "RIGHT_RAD_TEMP";
+      RIGHT_RAD_TEMP.pin         = A19;
       RIGHT_RAD_TEMP.scaleFact   = 0.1;
 
-      LEFT_RAD_TEMP.pin         = 0;
-      LEFT_RAD_TEMP.zeroMVolt10 = 0; // mV*10
-      LEFT_RAD_TEMP.mV10unit    = 0; // mV*10 per sensor unit
+      LEFT_RAD_TEMP.sensName    = "LEFT_RAD_TEMP";
+      LEFT_RAD_TEMP.pin         = A18;
       LEFT_RAD_TEMP.scaleFact   = 0.1;
 
-      RR_ROTOR_TEMP.pin         = 0;
-      RR_ROTOR_TEMP.zeroMVolt10 = 0; // mV*10
-      RR_ROTOR_TEMP.mV10unit    = 0; // mV*10 per sensor unit
+      RL_ROTOR_TEMP.sensName    = "RL_ROTOR_TEMP";
+      RR_ROTOR_TEMP.pin         = A15;
+      RR_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
+      RR_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
       RR_ROTOR_TEMP.scaleFact   = 0.1;
 
-      RL_ROTOR_TEMP.pin         = 0;
-      RL_ROTOR_TEMP.zeroMVolt10 = 0; // mV*10
-      RL_ROTOR_TEMP.mV10unit    = 0; // mV*10 per sensor unit
-      RL_ROTOR_TEMP.scaleFact   = 0.1;
-
-      FR_ROTOR_TEMP.sensName    = "FR_ROTOR_TEMP";
-      FR_ROTOR_TEMP.pin         = A12;
-      FR_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
-      FR_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
-      FR_ROTOR_TEMP.scaleFact   = 0.1;
-      // FR_ROTOR_TEMP.z1          = 0;
-      // FR_ROTOR_TEMP.z2          = 0;
-
-      FL_ROTOR_TEMP.sensName    = "FL_ROTOR_TEMP";
-      FL_ROTOR_TEMP.pin         = A15;
-      FL_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
-      FL_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
-      FL_ROTOR_TEMP.scaleFact   = 0.1;
-      // FR_ROTOR_TEMP.z1          = 0;
-      // FR_ROTOR_TEMP.z2          = 0;
+      RR_ROTOR_TEMP.sensName    = "RR_ROTOR_TEMP";
+      RR_ROTOR_TEMP.pin         = A12;
+      RR_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
+      RR_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
+      RR_ROTOR_TEMP.scaleFact   = 0.1;
 
       TIRETEMP_RL_I.sensName    = "TIRETEMP_RL_I";
-      TIRETEMP_RL_I.pin         = A15;
+      TIRETEMP_RL_I.pin         = A13;
       TIRETEMP_RL_I.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_RL_I.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_RL_I.scaleFact   = 0.1;
@@ -356,7 +342,7 @@ void setup() {
       // TIRETEMP_FL_I.z2          = 0;
 
       TIRETEMP_RL_M.sensName    = "TIRETEMP_RL_M";
-      TIRETEMP_RL_M.pin         = A15;
+      TIRETEMP_RL_M.pin         = A10;
       TIRETEMP_RL_M.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_RL_M.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_RL_M.scaleFact   = 0.1;
@@ -364,7 +350,7 @@ void setup() {
       // TIRETEMP_RL_M.z2          = 0;
 
       TIRETEMP_RL_O.sensName    = "TIRETEMP_RL_O";
-      TIRETEMP_RL_O.pin         = A15;
+      TIRETEMP_RL_O.pin         = A9;
       TIRETEMP_RL_O.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_RL_O.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_RL_O.scaleFact   = 0.1;
@@ -372,7 +358,7 @@ void setup() {
       // TIRETEMP_RL_O.z2          = 0;
 
       TIRETEMP_RR_I.sensName    = "TIRETEMP_RR_I";
-      TIRETEMP_RR_I.pin         = A15;
+      TIRETEMP_RR_I.pin         = A16;
       TIRETEMP_RR_I.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_RR_I.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_RR_I.scaleFact   = 0.1;
@@ -380,7 +366,7 @@ void setup() {
       // TIRETEMP_RR_I.z2          = 0;
 
       TIRETEMP_RR_M.sensName    = "TIRETEMP_RR_M";
-      TIRETEMP_RR_M.pin         = A15;
+      TIRETEMP_RR_M.pin         = A11;
       TIRETEMP_RR_M.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_RR_M.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_RR_M.scaleFact   = 0.1;
@@ -388,7 +374,7 @@ void setup() {
       // TIRETEMP_RR_M.z2          = 0;
 
       TIRETEMP_RR_O.sensName    = "TIRETEMP_RR_O";
-      TIRETEMP_RR_O.pin         = A15;
+      TIRETEMP_RR_O.pin         = A8;
       TIRETEMP_RR_O.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_RR_O.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_RR_O.scaleFact   = 0.1;
@@ -399,6 +385,12 @@ void setup() {
 
       // pin more initialization
       pinMode(13,                           OUTPUT); // Onboard LED
+      pinMode(RR_DAMPER_POS.pin,            INPUT);
+      pinMode(RL_DAMPER_POS.pin,            INPUT);
+      pinMode(RIGHT_RAD_TEMP.pin,           INPUT);
+      pinMode(LEFT_RAD_TEMP.pin,            INPUT);
+      pinMode(RL_ROTOR_TEMP.pin,            INPUT);
+      pinMode(RR_ROTOR_TEMP.pin,            INPUT);
       pinMode(TIRETEMP_FL_I.pin,            INPUT);
       pinMode(TIRETEMP_FL_M.pin,            INPUT);
       pinMode(TIRETEMP_FL_O.pin,            INPUT);
@@ -528,6 +520,12 @@ void loop() {
         SensTimer50Hz = millis();
 
         // read the sensors
+        analogReadSensor(RIGHT_RAD_TEMP);
+        analogReadSensor(LEFT_RAD_TEMP);
+        analogReadSensor(RL_DAMPER_POS);
+        analogReadSensor(RR_DAMPER_POS);
+        analogReadSensor(RL_ROTOR_TEMP);
+        analogReadSensor(RR_ROTOR_TEMP);
         analogReadSensor(TIRETEMP_RL_I);
         analogReadSensor(TIRETEMP_RL_M);
         analogReadSensor(TIRETEMP_RL_O);
@@ -536,10 +534,11 @@ void loop() {
         analogReadSensor(TIRETEMP_RR_O);
       }
 
+      // continually launch the calculateAndLaunchCAN function, as it
+      // has indivdual timers built in.
+      calculateAndLaunchCAN();
+
       break;
-
-
-
 
 
   }
@@ -577,7 +576,7 @@ static void analogReadSensor( sensor &SENSOR )
   SENSOR.count++;
 
   // uncomment to read raw values
-  // Serial.print(SENSOR.sensName); Serial.print(" analog reads: "); Serial.println(SENSOR.readVal);
+  //Serial.print(SENSOR.sensName); Serial.print(" analog reads: "); Serial.println(SENSOR.readVal);
 
 
 }
@@ -630,6 +629,9 @@ void analogToSensorVal( sensor &SENSOR )
   SENSOR.actualAvg = (int)sensAvg;
   // SENSOR.actualMin = (int)sensMin;
   // SENSOR.actualMax = (int)sensMax;
+
+  // print final values for calibration
+  Serial.print(SENSOR.sensName); Serial.print(" sensor value: "); Serial.println(SENSOR.actualAvg);
 
 
   // calculations are done, so reset the sensor raw read values
@@ -744,7 +746,6 @@ void calculateAndLaunchCAN()
     just_send_it_bro(0x50, 8, 0);
    *
    */
-
 
    switch ( ATCC )
    {
@@ -885,13 +886,14 @@ void calculateAndLaunchCAN()
     // rear ATCC
     case 1:
 
-      if ( millis() - SendTimer100Hz >= 100 ) // changed for testing
+      if ( millis() - SendTimer100Hz >= 10 )
       {
         SendTimer100Hz = millis();
 
         // add one for every cycle through. Reset after 14
         if ( messageCount100Hz < 15 ){messageCount100Hz++;}
         else {messageCount100Hz = 0;}
+
 
 
         analogToSensorVal(RL_DAMPER_POS);
@@ -923,9 +925,10 @@ void calculateAndLaunchCAN()
 
       } // end 100Hz timer messages
 
-      if ( millis() - SendTimer50Hz >= 50 ) // changed for testing
+      if ( millis() - SendTimer50Hz >= 20 ) // changed for testing
       {
         SendTimer50Hz = millis();
+
 
         //ATCCR_02
         analogToSensorVal(TIRETEMP_RL_I);
