@@ -225,7 +225,7 @@ void setup() {
       // CHANGE THE PINS BEFORE LOADING
 
       TIRETEMP_FL_I.sensName    = "TIRETEMP_FL_I";
-      TIRETEMP_FL_I.pin         = A15;
+      TIRETEMP_FL_I.pin         = A8;
       TIRETEMP_FL_I.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_FL_I.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_FL_I.scaleFact   = 0.1;
@@ -233,7 +233,7 @@ void setup() {
       // TIRETEMP_FL_I.z2          = 0;
 
       TIRETEMP_FL_M.sensName    = "TIRETEMP_FL_M";
-      TIRETEMP_FL_M.pin         = A15;
+      TIRETEMP_FL_M.pin         = A11;
       TIRETEMP_FL_M.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_FL_M.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_FL_M.scaleFact   = 0.1;
@@ -241,7 +241,7 @@ void setup() {
       // TIRETEMP_FL_M.z2          = 0;
 
       TIRETEMP_FL_O.sensName    = "TIRETEMP_FL_O";
-      TIRETEMP_FL_O.pin         = A15;
+      TIRETEMP_FL_O.pin         = A9;
       TIRETEMP_FL_O.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_FL_O.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_FL_O.scaleFact   = 0.1;
@@ -249,7 +249,7 @@ void setup() {
       // TIRETEMP_FL_O.z2          = 0;
 
       TIRETEMP_FR_I.sensName    = "TIRETEMP_FR_I";
-      TIRETEMP_FR_I.pin         = A15;
+      TIRETEMP_FR_I.pin         = A7;
       TIRETEMP_FR_I.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_FR_I.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_FR_I.scaleFact   = 0.1;
@@ -257,7 +257,7 @@ void setup() {
       // TIRETEMP_FR_I.z2          = 0;
 
       TIRETEMP_FR_M.sensName    = "TIRETEMP_FR_M";
-      TIRETEMP_FR_M.pin         = A15;
+      TIRETEMP_FR_M.pin         = A13;
       TIRETEMP_FR_M.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_FR_M.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_FR_M.scaleFact   = 0.1;
@@ -265,7 +265,7 @@ void setup() {
       // TIRETEMP_FR_M.z2          = 0;
 
       TIRETEMP_FR_O.sensName    = "TIRETEMP_FR_O";
-      TIRETEMP_FR_O.pin         = A15;
+      TIRETEMP_FR_O.pin         = A6;
       TIRETEMP_FR_O.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_FR_O.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_FR_O.scaleFact   = 0.1;
@@ -475,14 +475,14 @@ void loop() {
         SensTimer100Hz = millis();
 
         // read the sensors
-        analogReadSensor(FR_ROTOR_TEMP);
-        analogReadSensor(FL_ROTOR_TEMP);
+        //analogReadSensor(FR_ROTOR_TEMP);
+        //analogReadSensor(FL_ROTOR_TEMP);
       }
 
 
 
       // read the sensors in this timer at 50 Hz
-      if (millis() - SensTimer50Hz >= 20) // was 20
+      if (millis() - SensTimer50Hz >= 20)
       {
         SensTimer50Hz = millis();
 
