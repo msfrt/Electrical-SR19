@@ -19,7 +19,7 @@
 // before uploading, update the "ATCC" definition to the correct module
 // possible values:   0 : FRONT
 //                    1 : REAR
-#define ATCC 1
+#define ATCC 0
 
 
 // include and initialize CAN
@@ -155,7 +155,7 @@ void setup() {
       // FR_DAMPER_POS.z2          = 0;
 
       FL_DAMPER_POS.sensName    = "FL_DAMPER_POS";
-      FL_DAMPER_POS.pin         = A1;
+      FL_DAMPER_POS.pin         = A0; //A1
       FL_DAMPER_POS.zeroMVolt10 = 0; // mV*10
       FL_DAMPER_POS.mV10unit    = 0; // mV*10 per sensor unit
       FL_DAMPER_POS.scaleFact   = 0.1;
@@ -163,7 +163,7 @@ void setup() {
       // FL_DAMPER_POS.z2          = 0;
 
       TRACK_TEMP.sensName    = "TRACK_TEMP";
-      TRACK_TEMP.pin         = A2;
+      TRACK_TEMP.pin         = A0; //A2
       TRACK_TEMP.zeroMVolt10 = 400; // mV*10
       TRACK_TEMP.mV10unit    = 300.0000; // mV*10 per sensor unit
       TRACK_TEMP.scaleFact   = 0.1;
@@ -171,7 +171,7 @@ void setup() {
       // TRACK_TEMP.z2          = 0;
 
       FR_BRAKE_PRESSURE.sensName    = "FR_BRAKE_PRESSURE";
-      FR_BRAKE_PRESSURE.pin         = A13;
+      FR_BRAKE_PRESSURE.pin         = A0; //A13
       FR_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10 (.5V)
       FR_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit (Honeywell MLH2000PGB06A) Sens range .5V to 4.5V; 0psi to 2000psi
       FR_BRAKE_PRESSURE.scaleFact   = 0.1;
@@ -187,7 +187,7 @@ void setup() {
       // FL_BRAKE_PRESSURE.z2          = 0;
 
       RR_BRAKE_PRESSURE.sensName    = "RR_BRAKE_PRESSURE";
-      RR_BRAKE_PRESSURE.pin         = A4;
+      RR_BRAKE_PRESSURE.pin         = A0; //A4
       RR_BRAKE_PRESSURE.zeroMVolt10 = 5000; // mV*10
       RR_BRAKE_PRESSURE.mV10unit    = 20; // mV*10 per sensor unit
       RR_BRAKE_PRESSURE.scaleFact   = 0.1;
@@ -203,11 +203,11 @@ void setup() {
       // RL_BRAKE_PRESSURE.z2          = 0;
 
       WATER_TEMP_BETWEEN_RADS.sensName    = "WATER_TEMP_BETWEEN_RADS";
-      WATER_TEMP_BETWEEN_RADS.pin         = A19;
+      WATER_TEMP_BETWEEN_RADS.pin         = A0; //A19
       WATER_TEMP_BETWEEN_RADS.scaleFact   = 0.1;
 
       FR_ROTOR_TEMP.sensName    = "FR_ROTOR_TEMP";
-      FR_ROTOR_TEMP.pin         = A12;
+      FR_ROTOR_TEMP.pin         = A0; //A12
       FR_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
       FR_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
       FR_ROTOR_TEMP.scaleFact   = 0.1;
@@ -215,7 +215,7 @@ void setup() {
       // FR_ROTOR_TEMP.z2          = 0;
 
       FL_ROTOR_TEMP.sensName    = "FL_ROTOR_TEMP";
-      FL_ROTOR_TEMP.pin         = A15;
+      FL_ROTOR_TEMP.pin         = A0; //A15
       FL_ROTOR_TEMP.zeroMVolt10 = 5000; // mV*10
       FL_ROTOR_TEMP.mV10unit    = 50; // mV*10 per sensor unit
       FL_ROTOR_TEMP.scaleFact   = 0.1;
@@ -233,7 +233,7 @@ void setup() {
       // TIRETEMP_FL_I.z2          = 0;
 
       TIRETEMP_FL_M.sensName    = "TIRETEMP_FL_M";
-      TIRETEMP_FL_M.pin         = A11;
+      TIRETEMP_FL_M.pin         = A10;
       TIRETEMP_FL_M.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_FL_M.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_FL_M.scaleFact   = 0.1;
@@ -257,7 +257,7 @@ void setup() {
       // TIRETEMP_FR_I.z2          = 0;
 
       TIRETEMP_FR_M.sensName    = "TIRETEMP_FR_M";
-      TIRETEMP_FR_M.pin         = A13;
+      TIRETEMP_FR_M.pin         = A11;
       TIRETEMP_FR_M.zeroMVolt10 = 4000; // mV*10
       TIRETEMP_FR_M.mV10unit    = 300; // mV*10 per sensor unit
       TIRETEMP_FR_M.scaleFact   = 0.1;
@@ -477,6 +477,13 @@ void loop() {
         // read the sensors
         //analogReadSensor(FR_ROTOR_TEMP);
         //analogReadSensor(FL_ROTOR_TEMP);
+
+        analogReadSensor(TIRETEMP_FL_I);
+        analogReadSensor(TIRETEMP_FL_M);
+        analogReadSensor(TIRETEMP_FL_O);
+        analogReadSensor(TIRETEMP_FR_I);
+        analogReadSensor(TIRETEMP_FR_M);
+        analogReadSensor(TIRETEMP_FR_O);
       }
 
 
@@ -489,12 +496,6 @@ void loop() {
         // read the sensors
         analogReadSensor(WATER_TEMP_BETWEEN_RADS);
         // analogReadSensor(TRACK_TEMP); - disabled, not set up
-        analogReadSensor(TIRETEMP_FL_I);
-        analogReadSensor(TIRETEMP_FL_M);
-        analogReadSensor(TIRETEMP_FL_O);
-        analogReadSensor(TIRETEMP_FR_I);
-        analogReadSensor(TIRETEMP_FR_M);
-        analogReadSensor(TIRETEMP_FR_O);
       }
 
 
