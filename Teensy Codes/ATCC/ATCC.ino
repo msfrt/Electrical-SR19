@@ -463,7 +463,7 @@ void loop() {
         // read the sensors
         analogReadSensor(FL_BRAKE_PRESSURE);
         // analogReadSensor(FR_BRAKE_PRESSURE); -- disabled until ABS
-        analogReadSensor(RL_BRAKE_PRESSURE);// -- disabled due to faulty sensor
+        analogReadSensor(RL_BRAKE_PRESSURE); // -- disabled due to faulty sensor
         // analogReadSensor(RR_BRAKE_PRESSURE); -- disabled until ABS
       }
 
