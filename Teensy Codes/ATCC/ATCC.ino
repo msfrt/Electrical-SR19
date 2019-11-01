@@ -463,7 +463,7 @@ void loop() {
         // read the sensors
         analogReadSensor(FL_BRAKE_PRESSURE);
         // analogReadSensor(FR_BRAKE_PRESSURE); -- disabled until ABS
-        // analogReadSensor(RL_BRAKE_PRESSURE); -- disabled due to faulty sensor
+        analogReadSensor(RL_BRAKE_PRESSURE);// -- disabled due to faulty sensor
         // analogReadSensor(RR_BRAKE_PRESSURE); -- disabled until ABS
       }
 
@@ -808,19 +808,19 @@ void calculateAndLaunchCAN()
         sendCAN(0x8C, 8, 1);
 
 
-        // ATCCF_01
-        // analogToSensorVal(RL_BRAKE_PRESSURE);
-        // analogToSensorVal(RR_BRAKE_PRESSURE);
-        // analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
-        // msg.buf[0] = messageCount50Hz;
-        // msg.buf[1] = 0;//RL_BRAKE_PRESSURE.actualAvg; -- disabled due to faulty sensor
-        // msg.buf[2] = 0;//RL_BRAKE_PRESSURE.actualAvg >> 8;
-        // msg.buf[3] = 0;//RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS
-        // msg.buf[4] = 0;//RR_BRAKE_PRESSURE.actualAvg >> 8;
-        // msg.buf[5] = 0; //WATER_TEMP_BETWEEN_RADS.actualAvg;
-        // msg.buf[6] = 0; //WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
-        // msg.buf[7] = 0;
-        // sendCAN(0x8D, 8, 1);
+        //ATCCF_01
+        analogToSensorVal(RL_BRAKE_PRESSURE);
+        //analogToSensorVal(RR_BRAKE_PRESSURE);
+        analogToBoschTempVal(WATER_TEMP_BETWEEN_RADS);
+        msg.buf[0] = messageCount50Hz;
+        msg.buf[1] = RL_BRAKE_PRESSURE.actualAvg; //-- disabled due to faulty sensor
+        msg.buf[2] = RL_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[3] = 0;//RR_BRAKE_PRESSURE.actualAvg; -- disabled until ABS
+        msg.buf[4] = 0;//RR_BRAKE_PRESSURE.actualAvg >> 8;
+        msg.buf[5] = 0; //WATER_TEMP_BETWEEN_RADS.actualAvg;
+        msg.buf[6] = 0; //WATER_TEMP_BETWEEN_RADS.actualAvg >> 8;
+        msg.buf[7] = 0;
+        sendCAN(0x8D, 8, 1);
 
         //ATCCF_04
         analogToSensorVal(TIRETEMP_FL_I);
