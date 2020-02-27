@@ -172,8 +172,9 @@ void setup() {
   pixels_left.show();
 
   // initialize screens
-  display_left.begin();
   display_right.begin();
+  display_left.begin();
+
   display_left.setRotation(3);
   display_right.setRotation(1);
   // draw SR logo
