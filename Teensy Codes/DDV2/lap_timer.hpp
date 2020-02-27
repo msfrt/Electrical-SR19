@@ -182,7 +182,7 @@ void LapTimeDisplay::begin(bool startup_screen){
   screen.fillScreen(ILI9341_BLACK);
   screen.drawFastHLine(0,                  0, DISPLAY_WIDTH, ILI9341_GREEN);
   screen.drawFastHLine(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH, ILI9341_GREEN);
-  
+
   this->last_lap = -1;
 
   if (startup_screen){
